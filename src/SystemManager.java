@@ -3,12 +3,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SystemManager {
+    UI ui = new UI();
     ArrayList<Member> members= new ArrayList<>();
     ArrayList<Coach> coaches= new ArrayList<>();
     //Temporary to test the Execute Program
     public boolean runMainMenu() {
        //initializeFiles(); // Only do once
-       testUpdatingFiles(); //test First so that some data is stored before testing startup
+       //testUpdatingFiles(); //test First so that some data is stored before testing startup
+
+exampleForInitializedData();
+        ui.printMember(members.get(0));
+        ui.printMember(members.get(1));
+
+
        //testLoadingAtStartup();
         return false;
     }
@@ -19,10 +26,9 @@ public class SystemManager {
         loadArrays();
         Member testMember = members.get(0);
         System.out.println("Arrays have been loaded from file");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getName() );
+        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
         Coach testCoach = coaches.get(0);
         System.out.println("Coach 1 in array : " + testCoach.getName());
-
 
     }
 
@@ -42,26 +48,26 @@ public class SystemManager {
         exampleForInitializedData();
         Member testMember = members.get(0);
         System.out.println("Members have " + members.size() + " members");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getName() );
+        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
         System.out.println("Clearing the array");
         members.clear();
         System.out.println("Members have " + members.size() + " members");
         System.out.println("Loading the file into the array");
         loadMemberArray();
         System.out.println("Members have " + members.size() + " members");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getName() );
+        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
         System.out.println("Changing the name to Andy:");
-        testMember.setName("Andy");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getName() );
+        testMember.setFirstName("Andy");
+        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
         System.out.println("Updating the file");
         updateMemberInfoInFile(testMember);
         System.out.println("clearing the arrays and loading it again to check if the name has been updated");
         updateMembers();
         loadMemberArray();
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getName() );
+        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
         System.out.println("checking that the coach is still attached to the competition member:");
         CompetitionMember compMember  = (CompetitionMember) members.get(1);
-        System.out.println("Id : " + compMember.getMemberID() + "name: " + compMember.getName());
+        System.out.println("Id : " + compMember.getMemberID() + "name: " + compMember.getFirstName());
         System.out.println(compMember.getCoach().getName());
         System.out.println("updating the name of the coach to Clara"); //Can't because we use the name to find the coach in the file
         coaches.get(0).setName("Clara");
@@ -75,24 +81,26 @@ public class SystemManager {
     }
 
     public Member createCompetitionMember(int id){
-        String name = "Annie";
+        String firstName = "Annie";
+        String lastName = "Pederson";
         LocalDate date = LocalDate.of(2000,5,7);
-        char gender = 'f';
+        String gender = "F";
         boolean isActive = true;
         Coach coach = coaches.get(0); //Everything should be inputs
         Discipline[] disciplines = new Discipline[]{Discipline.BUTTERFLY};
-        return new CompetitionMember(name, date, gender, isActive,id, coach,disciplines );
+        return new CompetitionMember(firstName, lastName, date, gender, isActive,id, coach,disciplines );
 
 
     }
     public Member createMember( int id){
         //Ask for input, shouldn't be hardcoded - for testing:
-        String name = "Mia";
+        String firstName = "Mia";
+        String lastName = "Jensen";
         LocalDate date = LocalDate.of(2000,2,3);
-        char gender = 'f';
+        String gender = "F";
         boolean isActive = true;
         //ID should not be given it should be calculated, but I need it now for testing
-        return new Member(name,date,gender,isActive, id);
+        return new Member(firstName, lastName,date,gender,isActive, id);
 
     }
 

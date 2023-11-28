@@ -5,9 +5,10 @@ public class Member implements Serializable {
 
     // Attributter
 
-    private String name;
+    private String firstName;
+    private String lastName;
     private LocalDate birthdate;
-    private char gender;
+    private String gender;
     private boolean isActive;
     private boolean hasPaid;
     private int membershipPrice;
@@ -17,8 +18,9 @@ public class Member implements Serializable {
 
 // Konstruktør
 
-    public Member(String name, LocalDate birthdate, char gender, boolean isActive, int memberID) {
-        this.name = name;
+    public Member(String firstName,String lastName, LocalDate birthdate, String gender, boolean isActive, int memberID) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.birthdate = birthdate;
         this.gender = gender;
         this.isActive = isActive;
@@ -31,7 +33,7 @@ public class Member implements Serializable {
 
     // Alternativ konstruktør
     //Hvad bruges den til?
-    /*public Member(String name, LocalDate birthdate, char gender, boolean isActive, boolean hasPaid, int membershipPrice, int memberID, CompetitionMember.Team team) {
+    /*public Member(String name, LocalDate birthdate, String gender, boolean isActive, boolean hasPaid, int membershipPrice, int memberID, CompetitionMember.Team team) {
         this.name = name;
         this.birthdate = birthdate;
         this.gender = gender;
@@ -41,12 +43,20 @@ public class Member implements Serializable {
 
     // Metoder for at få og indstille navn
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     // Metoder for at få og indstille fødselsdato
@@ -61,11 +71,11 @@ public class Member implements Serializable {
 
     // Metoder for at få og indstille køn
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
