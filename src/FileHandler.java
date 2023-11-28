@@ -27,7 +27,7 @@ public class FileHandler {
                 objects.add(object);
             }
         } catch (EOFException e) {
-            // End of file reached, do nothing
+            // End of file reached, do nothing, IDK if this is good code
         } catch (IOException | ClassNotFoundException e) {
 
         }
@@ -41,23 +41,24 @@ public class FileHandler {
 
         while (iterator.hasNext()) {
             Object object = iterator.next();
-            if (object instanceof Member) {
-                Member member = (Member) object;
+            if (object instanceof Member member) {
                 Member memberToUpdate = (Member) objectToUpdate;
 
                 if (member.getMemberID() == memberToUpdate.getMemberID()) {
                     iterator.remove(); // Remove the existing object
-                    Member updatedObject = memberToUpdate; // Add the updated member
-                    iterator.add(updatedObject);
+                    iterator.add(memberToUpdate);
                 }
         }
-            else {
-                Coach coach = (Coach) object;
+            else if (object instanceof Coach coach){
                 Coach coachToUpdate = (Coach) objectToUpdate;
+                if (coach.equals(coachToUpdate)) {
+                    iterator.remove(); // Remove the existing object
+                    iterator.add(coachToUpdate);
             }
         }
 
     saveObjectsToFile(filename, objects);
+    }
 }
 
 
@@ -89,16 +90,11 @@ public class FileHandler {
             throw new RuntimeException(e);
         }
     }
-
-    public static void createTitlesForFile(String filename, ArrayList<String> titles){
-        File file = new File("src\\"+filename);
-        try {
-            FileOutputStream fos = new FileOutputStream(file, true); //used for tokens
-            PrintStream ps = new PrintStream(fos);
-            ps.println(String.join("\t", titles));
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found");;
+        public static void clearFile(String filename) {
+            try (FileWriter fw = new FileWriter("src\\"+filename, false)) {
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
 
 }
