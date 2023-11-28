@@ -11,9 +11,9 @@ public class SystemManager {
        //initializeFiles(); // Only do once
        //testUpdatingFiles(); //test First so that some data is stored before testing startup
 
-        System.out.println("give birthday");
-        ui.getLocalDateInput();
-        System.out.println(ui.getLocalDateInput());
+exampleForInitializedData();
+        ui.printMember(members.get(0));
+        ui.printMember(members.get(1));
 
 
        //testLoadingAtStartup();
@@ -84,7 +84,7 @@ public class SystemManager {
         String firstName = "Annie";
         String lastName = "Pederson";
         LocalDate date = LocalDate.of(2000,5,7);
-        char gender = 'f';
+        String gender = "F";
         boolean isActive = true;
         Coach coach = coaches.get(0); //Everything should be inputs
         Discipline[] disciplines = new Discipline[]{Discipline.BUTTERFLY};
@@ -97,7 +97,7 @@ public class SystemManager {
         String firstName = "Mia";
         String lastName = "Jensen";
         LocalDate date = LocalDate.of(2000,2,3);
-        char gender = 'f';
+        String gender = "F";
         boolean isActive = true;
         //ID should not be given it should be calculated, but I need it now for testing
         return new Member(firstName, lastName,date,gender,isActive, id);

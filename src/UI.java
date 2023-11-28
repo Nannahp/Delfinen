@@ -164,20 +164,39 @@ public class UI {
         System.out.println("__________________________________________");
 
         if (member instanceof CompetitionMember) {
-            System.out.printf("COMPETITION-MEMBER №%d%-20s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
+            System.out.printf("COMPETITION-MEMBER №%d%20.7s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
         } else {
-            System.out.printf("MEMBER №%d%-20s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
+            System.out.printf("MEMBER №%d%32.7s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
         }
 
-        System.out.printf("Name: %s %S%-20s%n", member.getFirstName(), member.getLastName(), member.getGender().toUpperCase() );
-        System.out.printf("Born on: %1$td.%1$tm.%1$ty%n", member.getBirthdate());
-        System.out.printf("Team: %S, age: %d%n", member.getTeam(), Period.between(member.getBirthdate(), LocalDate.now()).getYears());
+        System.out.printf("%-10s %-12S%18.1s%n", member.getFirstName(), member.getLastName(), member.getGender().toUpperCase() );
+        System.out.printf("Born on: %1$td/%1$tm/%tY ", member.getBirthdate());
+        System.out.printf("%19s%d%n","Age:",  Period.between(member.getBirthdate(), LocalDate.now()).getYears());
+        System.out.printf("Team: %S%n", member.getTeam());
         if (member instanceof CompetitionMember) {
+            ArrayList<Discipline> disciplines = ((CompetitionMember) member).getDisciplines();
+            System.out.println();
+            System.out.println("_______________Competition________________");
+            System.out.printf("Coach: Coach %S%n", ((CompetitionMember) member).getCoach().getName());
+            System.out.printf("%s","Discipline(s): ");
+            for (int i = 0; i < disciplines.size(); i++) {
+                Discipline discipline = disciplines.get(i);
+                System.out.printf("%S", discipline); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
+
+                // Check if the current discipline is not the last one
+                if (i < disciplines.size() - 1) {
+                    System.out.print(", ");
+                }
+            }
+            // ADD CODE HERE TO ADD COMPETITION SCORES AND OTHER DATA
+            System.out.println();
         }
         System.out.println();
-        System.out.println("Membership:");
-        System.out.printf("Price:%d,- dkk%-20S", member.getMembershipPrice(), member.hasPaid()?"Paid":"Non-Paid");
+        System.out.println("________________Membership________________");
+        System.out.printf("Price:%d,-%10s%n", member.getMembershipPrice(), member.hasPaid()?"Paid":"Non-Paid");
         System.out.println("__________________________________________");
+        System.out.println();
+        System.out.println();
     }
 
 
