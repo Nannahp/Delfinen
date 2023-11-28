@@ -1,5 +1,5 @@
 public class ExecuteProgram {
-    boolean systemRunning = true;
+
     SystemManager manager = new SystemManager();
 
     public static void main(String[] args) {
@@ -8,9 +8,8 @@ public class ExecuteProgram {
 
     //Runs the system until runMainMenu is false
     public void run() {
-        while (systemRunning) {
-            systemRunning = manager.runMainMenu();
-        }
+        manager.runMainMenu();
+
     }
 }
 
