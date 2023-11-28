@@ -18,8 +18,8 @@ public class CompetitionMember extends Member{
 
     // Konstruktør, der kun tager disciplines og coach som parametre
 
-    public CompetitionMember(String name, LocalDate birthdate, char gender, boolean isActive, int memberID, Coach coach, Discipline... disciplines) {
-        super(name, birthdate, gender, isActive, memberID);
+    public CompetitionMember(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive, int memberID, Coach coach, Discipline... disciplines) {
+        super(firstName, lastName, birthdate, gender, isActive, memberID);
         //metode til at adde dicipplines til listen
         for (Discipline discipline: disciplines) {
             addDisciplines(discipline);
