@@ -33,7 +33,6 @@ public class UI {
         for (Coach coach : coaches) {
             chooseCoachMenu.addMenuItems(coach.getName());
         }
-        chooseCoachMenu.addMenuItems("Return to Main Menu");
         chooseCoachMenu.printMenu();
 
     }

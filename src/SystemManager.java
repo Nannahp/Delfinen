@@ -4,37 +4,47 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SystemManager {
+    boolean systemRunning = true;
     Scanner scanner = new Scanner(System.in); //will be removed
     UI ui  = new UI();
     ArrayList<Member> members= new ArrayList<>();
     ArrayList<Coach> coaches= new ArrayList<>();
-    //Temporary to test the Execute Program
 
 
-    public boolean runMainMenu() {
-        while(true) { //maybe bad idea
+
+    public void runMainMenu() {
+        //initializeData();
+        loadArrays();
+        printMembers();//for testing - to see that it works
+        printCoaches(); //for testing - to see that it works
+        while(systemRunning){
             ui.buildMainMenu();
-            return false;
-        }
+            sendFromMainMenu();}
 
     }
 
-    public void sendFromMainMenu(int choice){
+    public void sendFromMainMenu(){
+        int choice = scanner.nextInt();
+        scanner.nextLine(); //scannerbug
         switch (choice){
             case 1 -> runCashierMenu();
             case 2 -> runManagerMenu();
+            case 3 -> runCoachMenu();
+            case 4 -> quitProgram();
         }
     }
-
+    public void quitProgram(){
+        systemRunning = false;
+    }
 
     public void  runCashierMenu(){
         ui.buildCashierMenu();
-
+        System.out.println("show members and their paymentStatus");
     }
 
     public void runManagerMenu(){
-        boolean returnToMainMenu = false;
-        while(!returnToMainMenu){
+        boolean exitMenu = false;
+        while(!exitMenu){
 
         ui.buildManagerMenu();
         int choice = scanner.nextInt();
@@ -43,31 +53,33 @@ public class SystemManager {
             case 1 -> addMember();
             case 2 -> System.out.println("edit member info is coming soon");
             case 3 -> System.out.println("delete member is coming soon");
-            case 4 -> returnToMainMenu = true;
+            case 4 -> addCoach();
+            case 5 -> exitMenu = true;
         }
         }
     }
 
+
     public void runCoachMenu(){
         Coach coach = runChooseCoachMenu();
-        boolean returnToMainMenu = false;
-        while(!returnToMainMenu){
-
+        boolean exitMenu = false;
+        while(!exitMenu){
             ui.buildCoachMenu();
             int choice = scanner.nextInt();
             scanner.nextLine(); //scannerbug
             switch (choice){
                 case 1 -> runSeeTop5Menu(coach);
-                case 2 -> System.out.println("edit member info is coming soon");
-                case 3 -> System.out.println("delete member is coming soon");
-                case 4 -> returnToMainMenu = true;
+                case 2 -> System.out.println("coming soon");//registerTrainingScore();
+                case 3 -> registerCompetitionScore();
+                case 4 -> exitMenu = true;
             }
         }
     }
+
     public void runSeeTop5Menu(Coach coach){
         //need coach to see top 5
-        boolean returnToMainMenu = false;
-        while(!returnToMainMenu){
+        boolean exitMenu = false;
+        while(!exitMenu){
 
             ui.buildSeeTop5Menu();
             int choice = scanner.nextInt();
@@ -78,31 +90,66 @@ public class SystemManager {
                 case 3 -> System.out.println("see top 5 of BreastStroke");
                 case 4 -> System.out.println("see top 5 of Butterfly");
                 case 5 -> System.out.println("see top 5 of Medley");
-                case 6 -> returnToMainMenu = true;
+                case 6 -> exitMenu = true;
             }
         }
     }
-    public void registerTrainingScore(){
 
+
+    private Member searchForMember(int memberID) {
+        try {
+            for (Member member : members) {
+                if (member.getMemberID() == memberID)
+                    return member;
+            }
+            throw new IllegalArgumentException("Member with given ID not found");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
+
+    public Member getMember(){
+        Member member = null;
+        while(member ==null){  //not tested!
+        System.out.println("enter id");
+        int memberId = scanner.nextInt();
+        scanner.nextLine(); //scannerbug
+        member =  searchForMember(memberId);}
+        return member;
+    }
+
+    //Not working currently, needs CompetitionMember methods
+    public void registerTrainingScore(){
+        CompetitionMember member = (CompetitionMember) getMember();
+        System.out.println("what was the registered time?");
+        int time = scanner.nextInt();
+        scanner.nextLine(); //scannerbug
+        LocalDate date = LocalDate.of(2000,4,6);//dummy
+        Discipline discipline = Discipline.BUTTERFLY; //dummy
+        member.addTrainingScore(new TrainingScore(time,date, discipline)); //needs to handle limited disciplines
+        FileHandler.updateObjectInFile("Members.csv",member);
+    }
+
+    public void registerCompetitionScore(){
+        getMember();
+        System.out.println("coming soon ;)");
+    }
+
 
     public Coach runChooseCoachMenu() { //OBS! Does not work dynamically
         Coach coach = null;
-        boolean returnToMainMenu = false;
-        while (!returnToMainMenu) {
             ui.buildChooseCoachMenu(coaches);
             int choice = scanner.nextInt();
             scanner.nextLine(); //scannerbug
             switch (choice) {
                 case 1 -> coach = coaches.get(0);
-
                 case 2 -> coach = coaches.get(1);
-
-                case 3 -> returnToMainMenu = true;
-            }
-        }
+        }//needs catch so that it doesn't return a null coach
         return  coach;
     }
+
+        //needs user input
     public Member createCompetitionMember(int id){
         String name = "Annie";
         LocalDate date = LocalDate.of(2000,5,7);
@@ -122,16 +169,18 @@ public class SystemManager {
         boolean isActive = true;
         //ID should not be given it should be calculated, but I need it now for testing
         return new Member(name,date,gender,isActive, id);
-
     }
 
+        //Needs proper user input
     public int chooseMemberOrCompetitionMember(){
+        System.out.println("choose 1 for member, choose 2 for competitionMember");
         int choice  = scanner.nextInt(); //Only for now, will be edited once we have ui
         scanner.nextLine(); //scannerbug
         return choice;
     }
-    public void addMember(){
 
+
+    public void addMember(){
         int choice = chooseMemberOrCompetitionMember();
         System.out.println("enter id");
         int id = scanner.nextInt(); //only for now, will be deleted once memberID is calculated
@@ -145,14 +194,20 @@ public class SystemManager {
         members.add(member);
         FileHandler.appendObjectToFile("Members.csv", member);
         System.out.println("Member added");
+        printMembers(); // for testing - to see if it works
     }
+
+
     public Coach createCoach(String name){
         return new Coach (name);
     }
-    public void addCoach(String name){
+    public void addCoach(){
+        System.out.println("What name?");
+        String name = scanner.nextLine();
         Coach coach = createCoach(name);
         coaches.add(coach);
         FileHandler.appendObjectToFile("Coaches.csv", coach);
+        printCoaches(); // for testing - to see if it works
 
     }
 
@@ -198,6 +253,22 @@ public class SystemManager {
         }
     }
 
+    public void printMembers(){
+        for (Member member: members) {
+            System.out.println(member.getMemberID() + " : " + member.getName());
+        }
+    }
+
+    public void printCoaches(){
+        for (Coach coach: coaches) {
+            System.out.println(coach.getName());
+        }
+    }
+
+
+
+    //FOR TESTING
+
 
     public void testLoadingAtStartup(){
         loadArrays();
@@ -211,11 +282,11 @@ public class SystemManager {
     }
 
     //FOR TESTING! MISSING USER INPUTS SO SOME STUFF IS HARDCODED
-    public void exampleForInitializedData(){
+    public void initializeData(){
         FileHandler.clearFile("Members.csv"); //clears the files, so it's easier to assess if the test data is correct.
         FileHandler.clearFile("Coaches.csv");
-        addCoach("Brian");
-        addCoach("Melany");
+        addCoach();
+        addCoach();
         addMember();
         addMember();
         addMember();
@@ -224,7 +295,7 @@ public class SystemManager {
 
 
     public void testUpdatingFiles(){
-        exampleForInitializedData();
+        initializeData();
         Member testMember = members.get(0);
         System.out.println("Members have " + members.size() + " members");
         System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getName() );
@@ -258,6 +329,7 @@ public class SystemManager {
 
 
     }
+
 }
 
 
