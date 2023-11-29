@@ -299,7 +299,7 @@ public class UI {
     public void buildManagerMenu() {
         Menu managerMenu = new Menu();
         managerMenu.setMenuTitle("     MANAGER \n What would you like to do?");
-        managerMenu.setMenuItems("Add member", "Edit member information", "Delete member", "Add new Coach", "Return to Main Menu");
+        managerMenu.setMenuItems("Add member", "See member information","Edit member information", "Delete member", "Add new Coach", "Return to Main Menu");
         managerMenu.printMenu();
 
     }

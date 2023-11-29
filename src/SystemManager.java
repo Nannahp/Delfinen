@@ -55,13 +55,14 @@ public class SystemManager {
         while (!exitMenu) {
 
             ui.buildManagerMenu();
-            int choice = menuInputHandler(5);
+            int choice = menuInputHandler(6);
             switch (choice) {
                 case 1 -> addMember();
-                case 2 -> ui.printText("edit member info is coming soon");
-                case 3 -> ui.printText("delete member is coming soon");
-                case 4 -> addCoach();
-                case 5 -> exitMenu = true;
+                case 2 -> seeMemberInformation();
+                case 3 -> ui.printText("edit member info is coming soon");
+                case 4 -> ui.printText("delete member is coming soon");
+                case 5 -> addCoach();
+                case 6 -> exitMenu = true;
             }
         }
     }
@@ -166,11 +167,15 @@ public class SystemManager {
     }
 
 
+    //Needs proper user input
     public boolean isMemberACompetitionMember(){
         ui.printText("Is the member a CompetitionMember? (y/n)");
         return ui.getBooleanInput();
     }
-
+    public void seeMemberInformation(){
+        Member member = getMember();
+        ui.printMember(member);
+    }
 
     public void addCoach(){
         ui.printText("What is the name of the coach?");
