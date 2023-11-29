@@ -58,13 +58,14 @@ public class SystemManager {
         while (!exitMenu) {
 
             ui.buildManagerMenu();
-            int choice = menuInputHandler(5);
+            int choice = menuInputHandler(6);
             switch (choice) {
                 case 1 -> addMember();
-                case 2 -> ui.printText("edit member info is coming soon");
-                case 3 -> ui.printText("delete member is coming soon");
-                case 4 -> addCoach();
-                case 5 -> exitMenu = true;
+                case 2 -> seeMemberInformation();
+                case 3 -> ui.printText("edit member info is coming soon");
+                case 4 -> ui.printText("delete member is coming soon");
+                case 5 -> addCoach();
+                case 6 -> exitMenu = true;
             }
         }
     }
@@ -103,12 +104,16 @@ public class SystemManager {
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            ui.printText("enter id");
             ui.printText("Please enter the MemberId of the member you would like to access:");
             int memberId = ui.getIntInput();
             member = searchForMember(memberId);
         }
         return member;
+    }
+
+    public void seeMemberInformation(){
+        Member member = getMember();
+        ui.printMember(member);
     }
 
    /* //Not working currently, needs CompetitionMember methods
