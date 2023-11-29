@@ -5,7 +5,7 @@ import java.util.List;
 public class SystemManager {
     UI ui = new UI();
     boolean systemRunning = true;
-    private int nextMemberId;
+    private int nextMemberId = 1;
     ArrayList<Member> members = new ArrayList<>();
     ArrayList<Coach> coaches = new ArrayList<>();
 
