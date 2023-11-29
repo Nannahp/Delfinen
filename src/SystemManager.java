@@ -13,7 +13,7 @@ public class SystemManager {
         //initializeData();
         loadArrays();
         updateNextMemberID();
-        // printMembers();//for testing - to see that it works
+        printMembers();//for testing - to see that it works
         // printCoaches(); //for testing - to see that it works
         while (systemRunning) {
             ui.buildMainMenu();
@@ -56,14 +56,14 @@ public class SystemManager {
     public void runManagerMenu() {
         boolean exitMenu = false;
         while (!exitMenu) {
-
+            printMembers();
             ui.buildManagerMenu();
             int choice = menuInputHandler(6);
             switch (choice) {
                 case 1 -> addMember();
                 case 2 -> seeMemberInformation();
                 case 3 -> ui.printText("edit member info is coming soon");
-                case 4 -> ui.printText("delete member is coming soon");
+                case 4 -> deleteMember();
                 case 5 -> addCoach();
                 case 6 -> exitMenu = true;
             }
@@ -166,7 +166,7 @@ public class SystemManager {
         member.setMemberID(nextMemberId++);
 
         coach.addMemberToCoach( member);
-        FileHandler.updateObjectInFile("Coaches.csv", coach);
+        FileHandler.modifyObjectInFile("Coaches.csv", coach, true);
 return member;
 }
     public Member createMember() {
@@ -235,7 +235,6 @@ return member;
     }
 
 
-    //Needs proper user input
     public boolean isMemberACompetitionMember(){
         ui.printText("Is the member a CompetitionMember? (y/n)");
         return ui.getBooleanInput();
@@ -253,6 +252,22 @@ return member;
         FileHandler.appendObjectToFile("Members.csv", member);
         ui.printText("Member added");
         ui.printMember(member);
+    }
+
+    public void deleteMember(){
+        Member member = getMember();
+        removeMemberFromFile(member);
+        updateMembers(); //Updates the membersArrayList
+        if (member instanceof  CompetitionMember){
+            deleteCompetitionMember((CompetitionMember) member);
+        }
+        ui.printText("Member: " + member.getFirstName() + " " + member.getLastName() + " deleted");
+    }
+    public void deleteCompetitionMember(CompetitionMember member){
+        Coach coach = member.getCoach();
+        coach.removeMemberFromCoachLists(member);
+        FileHandler.modifyObjectInFile("Coaches.csv", coach, true);
+        updateCoaches();
     }
 
 
@@ -416,17 +431,16 @@ return member;
     public Coach createCoach(String name){
         return new Coach (name);
     }
-    public void addCoach(String name){
-        Coach coach = createCoach(name);
-        coaches.add(coach);
-        FileHandler.appendObjectToFile("Coaches.csv", coach);
-    }
+
 
     public void updateMemberInfoInFile(Member member){
-        FileHandler.updateObjectInFile("Members.csv", member);
+        FileHandler.modifyObjectInFile("Members.csv", member,true);
     }
     public void updateCoachInfoInFile(Coach coach){
-        FileHandler.updateObjectInFile("Coaches.csv", coach);
+        FileHandler.modifyObjectInFile("Coaches.csv", coach, true);
+    }
+    public void removeMemberFromFile(Member member){
+        FileHandler.modifyObjectInFile("Members.csv", member,false);
     }
 
     public void initializeFiles(){
@@ -447,6 +461,7 @@ return member;
             coaches.add((Coach) obj);
         }
     }
+
 }
 
 

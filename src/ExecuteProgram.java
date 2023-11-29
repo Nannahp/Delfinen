@@ -12,15 +12,3 @@ public class ExecuteProgram {
 
     }
 }
-
-      /*  SystemManager systemManager = new SystemManager();
-        systemManager.createFile("testFil.csv","ID","Name","TrainingScores", "CompetitionScores" );
-        systemManager.addMember("oscar", 101);
-        systemManager.addCompetitionMember("andy", 102);
-        systemManager.printFile("testFil.csv");
-        systemManager.testAddCompetition();
-        systemManager.testEditTrainingScore();
-        systemManager.printFile("testFil.csv");
-
-    }*/
-

@@ -34,7 +34,7 @@ public class FileHandler {
         return objects;
     }
 
-    public static void updateObjectInFile(String filename,  Object objectToUpdate){
+    public static void modifyObjectInFile(String filename, Object objectToUpdate, boolean update){
         List<Object> objects = loadObjectsFromFile(filename);
 
         ListIterator<Object> iterator =  objects.listIterator();
@@ -45,15 +45,17 @@ public class FileHandler {
                 Member memberToUpdate = (Member) objectToUpdate;
 
                 if (member.getMemberID() == memberToUpdate.getMemberID()) {
+
                     iterator.remove(); // Remove the existing object
+                    if (update)
                     iterator.add(memberToUpdate);
                 }
         }
-            //this does not work
             else if (object instanceof Coach ){
                 Coach coachToUpdate = (Coach) objectToUpdate;
                 if (((Coach) object).getName().equals(coachToUpdate.getName())) {
                     iterator.remove(); // Remove the existing object
+                    if (update)
                     iterator.add(coachToUpdate);
             }
         }
@@ -61,9 +63,6 @@ public class FileHandler {
     saveObjectsToFile(filename, objects);
     }
 }
-
-
-
 
     public static void createFile(String fileName) {
         try {
