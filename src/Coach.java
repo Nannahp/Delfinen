@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class Coach implements Serializable {
     String name;
+    private static int nextCoachID = 1;
+    private int coachID;
     private ArrayList<CompetitionMember> juniorCrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBackcrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBreaststroke = new ArrayList<CompetitionMember>();
@@ -17,41 +19,30 @@ public class Coach implements Serializable {
     //Constructor
     Coach(String name) {
         this.name = name;
+        this.coachID = nextCoachID++;
+    }
+
+
+    //Checks the arraylist of disciplines of given member and puts in right arraylist
+    private void checkCompetitionMemberTeam(CompetitionMember member) {
+        ArrayList<Discipline> disciplines = member.getDisciplines();
+        for (Discipline discipline : disciplines) {
+            switch(discipline) {
+                case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
+                case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
+                case BUTTERFLY -> addToDisciplineList(member, juniorButterfly, seniorButterfly);
+                case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
+                case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
+            }
+        }
     }
 
     //Checks if competition member is a junior or senior
-    private void checkCompetitionMemberTeam(CompetitionMember member) {
+    private void addToDisciplineList(CompetitionMember member, ArrayList<CompetitionMember> juniorList, ArrayList<CompetitionMember> seniorList) {
         if (member.getTeam() == Team.JUNIOR) {  //getTeam()
-            addJuniorToDisciplineList(member);
+            juniorList.add(member);
         } else {
-            addSeniorToDisciplineList(member);
-        }
-    }
-
-    //Checks the arraylist of disciplines of given member and puts in right arraylist
-    private void addJuniorToDisciplineList(CompetitionMember member) {
-        ArrayList<Discipline> disciplines = member.getDisciplines();
-        for (Discipline discipline : disciplines) {
-            switch(discipline) {
-                case CRAWL -> juniorCrawl.add(member);
-                case BACKCRAWL -> juniorBackcrawl.add(member);
-                case BUTTERFLY -> juniorButterfly.add(member);
-                case BREASTSTROKE -> juniorBreaststroke.add(member);
-                case MEDLEY -> juniorMedley.add(member);
-            }
-        }
-    }
-//Er der en måde at få det til at være mindre ens?
-    private void addSeniorToDisciplineList(CompetitionMember member) {
-        ArrayList<Discipline> disciplines = member.getDisciplines();
-        for (Discipline discipline : disciplines) {
-            switch(discipline) {
-                case CRAWL -> seniorCrawl.add(member);
-                case BACKCRAWL -> seniorBackcrawl.add(member);
-                case BUTTERFLY -> seniorButterfly.add(member);
-                case BREASTSTROKE -> seniorBreaststroke.add(member);
-                case MEDLEY -> seniorMedley.add(member);
-            }
+            seniorList.add(member);
         }
     }
 
@@ -63,4 +54,7 @@ public class Coach implements Serializable {
         return name;
     }
 
+    public int getCoachID() {
+        return coachID;
+    }
 }

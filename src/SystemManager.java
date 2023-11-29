@@ -10,17 +10,12 @@ public class SystemManager {
     public boolean runMainMenu() {
        //initializeFiles(); // Only do once
        //testUpdatingFiles(); //test First so that some data is stored before testing startup
-
-exampleForInitializedData();
-        ui.printMember(members.get(0));
-        ui.printMember(members.get(1));
-
-
+        exampleForInitializedData();
+                ui.printMember(members.get(0));
+                ui.printMember(members.get(1));
        //testLoadingAtStartup();
         return false;
     }
-
-
 
     public void testLoadingAtStartup(){
         loadArrays();
@@ -29,7 +24,6 @@ exampleForInitializedData();
         System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
         Coach testCoach = coaches.get(0);
         System.out.println("Coach 1 in array : " + testCoach.getName());
-
     }
 
     //FOR TESTING! MISSING USER INPUTS SO SOME STUFF IS HARDCODED
@@ -40,7 +34,6 @@ exampleForInitializedData();
         addMember(1,1); //1 for member, 2 for competition member. Second int for member ID
         addMember(2,2);
         addMember(1,3);
-
     }
 
 
@@ -76,8 +69,19 @@ exampleForInitializedData();
         updateCoaches();
         loadCoachesArray();
         System.out.println(coaches.get(0).getName());
+    }
 
-
+    private Member searchForMember(int memberID) {
+        try {
+            for (Member member : members) {
+                if (member.getMemberID() == memberID)
+                    return member;
+            }
+            throw new IllegalArgumentException("Member with given ID not found");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     public Member createCompetitionMember(int id){
@@ -88,10 +92,9 @@ exampleForInitializedData();
         boolean isActive = true;
         Coach coach = coaches.get(0); //Everything should be inputs
         Discipline[] disciplines = new Discipline[]{Discipline.BUTTERFLY};
-        return new CompetitionMember(firstName, lastName, date, gender, isActive,id, coach,disciplines );
-
-
+        return new CompetitionMember(firstName, lastName, date, gender, isActive,coach,disciplines );
     }
+
     public Member createMember( int id){
         //Ask for input, shouldn't be hardcoded - for testing:
         String firstName = "Mia";
@@ -100,8 +103,7 @@ exampleForInitializedData();
         String gender = "F";
         boolean isActive = true;
         //ID should not be given it should be calculated, but I need it now for testing
-        return new Member(firstName, lastName,date,gender,isActive, id);
-
+        return new Member(firstName, lastName,date,gender,isActive);
     }
 
     public void addMember(int choice, int id){
@@ -114,6 +116,7 @@ exampleForInitializedData();
         FileHandler.appendObjectToFile("Members.csv", member);
         System.out.println("Member added");
     }
+
     public Coach createCoach(String name){
         return new Coach (name);
     }
@@ -121,19 +124,14 @@ exampleForInitializedData();
         Coach coach = createCoach(name);
         coaches.add(coach);
         FileHandler.appendObjectToFile("Coaches.csv", coach);
-
     }
-
 
     public void updateMemberInfoInFile(Member member){
         FileHandler.updateObjectInFile("Members.csv", member);
-
     }
     public void updateCoachInfoInFile(Coach coach){
         FileHandler.updateObjectInFile("Coaches.csv", coach);
-
     }
-
 
     public void initializeFiles(){
         FileHandler.createFile("Members.csv");
@@ -144,6 +142,7 @@ exampleForInitializedData();
         members.clear();
         loadMemberArray();
     }
+
     public void updateCoaches(){
         coaches.clear();
         loadCoachesArray();
@@ -153,12 +152,14 @@ exampleForInitializedData();
         loadMemberArray();
         loadCoachesArray();
     }
+
     private void loadMemberArray(){
         List<Object> objects = FileHandler.loadObjectsFromFile("Members.csv");
         for (Object obj : objects) {
             members.add((Member) obj);
         }
     }
+
     private void loadCoachesArray(){
         List<Object> objects = FileHandler.loadObjectsFromFile("Coaches.csv");
         for (Object obj : objects) {
