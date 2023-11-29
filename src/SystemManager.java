@@ -351,10 +351,7 @@ return member;
         }
     }
 
-
-
     //FOR TESTING
-
 
     public void testLoadingAtStartup(){
         loadArrays();
