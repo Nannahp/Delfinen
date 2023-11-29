@@ -1,17 +1,12 @@
-import javax.sound.midi.Soundbank;
+
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.ListIterator;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class UI {
     private Scanner in = new Scanner(System.in);
@@ -25,14 +20,20 @@ public class UI {
             System.out.println("You didn't use a string. Try again.");
             stringInput = in.nextLine();
         }
-        in.close();
         return stringInput;
     }
 
     public int getIntInput() {
-        int intInput = in.nextInt();
-
-        in.close();
+        int intInput = 0;
+        while (intInput == 0){
+        try {
+            intInput = in.nextInt();
+        }
+        catch (InputMismatchException e){
+            printText("Input not recognized, please enter a number:");
+         }
+        in.nextLine();//scannerbug?
+        }
         return intInput;
     }
 
@@ -40,11 +41,10 @@ public class UI {
         String booleanInput = in.nextLine();
 
         while (!isStringBoolean(booleanInput)) {
-            System.out.println("Boolean input non-indentified. Try again.");
+            System.out.println("Boolean input non-identified. Try again.");
             booleanInput = in.nextLine();
         }
 
-        in.close();
         return whichBooleanIsString(booleanInput);
     }
 
@@ -167,9 +167,9 @@ public class UI {
         System.out.println("__________________________________________");
 
         if (member instanceof CompetitionMember) {
-            System.out.printf("COMPETITION-MEMBER №%d%20.7s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
+            System.out.printf("COMPETITION-MEMBER №%d%20.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
         } else {
-            System.out.printf("MEMBER №%d%32.7s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
+            System.out.printf("MEMBER №%d%32.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
         }
 
         System.out.printf("%-10s %-12S%18.1s%n", member.getFirstName(), member.getLastName(), member.getGender().toUpperCase() );
@@ -236,7 +236,6 @@ public class UI {
         }
     }
 
-
     private boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -261,7 +260,34 @@ public class UI {
     }
 
 
+    // GET DISCIPLINES
 
+    public Discipline getDiscipline(){
+        Discipline discipline = null;
+        while (discipline == null){
+            String input = getStringInput();
+            for (Discipline d : Discipline.values()){
+            if (d.label.equals(input.toUpperCase())){
+                 discipline = d;}
+            }
+            if (discipline ==null){
+                printText("Discipline not recognised, please try again");
+            }
+        }
+        return  discipline;
+    }
+
+
+
+    // HANDLE MENU CHOICES
+
+    public int getMenuChoiceFromUserInput(){
+        printText("Please enter the desired menu-number: ");
+        return getIntInput();
+    }
+
+
+    // ------ MENUS -------
 
     public void buildMainMenu() {
         Menu mainMenu = new Menu();
@@ -288,7 +314,7 @@ public class UI {
 
     public void buildChooseCoachMenu(ArrayList<Coach> coaches) {
         Menu chooseCoachMenu = new Menu();
-        chooseCoachMenu.setMenuTitle("     WHICH COACH ARE YOU \n");
+        chooseCoachMenu.setMenuTitle("     COACHES \n");
         for (Coach coach : coaches) {
             chooseCoachMenu.addMenuItems(coach.getName());
         }
@@ -305,7 +331,7 @@ public class UI {
     }
     public void buildSeeTop5Menu(){
         Menu seeTop5Menu = new Menu();
-        seeTop5Menu.setMenuTitle("     SEE TOP 5 \n");
+        seeTop5Menu.setMenuTitle("     SEE TOP 5 \n   Please enter a discipline ");
         seeTop5Menu.setMenuItems("Crawl", "BackCrawl", "BreastStoke","Butterfly", "Medley","Return to Main Menu");
         seeTop5Menu.printMenu();
 

@@ -18,8 +18,8 @@ public class CompetitionMember extends Member{
 
     // Konstruktør, der kun tager disciplines og coach som parametre
 
-    public CompetitionMember(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive, int memberID, Coach coach, Discipline... disciplines) {
-        super(firstName, lastName, birthdate, gender, isActive, memberID);
+    public CompetitionMember(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive, Coach coach, Discipline... disciplines) {
+        super(firstName, lastName, birthdate, gender, isActive);
         //metode til at adde dicipplines til listen
         for (Discipline discipline: disciplines) {
             addDisciplines(discipline);
@@ -38,11 +38,15 @@ public class CompetitionMember extends Member{
     public ArrayList<Discipline> getDisciplines() {
         return disciplines;
     }
-    //Needs to add disciplines to a list of disciplines, AND check that there's only 1 of each disciplin
+
     public void addDisciplines(Discipline discipline) {
         if (!this.disciplines.contains(discipline)){
-          this.disciplines.add(discipline);}
+            this.disciplines.add(discipline);
+        } else {
+            System.out.println("A member can only be assigned to a discipline once");
+        }
     }
+
 
     // Metoder for at få og indstille coach
 

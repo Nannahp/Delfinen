@@ -18,16 +18,15 @@ public class Member implements Serializable {
 
 // Konstruktør
 
-    public Member(String firstName,String lastName, LocalDate birthdate, String gender, boolean isActive, int memberID) {
+    public Member(String firstName,String lastName, LocalDate birthdate, String gender, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
         this.gender = gender;
         this.isActive = isActive;
-        this.memberID = memberID; //not needed after proper method is made
         setHasPaid(true); //altid betalt ved oprettelse
-        setMembershipPrice();
-        setTeamFromBirthdate();
+        calculateMembershipPrice();
+        calcTeamFromDate();
     }
 
 
@@ -40,8 +39,6 @@ public class Member implements Serializable {
         this.isActive = isActive;
     }
 */
-
-    // Metoder for at få og indstille navn
 
     public String getFirstName() {
         return firstName;
@@ -60,7 +57,6 @@ public class Member implements Serializable {
     }
 
     // Metoder for at få og indstille fødselsdato
-
     public LocalDate getBirthdate() {
         return birthdate;
     }
@@ -70,7 +66,6 @@ public class Member implements Serializable {
     }
 
     // Metoder for at få og indstille køn
-
     public String getGender() {
         return gender;
     }
@@ -80,7 +75,6 @@ public class Member implements Serializable {
     }
 
     // Metoder for at få og indstille betalingsstatus
-
     public boolean getHasPaid() {
         return hasPaid;
     }
@@ -90,43 +84,66 @@ public class Member implements Serializable {
     }
 
     // Metoder for at få og indstille medlemskabspris
-
     public int getMembershipPrice() {
         return membershipPrice;
     }
 
-    //Needs to calculate price
-    public void setMembershipPrice() {
-        this.membershipPrice = 0;
+    //Metode der kan beregne Membership price ud fra alder
+    public int calculateMembershipPrice() {
+        int age = calculateAge();
+        int juniorRate = 1000;
+        int seniorRate = 1600;
+        int seniorDiscountPercent = 25;
+        int seniorDiscount = (seniorDiscountPercent * seniorRate) / 100;
+        int passiveRate = 500;
 
+        //Kontingentet
+        if (isActive) {
+            if (age < 18) {
+                return this.membershipPrice = juniorRate;
+            } else if (age >= 60) {
+                return this.membershipPrice = seniorRate - seniorDiscount;
+            } else {
+                return this.membershipPrice = seniorRate;
+            }
+        } else {
+            return this.membershipPrice = passiveRate;
+        }
     }
 
     // Metoder for at få og indstille medlems -ID
-
     public int getMemberID() {
         return memberID;
-
     }
+
+    //Brug Emmas kode i trello og lave et system for MemberID
+    //En Member må kun have en ID, starter fra fx 1 og går et tal op hver gang der bliver
+    //lavet ny member
+
+
+
+
     //Needs to set memberID from static nextID
     public void setMemberID(int memberID) {
         this.memberID = memberID;
-
     }
 
     // Metode til at få aktiv status
-
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 
     //Metode til at indstille aktiv status
-
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
 
-    // Metode for at få og indstille betalingsstatus
-    //Har allerede lavet tidligerer
+    //Metode for at få og indstille betalingsstatus
+    //Har allerede lavet tidligere
+    //Til at begynde med når vi laver en Member, så er den altid True
+    //Efterfølgende så skal man kunne ændre på den
+    //Efter et år, så er paymentStatus false -> indtil den er betalt
+
     public boolean hasPaid() {
         return hasPaid;
     }
@@ -137,27 +154,15 @@ public class Member implements Serializable {
 
 
     // Metoder for at få og indstille hold
-
     public Team getTeam() {
         return team;
-
-    }
-    public void setTeam(Team team) {
-        this.team = team;
-
-    }
-
-    // Metode til at indstille hold baseret på fødselsdato
-
-    public void setTeamFromBirthdate() {
-        this.team = calcTeamFromDate();
     }
 
     private int calculateAge() {
         return LocalDate.now().getYear() - this.birthdate.getYear();
-
     }
 
+    //Metode til at sætte team ift. alder
     public Team calcTeamFromDate() {
         int age = calculateAge();
         if (age < 18) {
@@ -165,40 +170,12 @@ public class Member implements Serializable {
         } else {
             return this.team = Team.SENIOR;
         }
-
     }
 
-
-
-    // Metode til at få discipliner
-
-    //public List<String> getDisciplines() {
-    //  return List.of();
-    //}
-
-
-
     // Metode til at beregne betaling
-
     public double calcPayment() {
-
         //Hvis medlemmet betalt, returneres medlemskabsprisen, ellers returneres 0.
         return hasPaid ? membershipPrice : 0;
     }
 
-    // Metode til at beregne hold ud fra fødselsdato
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
