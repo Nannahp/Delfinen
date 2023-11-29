@@ -53,14 +53,14 @@ public class SystemManager {
     public void runManagerMenu() {
         boolean exitMenu = false;
         while (!exitMenu) {
-
+            printMembers();
             ui.buildManagerMenu();
             int choice = menuInputHandler(6);
             switch (choice) {
                 case 1 -> addMember();
                 case 2 -> seeMemberInformation();
                 case 3 -> ui.printText("edit member info is coming soon");
-                case 4 -> ui.printText("delete member is coming soon");
+                case 4 -> deleteMember();
                 case 5 -> addCoach();
                 case 6 -> exitMenu = true;
             }
@@ -167,7 +167,6 @@ public class SystemManager {
     }
 
 
-    //Needs proper user input
     public boolean isMemberACompetitionMember(){
         ui.printText("Is the member a CompetitionMember? (y/n)");
         return ui.getBooleanInput();
@@ -176,6 +175,24 @@ public class SystemManager {
         Member member = getMember();
         ui.printMember(member);
     }
+
+    public void deleteMember(){
+        Member member = getMember();
+        removeMemberFromFile(member);
+        updateMembers(); //Updates the membersArrayList
+        if (member instanceof  CompetitionMember){
+            deleteCompetitionMember((CompetitionMember) member);
+        }
+        ui.printText("Member: " + member.getFirstName() + " " + member.getLastName() + " deleted");
+    }
+    public void deleteCompetitionMember(CompetitionMember member){
+        Coach coach = member.getCoach();
+        coach.removeMemberFromCoachLists(member);
+        FileHandler.modifyObjectInFile("Coaches.csv", coach, true);
+        updateCoaches();
+    }
+
+
 
     public void addCoach(){
         ui.printText("What is the name of the coach?");
@@ -345,6 +362,10 @@ public class SystemManager {
     public void updateCoachInfoInFile(Coach coach){
         FileHandler.updateObjectInFile("Coaches.txt", coach);
     }
+    public void removeMemberFromFile(Member member){
+        FileHandler.modifyObjectInFile("Members.csv", member,false);
+    }
+
 
     public void initializeFiles(){
         FileHandler.createFile("Members.txt");
