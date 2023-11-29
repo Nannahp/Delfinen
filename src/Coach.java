@@ -3,8 +3,7 @@ import java.util.ArrayList;
 
 public class Coach implements Serializable {
     String name;
-    private static int nextCoachID = 1;
-    private int coachID;
+    private int coachId;
     private ArrayList<CompetitionMember> juniorCrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBackcrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBreaststroke = new ArrayList<CompetitionMember>();
@@ -19,7 +18,6 @@ public class Coach implements Serializable {
     //Constructor
     Coach(String name) {
         this.name = name;
-        this.coachID = nextCoachID++;
     }
 
     public void addMemberToCoach(CompetitionMember member){
@@ -56,9 +54,6 @@ public class Coach implements Serializable {
         return name;
     }
 
-    public int getCoachID() {
-        return coachID;
-    }
     @Override
     public String toString() {
         return "Coach{" +
