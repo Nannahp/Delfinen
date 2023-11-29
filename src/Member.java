@@ -107,7 +107,7 @@ public class Member implements Serializable {
 
     public void setMemberID(int memberID) {this.memberID = memberID;}
 
-    public boolean isActive() {
+    public boolean getIsActive() {
         return isActive;
     }
 

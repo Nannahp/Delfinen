@@ -18,20 +18,11 @@ public class CompetitionMember extends Member{
         this.coach = coach;
     }
 
-    //Needs to add disciplines to a list of disciplines, AND check that there's only 1 of each disciplin
-    public ArrayList<Discipline> getDisciplines() {
-        return disciplines;
-    }
-
     public void addDisciplines(Discipline discipline) {
         if (!this.disciplines.contains(discipline)){
             this.disciplines.add(discipline);
         } else {
             System.out.println("A member can only be assigned to a discipline once");
-        }
-            this.disciplines.add(discipline);
-        } else {
-            System.out.println("The member already has this discipline assigned");
         }
     }
 
@@ -71,6 +62,7 @@ public class CompetitionMember extends Member{
     public ArrayList<Discipline> getDisciplines() {
         return disciplines;
     }
+
 
     public Coach getCoach() {
         return coach;

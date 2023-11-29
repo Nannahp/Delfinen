@@ -100,20 +100,6 @@ public class SystemManager {
         }
     }
 
-
-    private Member searchForMember(int memberID) {
-        try {
-            for (Member member : members) {
-                if (member.getMemberID() == memberID)
-                    return member;
-            }
-            throw new IllegalArgumentException("Member with given ID not found");
-        } catch (IllegalArgumentException e) {
-            ui.printText(e.getMessage());
-            return null;
-        }
-    }
-
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
@@ -280,13 +266,6 @@ return member;
     }
 
 
-
-    public Coach createCoach(String name){
-        return new Coach (name);
-    }
-
-
-
     public void addCoach(){
         ui.printText("What is the name of the coach?");
         String name = ui.getStringInput();
@@ -297,21 +276,6 @@ return member;
 
     }
 
-
-    public void updateMemberInfoInFile(Member member){
-        FileHandler.updateObjectInFile("Members.csv", member);
-
-    }
-    public void updateCoachInfoInFile(Coach coach){
-        FileHandler.updateObjectInFile("Coaches.csv", coach);
-
-    }
-
-
-    public void initializeFiles(){
-        FileHandler.createFile("Members.csv");
-        FileHandler.createFile("Coaches.csv");
-    }
 
     public void updateMembers(){
         members.clear();
@@ -326,18 +290,6 @@ return member;
         loadMemberArray();
         loadCoachesArray();
     }
-    private void loadMemberArray(){
-        List<Object> objects = FileHandler.loadObjectsFromFile("Members.csv");
-        for (Object obj : objects) {
-            members.add((Member) obj);
-        }
-    }
-    private void loadCoachesArray(){
-        List<Object> objects = FileHandler.loadObjectsFromFile("Coaches.csv");
-        for (Object obj : objects) {
-            coaches.add((Coach) obj);
-        }
-    }
 
     public void printMembers(){
         for (Member member: members) {
@@ -350,8 +302,6 @@ return member;
             ui.printText(coach.getName());
         }
     }
-
-
 
     //FOR TESTING
 
@@ -477,21 +427,6 @@ return member;
     public void initializeFiles(){
         FileHandler.createFile("Members.csv");
         FileHandler.createFile("Coaches.csv");
-    }
-
-    public void updateMembers(){
-        members.clear();
-        loadMemberArray();
-    }
-
-    public void updateCoaches(){
-        coaches.clear();
-        loadCoachesArray();
-    }
-
-    public void loadArrays(){
-        loadMemberArray();
-        loadCoachesArray();
     }
 
     private void loadMemberArray(){
