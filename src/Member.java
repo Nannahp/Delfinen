@@ -117,13 +117,13 @@ public class Member implements Serializable {
 
     public Team getTeam() {return team;}
 
+    //Metode for at få og indstille betalingsstatus
+    //Har allerede lavet tidligere
+    //Til at begynde med når vi laver en Member, så er den altid True
+    //Efterfølgende så skal man kunne ændre på den
+    //Efter et år, så er paymentStatus false -> indtil den er betalt
+
+    public void setPaymentStatus(boolean hasPaid) {
+        this.hasPaid = hasPaid;
+    }
 }
-
-
-
-
-
-
-
-
-

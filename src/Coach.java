@@ -22,6 +22,9 @@ public class Coach implements Serializable {
         this.coachID = nextCoachID++;
     }
 
+    public void addMemberToCoach(CompetitionMember member){
+        checkCompetitionMemberTeam(member);
+    }
 
     //Checks the arraylist of disciplines of given member and puts in right arraylist
     private void checkCompetitionMemberTeam(CompetitionMember member) {
@@ -45,7 +48,6 @@ public class Coach implements Serializable {
             seniorList.add(member);
         }
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -56,5 +58,21 @@ public class Coach implements Serializable {
 
     public int getCoachID() {
         return coachID;
+    }
+    @Override
+    public String toString() {
+        return "Coach{" +
+                "name='" + name + '\'' +
+                ", juniorCrawl=" + juniorCrawl.toString() +
+                ", juniorBackcrawl=" + juniorBackcrawl.toString() +
+                ", juniorBreaststroke=" + juniorBreaststroke.toString() +
+                ", juniorButterfly=" + juniorButterfly.toString() +
+                ", juniorMedley=" + juniorMedley.toString() +
+                ", seniorCrawl=" + seniorCrawl.toString() +
+                ", seniorBackcrawl=" + seniorBackcrawl.toString() +
+                ", seniorBreaststroke=" + seniorBreaststroke.toString() +
+                ", seniorButterfly=" + seniorButterfly.toString() +
+                ", seniorMedley=" + seniorMedley.toString() +
+                '}';
     }
 }

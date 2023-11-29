@@ -2,6 +2,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class CompetitionMember extends Member{
+
     private ArrayList<Discipline> disciplines = new ArrayList<>();
     private ArrayList<TrainingScore> trainingScores = new ArrayList<>(); //liste, da der er flere discipliner
     private ArrayList<DummyCompetitionScore> competitionScores = new ArrayList<>();
@@ -18,13 +19,22 @@ public class CompetitionMember extends Member{
     }
 
     //Needs to add disciplines to a list of disciplines, AND check that there's only 1 of each disciplin
+    public ArrayList<Discipline> getDisciplines() {
+        return disciplines;
+    }
+
     public void addDisciplines(Discipline discipline) {
         if (!this.disciplines.contains(discipline)){
+            this.disciplines.add(discipline);
+        } else {
+            System.out.println("A member can only be assigned to a discipline once");
+        }
             this.disciplines.add(discipline);
         } else {
             System.out.println("The member already has this discipline assigned");
         }
     }
+
 
     //Checks if member has discipline, if score already exists and updates accordingly
     private boolean updateTrainingScore(TrainingScore trainingScore) {

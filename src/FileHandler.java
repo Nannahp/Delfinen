@@ -49,9 +49,10 @@ public class FileHandler {
                     iterator.add(memberToUpdate);
                 }
         }
-            else if (object instanceof Coach coach){
+            //this does not work
+            else if (object instanceof Coach ){
                 Coach coachToUpdate = (Coach) objectToUpdate;
-                if (coach.equals(coachToUpdate)) {
+                if (((Coach) object).getName().equals(coachToUpdate.getName())) {
                     iterator.remove(); // Remove the existing object
                     iterator.add(coachToUpdate);
             }
