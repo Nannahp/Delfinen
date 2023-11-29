@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class Coach implements Serializable {
     String name;
+    private int coachId;
     private ArrayList<CompetitionMember> juniorCrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBackcrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBreaststroke = new ArrayList<CompetitionMember>();
@@ -19,42 +20,32 @@ public class Coach implements Serializable {
         this.name = name;
     }
 
-    //Checks if competition member is a junior or senior
-    private void checkCompetitionMemberTeam(CompetitionMember member) {
-        if (member.getTeam() == Team.JUNIOR) {  //getTeam()
-            addJuniorToDisciplineList(member);
-        } else {
-            addSeniorToDisciplineList(member);
-        }
+    public void addMemberToCoach(CompetitionMember member){
+        checkCompetitionMemberTeam(member);
     }
 
     //Checks the arraylist of disciplines of given member and puts in right arraylist
-    private void addJuniorToDisciplineList(CompetitionMember member) {
+    private void checkCompetitionMemberTeam(CompetitionMember member) {
         ArrayList<Discipline> disciplines = member.getDisciplines();
         for (Discipline discipline : disciplines) {
             switch(discipline) {
-                case CRAWL -> juniorCrawl.add(member);
-                case BACKCRAWL -> juniorBackcrawl.add(member);
-                case BUTTERFLY -> juniorButterfly.add(member);
-                case BREASTSTROKE -> juniorBreaststroke.add(member);
-                case MEDLEY -> juniorMedley.add(member);
-            }
-        }
-    }
-//Er der en måde at få det til at være mindre ens?
-    private void addSeniorToDisciplineList(CompetitionMember member) {
-        ArrayList<Discipline> disciplines = member.getDisciplines();
-        for (Discipline discipline : disciplines) {
-            switch(discipline) {
-                case CRAWL -> seniorCrawl.add(member);
-                case BACKCRAWL -> seniorBackcrawl.add(member);
-                case BUTTERFLY -> seniorButterfly.add(member);
-                case BREASTSTROKE -> seniorBreaststroke.add(member);
-                case MEDLEY -> seniorMedley.add(member);
+                case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
+                case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
+                case BUTTERFLY -> addToDisciplineList(member, juniorButterfly, seniorButterfly);
+                case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
+                case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
             }
         }
     }
 
+    //Checks if competition member is a junior or senior
+    private void addToDisciplineList(CompetitionMember member, ArrayList<CompetitionMember> juniorList, ArrayList<CompetitionMember> seniorList) {
+        if (member.getTeam() == Team.JUNIOR) {  //getTeam()
+            juniorList.add(member);
+        } else {
+            seniorList.add(member);
+        }
+    }
     public void setName(String name) {
         this.name = name;
     }
@@ -63,4 +54,20 @@ public class Coach implements Serializable {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "Coach{" +
+                "name='" + name + '\'' +
+                ", juniorCrawl=" + juniorCrawl.toString() +
+                ", juniorBackcrawl=" + juniorBackcrawl.toString() +
+                ", juniorBreaststroke=" + juniorBreaststroke.toString() +
+                ", juniorButterfly=" + juniorButterfly.toString() +
+                ", juniorMedley=" + juniorMedley.toString() +
+                ", seniorCrawl=" + seniorCrawl.toString() +
+                ", seniorBackcrawl=" + seniorBackcrawl.toString() +
+                ", seniorBreaststroke=" + seniorBreaststroke.toString() +
+                ", seniorButterfly=" + seniorButterfly.toString() +
+                ", seniorMedley=" + seniorMedley.toString() +
+                '}';
+    }
 }

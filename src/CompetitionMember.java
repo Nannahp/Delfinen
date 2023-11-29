@@ -4,74 +4,76 @@ import java.util.ArrayList;
 public class CompetitionMember extends Member{
 
     private ArrayList<Discipline> disciplines = new ArrayList<>();
-
-    // Liste af træningsscore for dette konkurrencemedlem
-
-    private ArrayList<TrainingScore> trainingScores = new ArrayList<>();
+    private ArrayList<TrainingScore> trainingScores = new ArrayList<>(); //liste, da der er flere discipliner
     private ArrayList<DummyCompetitionScore> competitionScores = new ArrayList<>();
-
-    // Bedste træningsscore for dette konkurrencemedlem
-
-    private TrainingScore bestTrainingScore;
-
     private Coach coach;
 
     // Konstruktør, der kun tager disciplines og coach som parametre
-
-    public CompetitionMember(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive, int memberID, Coach coach, Discipline... disciplines) {
-        super(firstName, lastName, birthdate, gender, isActive, memberID);
-        //metode til at adde dicipplines til listen
+    public CompetitionMember(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive, Coach coach, Discipline... disciplines) {
+        super(firstName, lastName, birthdate, gender, isActive);
+        //Metode til at adde dicipplines til listen
         for (Discipline discipline: disciplines) {
             addDisciplines(discipline);
         }
-
-       // this.disciplines = disciplines;
         this.coach = coach;
-        //skal settes efter konstruktør?
-
-        //this.trainingScores = trainingScores;
-        //this.bestTrainingScore = bestTrainingScore;
-
     }
-    // Metoder for at få og indstille disciplines
+
+    public void addDisciplines(Discipline discipline) {
+        if (!this.disciplines.contains(discipline)){
+            this.disciplines.add(discipline);
+        } else {
+            System.out.println("A member can only be assigned to a discipline once");
+        }
+    }
+
+
+    //Checks if member has discipline, if score already exists and updates accordingly
+    private boolean updateTrainingScore(TrainingScore trainingScore) {
+        try {
+            if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
+                //Loop checks if the trainingScores list has a score with given discipline
+                for (TrainingScore existingScore : trainingScores) {
+                    if (existingScore.getDiscipline().equals(trainingScore.getDiscipline())) {
+                        if (existingScore.getTime() > trainingScore.getTime()) {
+                            existingScore.setTime(trainingScore.getTime());
+                            existingScore.setDate(trainingScore.getDate());
+                            return true;
+                        }  else {
+                            System.out.println("The score is not the best score for this discipline");
+                            return false;
+                        }
+                    }
+                }
+                trainingScores.add(trainingScore);
+                return true;
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred while updating training score: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    //Metode til at sikre, at medlemmet har disciplinen i træningsscore
+    private boolean doesMemberHaveDiscipline(Discipline discipline) {
+        return getDisciplines().contains(discipline);
+    }
 
     public ArrayList<Discipline> getDisciplines() {
         return disciplines;
     }
-    //Needs to add disciplines to a list of disciplines, AND check that there's only 1 of each disciplin
-    public void addDisciplines(Discipline discipline) {
-        if (!this.disciplines.contains(discipline)){
-          this.disciplines.add(discipline);}
-    }
 
-    // Metoder for at få og indstille coach
 
     public Coach getCoach() {
         return coach;
     }
 
-    public void setCoach(Coach coach) {
-        this.coach = coach;
-
-    }
-
-
-    // Metoder for at få og indstille træningsscorer
-
     public ArrayList<TrainingScore> getTrainingScores() {
         return trainingScores;
-
     }
 
-    //Needs method to add to trainingScore
-    public void addTrainingScore(TrainingScore trainingScore){
-        //needs to check for disciplines so there is only one score for each discpline
-        this.trainingScores.add(trainingScore);
-
-    }
     public ArrayList<DummyCompetitionScore> getCompetitionScores(){
         return competitionScores;
     }
 }
-
 

@@ -1,11 +1,9 @@
-import javax.sound.midi.Soundbank;
+
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.ListIterator;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,14 +20,20 @@ public class UI {
             System.out.println("You didn't use a string. Try again.");
             stringInput = in.nextLine();
         }
-        in.close();
         return stringInput;
     }
 
     public int getIntInput() {
-        int intInput = in.nextInt();
-
-        in.close();
+        int intInput = 0;
+        while (intInput == 0){
+        try {
+            intInput = in.nextInt();
+        }
+        catch (InputMismatchException e){
+            printText("Input not recognized, please enter a number:");
+         }
+        in.nextLine();//scannerbug?
+        }
         return intInput;
     }
 
@@ -37,11 +41,10 @@ public class UI {
         String booleanInput = in.nextLine();
 
         while (!isStringBoolean(booleanInput)) {
-            System.out.println("Boolean input non-indentified. Try again.");
+            System.out.println("Boolean input non-identified. Try again.");
             booleanInput = in.nextLine();
         }
 
-        in.close();
         return whichBooleanIsString(booleanInput);
     }
 
@@ -164,9 +167,9 @@ public class UI {
         System.out.println("__________________________________________");
 
         if (member instanceof CompetitionMember) {
-            System.out.printf("COMPETITION-MEMBER №%d%20.7s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
+            System.out.printf("COMPETITION-MEMBER №%d%20.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
         } else {
-            System.out.printf("MEMBER №%d%32.7s%n", member.getMemberID(), member.isActive()?"Active":"Passive");
+            System.out.printf("MEMBER №%d%32.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
         }
 
         System.out.printf("%-10s %-12S%18.1s%n", member.getFirstName(), member.getLastName(), member.getGender().toUpperCase() );
@@ -233,7 +236,6 @@ public class UI {
         }
     }
 
-
     private boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
@@ -255,6 +257,84 @@ public class UI {
         Matcher matcher = pattern.matcher(str);
 
         return matcher.find(); // Boolean true if there are only letters in stringInput
+    }
+
+
+    // GET DISCIPLINES
+
+    public Discipline getDiscipline(){
+        Discipline discipline = null;
+        while (discipline == null){
+            String input = getStringInput();
+            for (Discipline d : Discipline.values()){
+            if (d.label.equals(input.toUpperCase())){
+                 discipline = d;}
+            }
+            if (discipline ==null){
+                printText("Discipline not recognised, please try again");
+            }
+        }
+        return  discipline;
+    }
+
+
+
+    // HANDLE MENU CHOICES
+
+    public int getMenuChoiceFromUserInput(){
+        printText("Please enter the desired menu-number: ");
+        return getIntInput();
+    }
+
+
+    // ------ MENUS -------
+
+    public void buildMainMenu() {
+        Menu mainMenu = new Menu();
+        mainMenu.setMenuTitle("     Which menu would you like to access?\n");
+        mainMenu.setMenuItems("Cashier", "Manager ", "Coach", "Quit");
+        mainMenu.printMenu();
+    }
+
+    public void buildManagerMenu() {
+        Menu managerMenu = new Menu();
+        managerMenu.setMenuTitle("     MANAGER \n What would you like to do?");
+        managerMenu.setMenuItems("Add member", "Edit member information", "Delete member", "Add new Coach", "Return to Main Menu");
+        managerMenu.printMenu();
+
+    }
+
+    public void buildCashierMenu() {
+        Menu cashierMenu = new Menu();
+        cashierMenu.setMenuTitle("     CASHIER \n");
+        cashierMenu.setMenuItems("Return to Main Menu");
+        cashierMenu.printMenu();
+
+    }
+
+    public void buildChooseCoachMenu(ArrayList<Coach> coaches) {
+        Menu chooseCoachMenu = new Menu();
+        chooseCoachMenu.setMenuTitle("     COACHES \n");
+        for (Coach coach : coaches) {
+            chooseCoachMenu.addMenuItems(coach.getName());
+        }
+        chooseCoachMenu.printMenu();
+
+    }
+
+    public void buildCoachMenu(){
+        Menu coachMenu = new Menu();
+        coachMenu.setMenuTitle("     COACH \n");
+        coachMenu.setMenuItems("See Top 5", "Register training score", "Register competition score","Return to Main Menu");
+        coachMenu.printMenu();
+
+    }
+    public void buildSeeTop5Menu(){
+        Menu seeTop5Menu = new Menu();
+        seeTop5Menu.setMenuTitle("     SEE TOP 5 \n   Please enter a discipline ");
+        seeTop5Menu.setMenuItems("Crawl", "BackCrawl", "BreastStoke","Butterfly", "Medley","Return to Main Menu");
+        seeTop5Menu.printMenu();
+
     }
 
 }
