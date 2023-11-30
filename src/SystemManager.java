@@ -188,7 +188,7 @@ public class SystemManager {
     public void deleteCompetitionMember(CompetitionMember member){
         Coach coach = member.getCoach();
         coach.removeMemberFromCoachLists(member);
-        FileHandler.modifyObjectInFile("Coaches.csv", coach, true);
+        updateCoachInfoInFile(coach);
         updateCoaches();
     }
 
@@ -357,13 +357,13 @@ public class SystemManager {
 
 
     public void updateMemberInfoInFile(Member member){
-        FileHandler.updateObjectInFile("Members.txt", member);
+        FileHandler.modifyObjectInFile("Members.txt", member, true);
     }
     public void updateCoachInfoInFile(Coach coach){
-        FileHandler.updateObjectInFile("Coaches.txt", coach);
+        FileHandler.modifyObjectInFile("Coaches.txt", coach, true);
     }
     public void removeMemberFromFile(Member member){
-        FileHandler.modifyObjectInFile("Members.csv", member,false);
+        FileHandler.modifyObjectInFile("Members.txt", member,false);
     }
 
 
