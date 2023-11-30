@@ -10,19 +10,22 @@ public class SystemManager {
     ArrayList<Coach> coaches = new ArrayList<>();
 
     public void runMainMenu() {
-        //initializeData();
-        loadArrays();
-        updateNextMemberID();
-        // printMembers();//for testing - to see that it works
-        // printCoaches(); //for testing - to see that it works
+        //initializeFiles(); //Maybe needs to run if you don't have the files
+        readyArraysAtStartup();
+         printMembers();//for testing - to see that it works
+         printCoaches(); //for testing - to see that it works
         while (systemRunning) {
             ui.buildMainMenu();
             sendFromMainMenu();
         }
 
     }
+
+
     public void updateNextMemberID(){
-        nextMemberId = members.size();
+        if(members.size() ==0){
+        nextMemberId = 1;}  //ensures that memberID can't be 0
+        else  nextMemberId = members.size() +1;
     }
 
     public void sendFromMainMenu() {
@@ -111,16 +114,6 @@ public class SystemManager {
         return member;
     }
 
-   /* //Not working currently, needs CompetitionMember methods
-    public void registerTrainingScore(){
-        CompetitionMember member = (CompetitionMember) getMember();
-        ui.printText("what was the registered time?");
-        LocalDate date = LocalDate.of(2000,4,6);//dummy
-        Discipline discipline = Discipline.BUTTERFLY; //dummy
-        member.addTrainingScore(new TrainingScore(time,date, discipline)); //needs to handle limited disciplines
-        FileHandler.updateObjectInFile("Members.csv",member);
-    }*/
-
     public void registerCompetitionScore() {
         getMember();
         ui.printText("coming soon ;)");
@@ -161,7 +154,7 @@ public class SystemManager {
         member.setMemberID(nextMemberId++);
 
         coach.addMemberToCoach( member);
-        FileHandler.updateObjectInFile("Coaches.csv", coach);
+        FileHandler.updateObjectInFile("Coaches.txt", coach);
 return member;
 }
     public Member createMember() {
@@ -245,7 +238,7 @@ return member;
         else member = createMember();
 
         members.add(member);
-        FileHandler.appendObjectToFile("Members.csv", member);
+        FileHandler.appendObjectToFile("Members.txt", member);
         ui.printText("Member added");
         ui.printMember(member);
     }
@@ -271,10 +264,24 @@ return member;
         String name = ui.getStringInput();
         Coach coach = createCoach(name);
         coaches.add(coach);
-        FileHandler.appendObjectToFile("Coaches.csv", coach);
+        FileHandler.appendObjectToFile("Coaches.txt", coach);
         ui.printText("Coach added");
 
     }
+
+    private Member searchForMember(int memberID) {
+        try {
+            for (Member member : members) {
+                if (member.getMemberID() == memberID)
+                    return member;
+            }
+            throw new IllegalArgumentException("Member with given ID not found");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
 
 
     public void updateMembers(){
@@ -284,6 +291,11 @@ return member;
     public void updateCoaches(){
         coaches.clear();
         loadCoachesArray();
+    }
+
+    public void updateArrays(){
+        updateCoaches();
+        updateMembers();
     }
 
     public void loadArrays(){
@@ -303,141 +315,84 @@ return member;
         }
     }
 
-    //FOR TESTING
 
-
-    public void testLoadingAtStartup(){
+    public void readyArraysAtStartup(){
         loadArrays();
-        Member testMember = members.get(0);
-        ui.printText("Arrays have been loaded from file");
-        ui.printText("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
-        Coach testCoach = coaches.get(0);
-        ui.printText("Coach 1 in array : " + testCoach.getName());
-    }
-
-    //FOR TESTING! MISSING USER INPUTS SO SOME STUFF IS HARDCODED
-    public void initializeData(){
-        FileHandler.clearFile("Members.csv"); //clears the files, so it's easier to assess if the test data is correct.
-        FileHandler.clearFile("Coaches.csv");
-        addCoach();
-        addCoach();
-        addMember();
-        addMember();
-        addMember();
-
-    }
-
-
-    public void testUpdatingFiles(){
-        initializeData();
-        Member testMember = members.get(0);
-        System.out.println("Members have " + members.size() + " members");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName());
-        System.out.println("Clearing the array");
-        members.clear();
-        System.out.println("Members have " + members.size() + " members");
-        System.out.println("Loading the file into the array");
-        loadMemberArray();
-        System.out.println("Members have " + members.size() + " members");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
-        System.out.println("Changing the name to Andy:");
-        testMember.setFirstName("Andy");
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
-        System.out.println("Updating the file");
-        updateMemberInfoInFile(testMember);
-        System.out.println("clearing the arrays and loading it again to check if the name has been updated");
-        updateMembers();
-        loadMemberArray();
-        System.out.println("Member 1 in array is: ID: "+ testMember.getMemberID() + "Name: "+ testMember.getFirstName() );
-        System.out.println("checking that the coach is still attached to the competition member:");
-        CompetitionMember compMember  = (CompetitionMember) members.get(1);
-        System.out.println("Id : " + compMember.getMemberID() + "name: " + compMember.getFirstName());
-        System.out.println(compMember.getCoach().getName());
-        System.out.println("updating the name of the coach to Clara"); //Can't because we use the name to find the coach in the file
-        coaches.get(0).setName("Clara");
-        updateCoachInfoInFile(coaches.get(0));
-        System.out.println("clearing the arrays and loading it again to check if the name has been updated");
-        updateCoaches();
-        loadCoachesArray();
-        System.out.println(coaches.get(0).getName());
-    }
-
-    private Member searchForMember(int memberID) {
-        try {
-            for (Member member : members) {
-                if (member.getMemberID() == memberID)
-                    return member;
-            }
-            throw new IllegalArgumentException("Member with given ID not found");
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return null;
+        updateNextMemberID();
+        if (members.size() ==0 || coaches.size() ==0){
+            initializeData();       //If the arrays are empty at startup then clear the files and add some default members
+            updateArrays();
         }
     }
 
-    public Member createCompetitionMember(int id){
-        String firstName = "Annie";
-        String lastName = "Pederson";
-        LocalDate date = LocalDate.of(2000,5,7);
-        String gender = "F";
-        boolean isActive = true;
-        Coach coach = coaches.get(0); //Everything should be inputs
-        Discipline[] disciplines = new Discipline[]{Discipline.BUTTERFLY};
-        return new CompetitionMember(firstName, lastName, date, gender, isActive,coach,disciplines );
+
+    public void initializeData(){
+        FileHandler.clearFile("Members.txt"); //clears the files, so it's easier to assess if the data is correct.
+        FileHandler.clearFile("Coaches.txt");
+        addTestCoach("Henry");
+        addTestCoach("Maria");
+        loadCoachesArray();
+        addTestCompetitionMember("Peter", "Parker", "m", 1988);
+        addTestCompetitionMember("Miles", "Morales","m", 2010);
+        addTestMember("MJ", "Watson", "f", 1988);
+        addTestMember("Otto", "Octavious", "m", 1960);
+
     }
 
-    public Member createMember( int id){
-        //Ask for input, shouldn't be hardcoded - for testing:
-        String firstName = "Mia";
-        String lastName = "Jensen";
-        LocalDate date = LocalDate.of(2000,2,3);
-        String gender = "F";
-        boolean isActive = true;
-        //ID should not be given it should be calculated, but I need it now for testing
-        return new Member(firstName, lastName,date,gender,isActive);
+
+
+    public void addTestCoach(String name){
+        Coach coach = createCoach(name);
+        FileHandler.appendObjectToFile("Coaches.txt", coach);
+
     }
 
-    public void addMember(int choice, int id){
-        Member member = null;
-    switch (choice){
-        case 1 -> member = createMember(id); //ID should not be given should be calculated.
-        case 2 -> member = createCompetitionMember(id);
+    public void addTestCompetitionMember(String firstName, String lastName, String gender, int year){
+        LocalDate date = LocalDate.of(year,5,7);
+        boolean isActive = true;
+        Coach coach = coaches.get(0);
+        Discipline[] disciplines = new Discipline[]{Discipline.BUTTERFLY,Discipline.CRAWL};
+        CompetitionMember member = new CompetitionMember(firstName, lastName, date, gender, isActive,coach,disciplines );
+        member.setMemberID(nextMemberId++);
+        FileHandler.appendObjectToFile("Members.txt", member);
+        coach.addMemberToCoach(member);
+        FileHandler.updateObjectInFile("Coaches.txt", coach);
     }
-        members.add(member);
-        FileHandler.appendObjectToFile("Members.csv", member);
-        System.out.println("Member added");
+
+    public void addTestMember(String firstName, String lastName,String gender, int year){
+        LocalDate date = LocalDate.of(year,5,7);
+        boolean isActive = true;
+        Member member = new Member(firstName, lastName, date, gender, isActive );
+        member.setMemberID(nextMemberId++);
+        FileHandler.appendObjectToFile("Members.txt", member);
     }
 
     public Coach createCoach(String name){
         return new Coach (name);
     }
-    public void addCoach(String name){
-        Coach coach = createCoach(name);
-        coaches.add(coach);
-        FileHandler.appendObjectToFile("Coaches.csv", coach);
-    }
 
     public void updateMemberInfoInFile(Member member){
-        FileHandler.updateObjectInFile("Members.csv", member);
+        FileHandler.updateObjectInFile("Members.txt", member);
     }
     public void updateCoachInfoInFile(Coach coach){
-        FileHandler.updateObjectInFile("Coaches.csv", coach);
+        FileHandler.updateObjectInFile("Coaches.txt", coach);
     }
 
     public void initializeFiles(){
-        FileHandler.createFile("Members.csv");
-        FileHandler.createFile("Coaches.csv");
+        FileHandler.createFile("Members.txt");
+        FileHandler.createFile("Coaches.txt");
     }
 
+
     private void loadMemberArray(){
-        List<Object> objects = FileHandler.loadObjectsFromFile("Members.csv");
+        List<Object> objects = FileHandler.loadObjectsFromFile("Members.txt");
         for (Object obj : objects) {
             members.add((Member) obj);
         }
     }
 
     private void loadCoachesArray(){
-        List<Object> objects = FileHandler.loadObjectsFromFile("Coaches.csv");
+        List<Object> objects = FileHandler.loadObjectsFromFile("Coaches.txt");
         for (Object obj : objects) {
             coaches.add((Coach) obj);
         }

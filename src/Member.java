@@ -103,7 +103,8 @@ public class Member implements Serializable {
 
     public int getMemberID() { return memberID; }
 
-    public void setMemberID(int memberID) {this.memberID = memberID;}
+    public void setMemberID(int memberID)
+    {this.memberID = memberID;}
 
     public boolean getIsActive() {
         return isActive;

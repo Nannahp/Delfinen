@@ -3,8 +3,8 @@ import java.util.*;
 
 public class FileHandler {
 
-    public static void saveObjectsToFile(String filename, List<Object> objects) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src\\" + filename))) {
+    public static void saveObjectsToFile(String fileName, List<Object> objects) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src\\files\\"+fileName))) {
             for (Object object : objects) {
                 oos.writeObject(object);
             }
@@ -12,16 +12,16 @@ public class FileHandler {
             e.printStackTrace();
         }
     }
-    public static void appendObjectToFile(String filename, Object newObject) {
-        List<Object> existingObjects = new ArrayList<>(loadObjectsFromFile(filename));
+    public static void appendObjectToFile(String fileName, Object newObject) {
+        List<Object> existingObjects = new ArrayList<>(loadObjectsFromFile(fileName));
         existingObjects.add(newObject);
 
-        saveObjectsToFile(filename, existingObjects);
+        saveObjectsToFile(fileName, existingObjects);
     }
 
-    public static List<Object> loadObjectsFromFile(String filename) {
+    public static List<Object> loadObjectsFromFile(String fileName) {
         List<Object> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src\\" + filename))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src\\files\\"+fileName))) {
             Object object;
             while ((object = ois.readObject()) != null) {
                 objects.add(object);
@@ -34,8 +34,8 @@ public class FileHandler {
         return objects;
     }
 
-    public static void updateObjectInFile(String filename,  Object objectToUpdate){
-        List<Object> objects = loadObjectsFromFile(filename);
+    public static void updateObjectInFile(String fileName,  Object objectToUpdate){
+        List<Object> objects = loadObjectsFromFile(fileName);
 
         ListIterator<Object> iterator =  objects.listIterator();
 
@@ -58,7 +58,7 @@ public class FileHandler {
             }
         }
 
-    saveObjectsToFile(filename, objects);
+    saveObjectsToFile(fileName, objects);
     }
 }
 
@@ -67,7 +67,7 @@ public class FileHandler {
 
     public static void createFile(String fileName) {
         try {
-            File newFile = new File("src\\"+fileName);
+            File newFile = new File("src\\files\\"+fileName);
             if (newFile.createNewFile()) {
                 System.out.println("File created: " + newFile.getName());
             } else {
@@ -91,8 +91,8 @@ public class FileHandler {
             throw new RuntimeException(e);
         }
     }
-        public static void clearFile(String filename) {
-            try (FileWriter fw = new FileWriter("src\\"+filename, false)) {
+        public static void clearFile(String fileName) {
+            try (FileWriter fw = new FileWriter("src\\files\\"+fileName, false)) {
             } catch (IOException e) {
                 e.printStackTrace();
             }
