@@ -26,12 +26,23 @@ public class CompetitionMember extends Member{
         }
     }
 
+    public void addTestTrainingScore( TrainingScore trainingScore) {
+        if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
+            //Loop checks if the trainingScores list has a score with given discipline
+            if (trainingScores.size() == 0 || !doesTrainingScoresContainsDiscipline(trainingScore.getDiscipline())) {
+                trainingScores.add(trainingScore);
+            }
+        }
+    }
 
     //Checks if member has discipline, if score already exists and updates accordingly
-    private boolean updateTrainingScore(TrainingScore trainingScore) {
+    public boolean updateTrainingScore(TrainingScore trainingScore) {
         try {
             if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
                 //Loop checks if the trainingScores list has a score with given discipline
+                if (trainingScores.size() ==0 || !doesTrainingScoresContainsDiscipline(trainingScore.getDiscipline()) ){
+                    trainingScores.add(trainingScore);
+                }
                 for (TrainingScore existingScore : trainingScores) {
                     if (existingScore.getDiscipline().equals(trainingScore.getDiscipline())) {
                         if (existingScore.getTime() > trainingScore.getTime()) {
@@ -50,6 +61,26 @@ public class CompetitionMember extends Member{
         } catch (Exception e) {
             System.err.println("An error occurred while updating training score: " + e.getMessage());
             e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int findTrainingTime(Discipline discipline) {
+        int time = 0;
+        for (TrainingScore score : trainingScores) {
+            if (score.getDiscipline().equals(discipline)) {
+                time = score.getTime();
+            }
+        }
+        return time;
+    }
+
+
+    public boolean doesTrainingScoresContainsDiscipline(Discipline discipline) {
+        for (TrainingScore score : trainingScores) {
+            if (score.getDiscipline().equals(discipline)) {
+                return true;
+            }
         }
         return false;
     }

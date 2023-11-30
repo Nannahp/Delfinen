@@ -120,8 +120,31 @@ public class Coach implements Serializable {
         return names;
     }
 
+    public void updateMemberInCoach(CompetitionMember updatedMember) {
+        if (updatedMember.getTeam().equals(Team.JUNIOR)){
+            updateList(juniorCrawl,updatedMember);
+            updateList(juniorBackcrawl,updatedMember);
+            updateList(juniorBreaststroke,updatedMember);
+            updateList(juniorButterfly,updatedMember);
+            updateList(juniorMedley,updatedMember);
+        }
+        else {
+            updateList(seniorCrawl,updatedMember);
+            updateList(seniorBackcrawl,updatedMember);
+            updateList(seniorBreaststroke,updatedMember);
+            updateList(seniorButterfly,updatedMember);
+            updateList(seniorMedley,updatedMember);
 
+        }
+    }
 
+    public void updateList(ArrayList<CompetitionMember> list, CompetitionMember updatedMember){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getMemberID() == updatedMember.getMemberID()) {
+                list.set(i, updatedMember); // Replace the old Member with the updated one
+            }
+        }
+    }
 
 
     @Override

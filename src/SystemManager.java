@@ -1,11 +1,13 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SystemManager {
     UI ui = new UI();
     boolean systemRunning = true;
-    private int nextMemberId = 1;
+    private int nextMemberId;
+    private int nextCoachId;
     ArrayList<Member> members = new ArrayList<>();
     ArrayList<Coach> coaches = new ArrayList<>();
 
@@ -246,11 +248,47 @@ public class SystemManager {
         ui.buildSeeTop5Menu();
         int choice = menuInputHandler(5);
         switch (choice) {
-            case 1 -> ui.printText("see top 5 of Crawl");
-            case 2 -> ui.printText("see top 5 of BackCrawl");
-            case 3 -> ui.printText("see top 5 of BreastStroke");
-            case 4 -> ui.printText("see top 5 of Butterfly");
-            case 5 -> ui.printText("see top 5 of Medley");
+            case 1 -> seeTop5(coach,Discipline.CRAWL);
+            case 2 -> seeTop5(coach,Discipline.BACKCRAWL);
+            case 3 -> seeTop5(coach,Discipline.BREASTSTROKE);
+            case 4 -> seeTop5(coach,Discipline.BUTTERFLY);
+            case 5 -> seeTop5(coach,Discipline.MEDLEY);
+        }
+    }
+
+    //For testing
+    public void seeTop5(Coach coach, Discipline discipline){
+        ArrayList seniors = sortTop5Members(coach.getSeniorList(discipline),discipline);
+        ArrayList juniors = sortTop5Members(coach.getJuniorList(discipline),discipline);
+        ui.printText("\nSeniors in " + discipline.label + " top 5:\n");
+        ui.printTop5List(seniors, discipline);
+        ui.printText("\nJuniors in " + discipline.label + " top 5:\n");
+        ui.printTop5List(juniors, discipline);
+    }
+
+    public ArrayList<CompetitionMember> sortTop5Members(ArrayList<CompetitionMember> memberList, Discipline discipline) {
+        CompetitionMemberDisciplineScoreComparator comparator = new CompetitionMemberDisciplineScoreComparator(discipline);
+        Collections.sort(memberList, comparator);
+        return new ArrayList<>(memberList.subList(0, Math.min(memberList.size(), 5)));
+        // Returns top five members in the list, but doesn't crash if there are fewer than 5 members
+    }
+
+//for testing:
+    public void checkTrainingScores(){
+        CompetitionMember member = (CompetitionMember) members.get(0);
+        System.out.println("Member info");
+        System.out.println(member.getTrainingScores().get(0).toString());
+        System.out.println("Coach info");
+        System.out.println(coaches.get(0).getMemberNamesInList(coaches.get(0).getSeniorList(Discipline.CRAWL)));
+        System.out.println(coaches.get(0).getSeniorList(Discipline.CRAWL).get(0));
+        CompetitionMember member2 = coaches.get(0).getSeniorList(Discipline.CRAWL).get(0);
+        System.out.println(member2.getTrainingScores().get(0).toString());
+        System.out.println(coaches.get(0).getSeniorList(Discipline.CRAWL).get(0).getTrainingScores().get(0).toString());
+    }
+    public void printCoachList(Coach coach) {
+        ArrayList<CompetitionMember> seniorMedleyList = coach.getSeniorList(Discipline.MEDLEY);
+        for (CompetitionMember member : seniorMedleyList) {
+            System.out.println(member.getFirstName()); //Det virker, men her er det specifik seniorMedley
         }
     }
     public void registerCompetitionScore() {
@@ -377,6 +415,7 @@ public class SystemManager {
         updateNextMemberID();
         if (members.size() ==0 || coaches.size() ==0){
             initializeData();       //If the arrays are empty at startup then clear the files and add some default members
+            initializeTrainingScores();
             updateArrays();
         }
     }
@@ -389,10 +428,33 @@ public class SystemManager {
         loadCoachesArray();
         addTestCompetitionMember("Peter", "Parker", "m", 1988);
         addTestCompetitionMember("Miles", "Morales","m", 2010);
+        addTestCompetitionMember("Felicia", "Hardy", "f", 1990);
         addTestMember("MJ", "Watson", "f", 1988);
         addTestMember("Otto", "Octavious", "m", 1960);
 
     }
+
+    public void initializeTrainingScores(){
+        loadMemberArray();
+        CompetitionMember peter = (CompetitionMember) members.get(0);
+        CompetitionMember miles = (CompetitionMember) members.get(1);
+        CompetitionMember felicia = (CompetitionMember) members.get(2);
+        peter.addTestTrainingScore(new TrainingScore(38,LocalDate.now(),Discipline.CRAWL));
+        peter.addTestTrainingScore(new TrainingScore(120,LocalDate.now(),Discipline.BUTTERFLY));
+        miles.addTestTrainingScore(new TrainingScore(44, LocalDate.now(), Discipline.CRAWL));
+        miles.addTestTrainingScore(new TrainingScore(62,LocalDate.now(),Discipline.BUTTERFLY));
+        felicia.addTestTrainingScore(new TrainingScore(50,LocalDate.now(),Discipline.CRAWL));
+        felicia.addTestTrainingScore(new TrainingScore(66,LocalDate.now(),Discipline.BUTTERFLY));
+        updateMemberInfoInFile(peter);
+        updateMemberInfoInFile(miles);
+        updateMemberInfoInFile(felicia);
+        coaches.get(0).updateMemberInCoach(peter);
+        coaches.get(0).updateMemberInCoach(miles);
+        coaches.get(0).updateMemberInCoach(felicia);
+        updateCoachInfoInFile(coaches.get(0));
+        updateCoachInfoInFile(coaches.get(1));
+    }
+
     public void addTestCoach(String name){
         Coach coach = createCoach(name);
         FileHandler.appendObjectToFile("Coaches.txt", coach);

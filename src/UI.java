@@ -202,7 +202,16 @@ public class UI {
         System.out.println();
     }
 
+    public void printTrainingScore(Discipline discipline, CompetitionMember member){
+        int time =  member.findTrainingTime(discipline);
+        printText(member.getFirstName() + " " + member.getLastName() + " : " + time );
+    }
 
+    public void printTop5List(ArrayList<CompetitionMember> listOfMembers, Discipline discipline){
+        for( int i =0; i <listOfMembers.size(); i++){
+            printTrainingScore(discipline, listOfMembers.get(i));
+        }
+    }
     /// private boolean methods to check data type
 
     private static boolean isLeapYear(int year) {
