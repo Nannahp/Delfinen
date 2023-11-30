@@ -91,7 +91,7 @@ public class Member implements Serializable {
     }
 
     public void setHasPaid(boolean hasPaid) {
-        this.hasPaid = hasPaid();
+        this.hasPaid = hasPaid;
     }
     public boolean hasPaid() {
         return hasPaid;

@@ -196,7 +196,7 @@ public class UI {
         }
         System.out.println();
         System.out.println("________________Membership________________");
-        System.out.printf("Price:%d,-%10s%n", member.getMembershipPrice(), member.hasPaid()?"Paid":"Non-Paid");
+        System.out.printf("Price:%d,-%10s%n", member.getMembershipPrice(), member.hasPaid()?"Paid":"Not-Paid");
         System.out.println("__________________________________________");
         System.out.println();
         System.out.println();

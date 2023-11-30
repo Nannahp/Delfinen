@@ -10,6 +10,5 @@ public class ExecuteProgram {
     //Runs the system until runMainMenu is false
     public void run() {
         manager.runMainMenu();
-
     }
 }

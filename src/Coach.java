@@ -59,10 +59,19 @@ public class Coach implements Serializable {
 
     //Checks if competition member is a junior or senior
     private void addToDisciplineList(CompetitionMember member, ArrayList<CompetitionMember> juniorList, ArrayList<CompetitionMember> seniorList) {
-        if (member.getTeam() == Team.JUNIOR) {  //getTeam()
-            juniorList.add(member);
-        } else {
-            seniorList.add(member);
+        boolean addToTeam = false;
+        try {
+            if (member.getIsActive()) {
+                addToTeam = true;
+                System.out.println("Added to team");
+                if (member.getTeam() == Team.JUNIOR) {  //getTeam()
+                    juniorList.add(member);
+                } else {
+                    seniorList.add(member);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred while adding a member to the team:" + e.getMessage());
         }
     }
     public void setName(String name) {
@@ -73,6 +82,36 @@ public class Coach implements Serializable {
         return name;
     }
 
+    public void setCoachId(int coachId) {
+        this.coachId = coachId;
+    }
+
+    public ArrayList<CompetitionMember> getJuniorList(Discipline discipline) {
+        switch(discipline) {
+            case CRAWL -> {return juniorCrawl;}
+            case BACKCRAWL -> {return juniorBackcrawl;}
+            case BUTTERFLY -> {return juniorButterfly;}
+            case BREASTSTROKE -> {return juniorBreaststroke;}
+            case MEDLEY -> {return juniorMedley;}
+        }
+        System.out.println("Something went wrong while retrieving the junior team list");
+        return null;
+    }
+
+    public ArrayList<CompetitionMember> getSeniorList(Discipline discipline) {
+        switch(discipline) {
+            case CRAWL -> {return seniorCrawl;}
+            case BACKCRAWL -> {return seniorBackcrawl;}
+            case BUTTERFLY -> {return seniorButterfly;}
+            case BREASTSTROKE -> {return seniorBreaststroke;}
+            case MEDLEY -> {return seniorMedley;}
+        }
+        System.out.println("Something went wrong while retrieving the senior team list");
+        return null;
+    }
+
+
+
     public ArrayList<String> getMemberNamesInList(ArrayList<CompetitionMember> members){
         ArrayList<String> names = new ArrayList<>();
         for (Member member: members) {
@@ -81,10 +120,15 @@ public class Coach implements Serializable {
         return names;
     }
 
+
+
+
+
     @Override
     public String toString() {
         return "Coach{" +
                 "name='" + name + '\'' +
+                "id='" + coachId + '\'' +
                 ", juniorCrawl=" + getMemberNamesInList(juniorCrawl) +
                 ", juniorBackcrawl=" + getMemberNamesInList(juniorBackcrawl) +
                 ", juniorBreaststroke=" + getMemberNamesInList(juniorBreaststroke) +
