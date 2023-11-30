@@ -21,12 +21,7 @@ public class SystemManager {
 
     }
 
-
-    public void updateNextMemberID(){
-        if(members.size() ==0){
-        nextMemberId = 1;}  //ensures that memberID can't be 0
-        else  nextMemberId = members.size() +1;
-    }
+    // ----- MENUS -----
 
     public void sendFromMainMenu() {
         int choice = menuInputHandler(4);
@@ -38,16 +33,7 @@ public class SystemManager {
         }
     }
 
-    public void quitProgram() {
-        systemRunning = false;
-    }
-
-    public void runCashierMenu() {
-        ui.buildCashierMenu();
-        ui.printText("show members and their paymentStatus");
-    }
-
-    public int menuInputHandler(int upperLimitOfMenuItems) {
+    public int menuInputHandler(int upperLimitOfMenuItems) { //maybe should be in UI er menu
         int choice = ui.getMenuChoiceFromUserInput();
         while (choice < 0 || upperLimitOfMenuItems < choice) {
             ui.printText("Not an option");
@@ -56,6 +42,14 @@ public class SystemManager {
         return choice;
     }
 
+    // ---- CASHIER ----
+
+    public void runCashierMenu() {
+        ui.buildCashierMenu();
+        ui.printText("show members and their paymentStatus");
+    }
+
+    // ---- MANAGER -----
     public void runManagerMenu() {
         boolean exitMenu = false;
         while (!exitMenu) {
@@ -71,69 +65,19 @@ public class SystemManager {
             }
         }
     }
+    public void addMember(){
+        boolean isACompetitionMember = isMemberACompetitionMember();
+        Member member;
+        if (isACompetitionMember) {
+            member = createCompetitionMember();}
+        else member = createMember();
 
-
-    public void runCoachMenu() {
-        Coach coach = runChooseCoachMenu();
-        ui.printText(coach.toString());
-        boolean exitMenu = false;
-        while (!exitMenu) {
-            ui.buildCoachMenu();
-            int choice = menuInputHandler(4);
-            switch (choice) {
-                case 1 -> runSeeTop5Menu(coach);
-                case 2 -> ui.printText("coming soon");//registerTrainingScore();
-                case 3 -> registerCompetitionScore();
-                case 4 -> exitMenu = true;
-            }
-        }
-
+        members.add(member);
+        FileHandler.appendObjectToFile("Members.txt", member);
+        ui.printText("Member added");
+        ui.printMember(member);
     }
 
-    public void runSeeTop5Menu(Coach coach) {
-        //need coach to see top 5
-        ui.buildSeeTop5Menu();
-        int choice = menuInputHandler(5);
-        switch (choice) {
-            case 1 -> ui.printText("see top 5 of Crawl");
-            case 2 -> ui.printText("see top 5 of BackCrawl");
-            case 3 -> ui.printText("see top 5 of BreastStroke");
-            case 4 -> ui.printText("see top 5 of Butterfly");
-            case 5 -> ui.printText("see top 5 of Medley");
-        }
-    }
-
-    public Member getMember() {
-        Member member = null;
-        while (member == null) {  //not tested!
-            ui.printText("enter id");
-            ui.printText("Please enter the MemberId of the member you would like to access:");
-            int memberId = ui.getIntInput();
-            member = searchForMember(memberId);
-        }
-        return member;
-    }
-
-    public void registerCompetitionScore() {
-        getMember();
-        ui.printText("coming soon ;)");
-    }
-
-
-    public Coach runChooseCoachMenu() {
-        Coach coach = null;
-        ui.buildChooseCoachMenu(coaches);
-        ui.printText("Which coach do you want? ");
-        while (coach == null) {
-            int choice = ui.getIntInput();
-            if (choice >= 1 && choice <= coaches.size()) {
-                coach = coaches.get(choice - 1);
-            } else {
-                System.out.println("Invalid choice. Please select a valid option.");
-            }
-        }
-        return coach;
-    }
 
     public CompetitionMember createCompetitionMember() {
         CompetitionMember member;
@@ -154,9 +98,11 @@ public class SystemManager {
         member.setMemberID(nextMemberId++);
 
         coach.addMemberToCoach( member);
-        FileHandler.updateObjectInFile("Coaches.txt", coach);
-return member;
-}
+        updateCoachInfoInFile(coach);
+
+        return member;
+    }
+
     public Member createMember() {
         Member member;
         String firstName = getMemberStringInput("first-name");
@@ -168,9 +114,6 @@ return member;
         member.setMemberID(nextMemberId++);
         return member;
     }
-
-
-
     private String getGenderInput() {
         ui.printText("Please enter the gender of the member (F/M)");
         String gender = null;
@@ -223,39 +166,9 @@ return member;
     }
 
 
-    //Needs proper user input
     public boolean isMemberACompetitionMember(){
         ui.printText("Is the member a CompetitionMember? (y/n)");
         return ui.getBooleanInput();
-    }
-
-
-    public void addMember(){
-        boolean isACompetitionMember = isMemberACompetitionMember();
-        Member member;
-        if (isACompetitionMember) {
-            member = createCompetitionMember();}
-        else member = createMember();
-
-        members.add(member);
-        FileHandler.appendObjectToFile("Members.txt", member);
-        ui.printText("Member added");
-        ui.printMember(member);
-    }
-
-
-    //Maybe not needed
-    public Coach searchForCoach(){
-        Coach coachToReturn = null;
-        while(coachToReturn==null){
-        ui.printText("Please enter the name of the Coach you want");
-        String name = ui.getStringInput();
-        for (Coach coach: coaches) {
-            if (coach.getName().equals(name)){
-                coachToReturn = coach;
-            }
-        }
-        }return coachToReturn;
     }
 
 
@@ -268,6 +181,63 @@ return member;
         ui.printText("Coach added");
 
     }
+    public Coach createCoach(String name){
+        return new Coach (name);
+    }
+
+   // ---- COACH ----
+
+    public Coach runChooseCoachMenu() {
+        Coach coach = null;
+        ui.buildChooseCoachMenu(coaches);
+        ui.printText("Which coach do you want? ");
+        while (coach == null) {
+            int choice = ui.getIntInput();
+            if (choice >= 1 && choice <= coaches.size()) {
+                coach = coaches.get(choice - 1);
+            } else {
+                System.out.println("Invalid choice. Please select a valid option.");
+            }
+        }
+        return coach;
+    }
+
+    public void runCoachMenu() {
+        Coach coach = runChooseCoachMenu();
+        ui.printText(coach.toString());
+        boolean exitMenu = false;
+        while (!exitMenu) {
+            ui.buildCoachMenu();
+            int choice = menuInputHandler(4);
+            switch (choice) {
+                case 1 -> runSeeTop5Menu(coach);
+                case 2 -> ui.printText("coming soon");//registerTrainingScore();
+                case 3 -> registerCompetitionScore();
+                case 4 -> exitMenu = true;
+            }
+        }
+
+    }
+
+    public void runSeeTop5Menu(Coach coach) {
+        //need coach to see top 5
+        ui.buildSeeTop5Menu();
+        int choice = menuInputHandler(5);
+        switch (choice) {
+            case 1 -> ui.printText("see top 5 of Crawl");
+            case 2 -> ui.printText("see top 5 of BackCrawl");
+            case 3 -> ui.printText("see top 5 of BreastStroke");
+            case 4 -> ui.printText("see top 5 of Butterfly");
+            case 5 -> ui.printText("see top 5 of Medley");
+        }
+    }
+    public void registerCompetitionScore() {
+        getMember();
+        ui.printText("coming soon ;)");
+    }
+
+
+    // ---- SYSTEM METHODS----
 
     private Member searchForMember(int memberID) {
         try {
@@ -281,8 +251,42 @@ return member;
             return null;
         }
     }
+    public Member getMember() {
+        Member member = null;
+        while (member == null) {  //not tested!
+            ui.printText("enter id");
+            ui.printText("Please enter the MemberId of the member you would like to access:");
+            int memberId = ui.getIntInput();
+            member = searchForMember(memberId);
+        }
+        return member;
+    }
 
+    public void updateNextMemberID(){
+        if(members.size() ==0){
+            nextMemberId = 1;}  //ensures that memberID can't be 0
+        else  nextMemberId = members.size() +1;
+    }
 
+    //Maybe not needed
+    public Coach searchForCoach(){
+        Coach coachToReturn = null;
+        while(coachToReturn==null){
+            ui.printText("Please enter the name of the Coach you want");
+            String name = ui.getStringInput();
+            for (Coach coach: coaches) {
+                if (coach.getName().equals(name)){
+                    coachToReturn = coach;
+                }
+            }
+        }return coachToReturn;
+    }
+
+    public void quitProgram() {
+        systemRunning = false;
+    }
+
+    // --- STARTUP / ARRAYS -----
 
     public void updateMembers(){
         members.clear();
@@ -303,6 +307,20 @@ return member;
         loadCoachesArray();
     }
 
+    private void loadMemberArray(){
+        List<Object> objects = FileHandler.loadObjectsFromFile("Members.txt");
+        for (Object obj : objects) {
+            members.add((Member) obj);
+        }
+    }
+
+    private void loadCoachesArray(){
+        List<Object> objects = FileHandler.loadObjectsFromFile("Coaches.txt");
+        for (Object obj : objects) {
+            coaches.add((Coach) obj);
+        }
+    }
+
     public void printMembers(){
         for (Member member: members) {
             ui.printText(member.getMemberID() + " : " + member.getFirstName());
@@ -316,6 +334,18 @@ return member;
     }
 
 
+    public void updateMemberInfoInFile(Member member){
+        FileHandler.updateObjectInFile("Members.txt", member);
+    }
+    public void updateCoachInfoInFile(Coach coach){
+        FileHandler.updateObjectInFile("Coaches.txt", coach);
+    }
+
+    public void initializeFiles(){
+        FileHandler.createFile("Members.txt");
+        FileHandler.createFile("Coaches.txt");
+    }
+
     public void readyArraysAtStartup(){
         loadArrays();
         updateNextMemberID();
@@ -324,7 +354,6 @@ return member;
             updateArrays();
         }
     }
-
 
     public void initializeData(){
         FileHandler.clearFile("Members.txt"); //clears the files, so it's easier to assess if the data is correct.
@@ -338,9 +367,6 @@ return member;
         addTestMember("Otto", "Octavious", "m", 1960);
 
     }
-
-
-
     public void addTestCoach(String name){
         Coach coach = createCoach(name);
         FileHandler.appendObjectToFile("Coaches.txt", coach);
@@ -356,7 +382,7 @@ return member;
         member.setMemberID(nextMemberId++);
         FileHandler.appendObjectToFile("Members.txt", member);
         coach.addMemberToCoach(member);
-        FileHandler.updateObjectInFile("Coaches.txt", coach);
+        updateCoachInfoInFile(coach);
     }
 
     public void addTestMember(String firstName, String lastName,String gender, int year){
@@ -365,37 +391,6 @@ return member;
         Member member = new Member(firstName, lastName, date, gender, isActive );
         member.setMemberID(nextMemberId++);
         FileHandler.appendObjectToFile("Members.txt", member);
-    }
-
-    public Coach createCoach(String name){
-        return new Coach (name);
-    }
-
-    public void updateMemberInfoInFile(Member member){
-        FileHandler.updateObjectInFile("Members.txt", member);
-    }
-    public void updateCoachInfoInFile(Coach coach){
-        FileHandler.updateObjectInFile("Coaches.txt", coach);
-    }
-
-    public void initializeFiles(){
-        FileHandler.createFile("Members.txt");
-        FileHandler.createFile("Coaches.txt");
-    }
-
-
-    private void loadMemberArray(){
-        List<Object> objects = FileHandler.loadObjectsFromFile("Members.txt");
-        for (Object obj : objects) {
-            members.add((Member) obj);
-        }
-    }
-
-    private void loadCoachesArray(){
-        List<Object> objects = FileHandler.loadObjectsFromFile("Coaches.txt");
-        for (Object obj : objects) {
-            coaches.add((Coach) obj);
-        }
     }
 }
 
