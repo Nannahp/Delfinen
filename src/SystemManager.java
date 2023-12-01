@@ -44,7 +44,7 @@ public void runCashierMenu() {
                   case 1 -> showPaymentStatusForAllMembers();
                   case 2 -> registerPaymentStatus();
                   case 3 -> exitMenu = true;
-                  default -> ui.printText("\n Invalid choice. Please select a valid option.", ConsoleColor.RED);
+                  default -> UI.printText("\n Invalid choice. Please select a valid option.", ConsoleColor.RED);
 
 
               }
@@ -53,20 +53,20 @@ public void runCashierMenu() {
 
     public void showPaymentStatusForAllMembers() {
         if (members.isEmpty()) {
-            ui.printText("\n No members found.", ConsoleColor.RED);
+            UI.printText("\n No members found.", ConsoleColor.RED);
         } else {
-            ui.printText("\n Payment Status for all members:" , ConsoleColor.RED);
+            UI.printText("\n Payment Status for all members:" , ConsoleColor.RED);
             for (Member member: members) {
-                ui.printText(" Member ID: " + member.getMemberID() + "-Payment Status:" + member.getPaymentStatus()+"\n", ConsoleColor.RED);
+                UI.printText(" Member ID: " + member.getMemberID() + "-Payment Status:" + member.getPaymentStatus()+"\n", ConsoleColor.RED);
             }
         }
     }
 
     public void registerPaymentStatus(){
         ui.printMembers(members);
-        ui.printText("\n",ConsoleColor.WHITE);
+        UI.printText("\n",ConsoleColor.WHITE);
         Member member = getMember();
-        ui.printText("\n Payment received? (y/n): ",ConsoleColor.WHITE);
+        UI.printText("\n Payment received? (y/n): ",ConsoleColor.WHITE);
         member.setPaymentStatus(ui.getBooleanInput());
         updateMemberInfoInFile(member);
     }
@@ -97,7 +97,7 @@ public void runCashierMenu() {
 
         members.add(member);
         FileHandler.appendObjectToFile("Members.txt", member);
-        ui.printText("\n Member added", ConsoleColor.GREEN);
+        UI.printText("\n Member added", ConsoleColor.GREEN);
         ui.printMember(member);
     }
 
@@ -110,9 +110,9 @@ public void runCashierMenu() {
         String gender = getGenderInput();
         boolean isActive = getMemberBooleanInput();
 
-        ui.printText("\n CompetitionMembers need to be assigned a coach \n", ConsoleColor.WHITE);
+        UI.printText("\n CompetitionMembers need to be assigned a coach \n", ConsoleColor.WHITE);
         Coach coach = runChooseCoachMenu();
-        ui.printText(""" 
+        UI.printText(""" 
                 CompetitionMembers need to be assigned a discipline.\s
                 (Crawl, BackCrawl, BreastStroke, Butterfly, Medley)
                                                                 """, ConsoleColor.WHITE);
@@ -140,29 +140,29 @@ public void runCashierMenu() {
 
     //SHOULD BE IN UI?
     private String getGenderInput() {
-        ui.printText("\n Please enter the gender of the member (F/M)" ,ConsoleColor.WHITE);
+        UI.printText("\n Please enter the gender of the member (F/M)" ,ConsoleColor.WHITE);
         String gender = null;
         while (gender == null) {
             String input = ui.getStringInput();
             if (input.equalsIgnoreCase("f") || input.equalsIgnoreCase("m")) {
                 gender = input;
-            } else ui.printText("\n Please enter either \"f\" or \"m\"", ConsoleColor.RED);
+            } else UI.printText("\n Please enter either \"f\" or \"m\"", ConsoleColor.RED);
         }
         return gender;
     }
 
     private String getMemberNameInput(String prompt) {
-        ui.printText("\n Please enter the " + prompt + " of the member:", ConsoleColor.WHITE);
+        UI.printText("\n Please enter the " + prompt + " of the member:", ConsoleColor.WHITE);
         return ui.getStringInput();
     }
 
     private LocalDate getMemberDateInput() {
-        ui.printText("\n Please enter the birthdate of the member:",ConsoleColor.WHITE);
+        UI.printText("\n Please enter the birthdate of the member:",ConsoleColor.WHITE);
         return ui.getLocalDateInput();
     }
 
     private boolean getMemberBooleanInput() {
-        ui.printText("\n Is the member active? (y/n):",ConsoleColor.WHITE);
+        UI.printText("\n Is the member active? (y/n):",ConsoleColor.WHITE);
         return ui.getBooleanInput();
     }
 
@@ -172,7 +172,7 @@ public void runCashierMenu() {
         disciplines.add(askForDiscipline());
         boolean needToAddMoreDisciplines;
         do{
-            ui.printText("\n Are there additional disciplines? (y/n)",ConsoleColor.WHITE);
+            UI.printText("\n Are there additional disciplines? (y/n)",ConsoleColor.WHITE);
             needToAddMoreDisciplines = ui.getBooleanInput();
             if (needToAddMoreDisciplines){
                 Discipline discipline = askForDiscipline();
@@ -180,38 +180,37 @@ public void runCashierMenu() {
             }
         }
         while (needToAddMoreDisciplines);
-        Discipline[] disciplinesArray = disciplines.toArray(new Discipline[disciplines.size()]);
-        return disciplinesArray;
+        return disciplines.toArray(new Discipline[disciplines.size()]);
     }
 
 
     public Discipline askForDiscipline(){
-        ui.printText("\n Please enter a discipline:",ConsoleColor.WHITE);
+        UI.printText("\n Please enter a discipline:",ConsoleColor.WHITE);
         return ui.getDiscipline();
     }
 
 
     public boolean isMemberACompetitionMember(){
-        ui.printText("\n Is the member a CompetitionMember? (y/n)",ConsoleColor.WHITE);
+        UI.printText("\n Is the member a CompetitionMember? (y/n)",ConsoleColor.WHITE);
         return ui.getBooleanInput();
     }
     public void seeMemberInformation(){
         ui.printMembers(members);
-        ui.printText("\n", ConsoleColor.WHITE);
+        UI.printText("\n", ConsoleColor.WHITE);
         Member member = getMember();
         ui.printMember(member);
     }
 
     public void deleteMember(){
         ui.printMembers(members);
-        ui.printText("\n", ConsoleColor.WHITE);
+        UI.printText("\n", ConsoleColor.WHITE);
         Member member = getMember();
         removeMemberFromFile(member);
         updateMembers(); //Updates the membersArrayList
         if (member instanceof  CompetitionMember){
             deleteCompetitionMember((CompetitionMember) member);
         }
-        ui.printText("\n Member: " + member.getFirstName() + " " + member.getLastName() + " deleted",ConsoleColor.GREEN);
+        UI.printText("\n Member: " + member.getFirstName() + " " + member.getLastName() + " deleted",ConsoleColor.GREEN);
     }
     public void deleteCompetitionMember(CompetitionMember member){
         Coach coach = member.getCoach();
@@ -229,7 +228,7 @@ public void runCashierMenu() {
 
     public void editMember(){
         ui.printMembers(members);
-        ui.printText("\n", ConsoleColor.WHITE);
+        UI.printText("\n", ConsoleColor.WHITE);
         Member member = getMember();
         runEditMenu(member);
         updateMemberInfoInFile(member);
@@ -257,25 +256,25 @@ public void runCashierMenu() {
 
 public void addDiscipline(Member member){
         if( member instanceof CompetitionMember){
-        ui.printText("\n " +member.getFirstName() + " is active in:" ,ConsoleColor.WHITE);
+        UI.printText("\n " +member.getFirstName() + " is active in:" ,ConsoleColor.WHITE);
         ui.printDisciplines(((CompetitionMember) member).getDisciplines());
-        ui.printText("\n Which discipline would you like to add?", ConsoleColor.WHITE);
+        UI.printText("\n Which discipline would you like to add?", ConsoleColor.WHITE);
         Discipline discipline = ui.getDiscipline();
         ((CompetitionMember) member).addDisciplines(discipline);
         Coach coach = ((CompetitionMember) member).getCoach();
         coach.checkCompetitionMemberTeam((CompetitionMember) member);
 }
-    else ui.printText("\n Member is not a competition member", ConsoleColor.RED);}
+    else UI.printText("\n Member is not a competition member", ConsoleColor.RED);}
 
 public void removeDiscipline(Member member){
     if( member instanceof CompetitionMember) {
-        ui.printText("\n Which discipline would you like to delete?", ConsoleColor.WHITE);
+        UI.printText("\n Which discipline would you like to delete?", ConsoleColor.WHITE);
         ui.printDisciplines(((CompetitionMember) member).getDisciplines());
         Discipline discipline = ui.getDiscipline();
         ((CompetitionMember) member).deleteDiscipline(discipline);
         deleteMemberByDiscipline((CompetitionMember) member, discipline);
     }
-    else ui.printText("\n Member is not a competition member", ConsoleColor.RED);
+    else UI.printText("\n Member is not a competition member", ConsoleColor.RED);
 }
 
 
@@ -289,12 +288,12 @@ public void removeDiscipline(Member member){
 
 
     public void addCoach(){
-        ui.printText("\n What is the name of the coach?",ConsoleColor.WHITE);
+        UI.printText("\n What is the name of the coach?",ConsoleColor.WHITE);
         String name = ui.getStringInput();
         Coach coach = createCoach(name);
         coaches.add(coach);
         FileHandler.appendObjectToFile("Coaches.txt", coach);
-        ui.printText("\n Coach added",ConsoleColor.GREEN);
+        UI.printText("\n Coach added",ConsoleColor.GREEN);
 
     }
     public Coach createCoach(String name){
@@ -306,13 +305,13 @@ public void removeDiscipline(Member member){
     public Coach runChooseCoachMenu() {
         Coach coach = null;
         ui.buildChooseCoachMenu(coaches);
-        ui.printText("\n Which coach do you want? ",ConsoleColor.WHITE);
+        UI.printText("\n Which coach do you want? ",ConsoleColor.WHITE);
         while (coach == null) {
-            int choice = ui.getIntInput();
+            int choice = UI.getIntInput();
             if (choice >= 1 && choice <= coaches.size()) {
                 coach = coaches.get(choice - 1);
             } else {
-                ui.printText("\n Invalid choice. Please select a valid option.",ConsoleColor.RED);
+                UI.printText("\n Invalid choice. Please select a valid option.",ConsoleColor.RED);
             }
         }
         return coach;
@@ -336,21 +335,21 @@ public void removeDiscipline(Member member){
     }
 
     public void registerTrainingScore(Coach coach){
-        ui.printText("\n Which member you would like to add a training score to?\n", ConsoleColor.WHITE);
+        UI.printText("\n Which member you would like to add a training score to?\n", ConsoleColor.WHITE);
         ui.printMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
         coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
         updateCoachInfo((CompetitionMember) member);   }
-        else ui.printText("\n The member ID you have entered is not a competition member", ConsoleColor.RED);
+        else UI.printText("\n The member ID you have entered is not a competition member", ConsoleColor.RED);
 
     }
 
     public TrainingScore createTrainingScore(){
-        ui.printText("\n Please enter discipline:",ConsoleColor.WHITE);
+        UI.printText("\n Please enter discipline:",ConsoleColor.WHITE);
         Discipline discipline = ui.getDiscipline();
-        ui.printText("\n Please enter the training-time (in seconds):",ConsoleColor.WHITE);
-        int time = ui.getIntInput();
+        UI.printText("\n Please enter the training-time (in seconds):",ConsoleColor.WHITE);
+        int time = UI.getIntInput();
         LocalDate date = LocalDate.now();
         return  new TrainingScore(time, date,discipline);
     }
@@ -390,7 +389,7 @@ public void removeDiscipline(Member member){
 
     public void registerCompetitionScore() {
         getMember();
-        ui.printText("\n coming soon ;)",ConsoleColor.RED);
+        UI.printText("\n coming soon ;)",ConsoleColor.RED);
     }
 
 
@@ -411,15 +410,15 @@ public void removeDiscipline(Member member){
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            ui.printText(" \n Please enter the MemberId of the member you would like to access:",ConsoleColor.WHITE);
-            int memberId = ui.getIntInput();
+            UI.printText(" \n Please enter the MemberId of the member you would like to access:",ConsoleColor.WHITE);
+            int memberId = UI.getIntInput();
             member = searchForMember(memberId);
         }
         return member;
     }
 
     public void updateNextMemberID(){
-        if(members.size() ==0){
+        if(members.isEmpty()){
             nextMemberId = 1;}  //ensures that memberID can't be 0
         else  nextMemberId = Collections.max(members, Comparator.comparing(Member::getMemberID)).getMemberID() + 1;
     }                        //ensures that the ID can't be the same if we delete a member and add a new one
@@ -429,7 +428,7 @@ public void removeDiscipline(Member member){
     public Coach searchForCoach(){
         Coach coachToReturn = null;
         while(coachToReturn==null){
-            ui.printText(" \nPlease enter the name of the Coach you want",ConsoleColor.WHITE);
+            UI.printText(" \nPlease enter the name of the Coach you want",ConsoleColor.WHITE);
             String name = ui.getStringInput();
             for (Coach coach: coaches) {
                 if (coach.getName().equals(name)){
@@ -488,7 +487,7 @@ public void removeDiscipline(Member member){
 
     public void printCoaches(){
         for (Coach coach: coaches) {
-            ui.printText(coach.getName(),ConsoleColor.WHITE);
+            UI.printText(coach.getName(),ConsoleColor.WHITE);
         }
     }
 
@@ -512,7 +511,7 @@ public void removeDiscipline(Member member){
     public void readyArraysAtStartup(){
         loadArrays();
         updateNextMemberID();
-        if (members.size() ==0 || coaches.size() ==0){
+        if (members.isEmpty() || coaches.isEmpty()){
             initializeData();       //If the arrays are empty at startup then clear the files and add some default members
             initializeTrainingScores();
             updateArrays();
