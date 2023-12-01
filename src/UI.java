@@ -138,6 +138,13 @@ public class UI {
         }
     }
 
+    public void printListOfMembers(ArrayList<Member> members){
+        if (!members.isEmpty()) {
+            for (Member member: members) {
+                printText(member.toString());
+            }
+        }
+    }
     public void printList(ArrayList<Object> list) {
 
         if (!list.isEmpty()) {
@@ -196,13 +203,22 @@ public class UI {
         }
         System.out.println();
         System.out.println("________________Membership________________");
-        System.out.printf("Price:%d,-%10s%n", member.getMembershipPrice(), member.hasPaid()?"Paid":"Non-Paid");
+        System.out.printf("Price:%d,-%10s%n", member.getMembershipPrice(), member.hasPaid()?"Paid":"Not-Paid");
         System.out.println("__________________________________________");
         System.out.println();
         System.out.println();
     }
 
+    public void printTrainingScore(Discipline discipline, CompetitionMember member){
+        int time =  member.findTrainingTime(discipline);
+        printText(member.getFirstName() + " " + member.getLastName() + " : " + time );
+    }
 
+    public void printTop5List(ArrayList<CompetitionMember> listOfMembers, Discipline discipline){
+        for( int i =0; i <listOfMembers.size(); i++){
+            printTrainingScore(discipline, listOfMembers.get(i));
+        }
+    }
     /// private boolean methods to check data type
 
     private static boolean isLeapYear(int year) {
@@ -299,7 +315,7 @@ public class UI {
     public void buildManagerMenu() {
         Menu managerMenu = new Menu();
         managerMenu.setMenuTitle("     MANAGER \n What would you like to do?");
-        managerMenu.setMenuItems("Add member", "Edit member information", "Delete member", "Add new Coach", "Return to Main Menu");
+        managerMenu.setMenuItems("Add member", "See member information","Edit member information", "Delete member", "Add new Coach", "Return to Main Menu");
         managerMenu.printMenu();
 
     }

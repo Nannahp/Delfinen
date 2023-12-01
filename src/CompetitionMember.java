@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CompetitionMember extends Member{
 
@@ -26,12 +27,23 @@ public class CompetitionMember extends Member{
         }
     }
 
-
+    public void addTestTrainingScore(TrainingScore trainingScore) {
+        if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
+            //Loop checks if the trainingScores list has a score with given discipline
+            if (trainingScores.size() == 0 || !doesTrainingScoresContainsDiscipline(trainingScore.getDiscipline())) {
+                trainingScores.add(trainingScore);
+            }
+        }
+    }
+/*
     //Checks if member has discipline, if score already exists and updates accordingly
-    private boolean updateTrainingScore(TrainingScore trainingScore) {
+    public boolean updateTrainingScore(TrainingScore trainingScore) {
         try {
             if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
                 //Loop checks if the trainingScores list has a score with given discipline
+                if (trainingScores.size() ==0 || !doesTrainingScoresContainsDiscipline(trainingScore.getDiscipline()) ){
+                    trainingScores.add(trainingScore);
+                }
                 for (TrainingScore existingScore : trainingScores) {
                     if (existingScore.getDiscipline().equals(trainingScore.getDiscipline())) {
                         if (existingScore.getTime() > trainingScore.getTime()) {
@@ -50,6 +62,72 @@ public class CompetitionMember extends Member{
         } catch (Exception e) {
             System.err.println("An error occurred while updating training score: " + e.getMessage());
             e.printStackTrace();
+        }
+        return false;
+    }
+*/
+
+public boolean checkIfTrainingScoreExists(Discipline discipline){
+    boolean scoreExists = false;
+    for (TrainingScore score: trainingScores) {
+        if( score.getDiscipline().equals(discipline)){
+            scoreExists = true;
+        }
+    }
+    return scoreExists;
+}
+public boolean updateTrainingScore(TrainingScore trainingScore) {
+    try {
+        //Checks if Member has the discipline
+        if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
+            //Checks if the trainingScores list has a score with given discipline, if not, just adds it
+            if (!checkIfTrainingScoreExists(trainingScore.getDiscipline()) || updateExistingScore(trainingScore)){
+                trainingScores.add(trainingScore);
+                System.out.println("Training score updated");
+            } else System.out.println("This is not the best score for this member");
+            return true;
+        }
+        System.out.println("This member is not active in: " + trainingScore.getDiscipline());
+        return false;
+    } catch (Exception e) {
+        System.err.println("An error occurred while updating training score: " + e.getMessage());
+        e.printStackTrace();
+    }
+    return false;
+}
+    private boolean updateExistingScore(TrainingScore trainingScore) {
+        //If it has existing score
+        for (TrainingScore existingScore : trainingScores) {
+            //Finds the score with the right discipline
+            if (existingScore.getDiscipline().equals(trainingScore.getDiscipline())) {
+                //Checks if it really is the best score
+                if (existingScore.getTime() > trainingScore.getTime()) {
+                    existingScore.setTime(trainingScore.getTime());
+                    existingScore.setDate(trainingScore.getDate());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public int findTrainingTime(Discipline discipline) {
+        int time = 0;
+        for (TrainingScore score : trainingScores) {
+            if (score.getDiscipline().equals(discipline)) {
+                time = score.getTime();
+            }
+        }
+        return time;
+    }
+
+
+    public boolean doesTrainingScoresContainsDiscipline(Discipline discipline) {
+        for (TrainingScore score : trainingScores) {
+            if (score.getDiscipline().equals(discipline)) {
+                return true;
+            }
         }
         return false;
     }
@@ -75,5 +153,17 @@ public class CompetitionMember extends Member{
     public ArrayList<DummyCompetitionScore> getCompetitionScores(){
         return competitionScores;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        CompetitionMember otherMember = (CompetitionMember) obj;
+        return Objects.equals(this.getMemberID(), otherMember.getMemberID());
+    }
+
 }
 
