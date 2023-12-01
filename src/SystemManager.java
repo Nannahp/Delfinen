@@ -91,7 +91,7 @@ public void runCashierMenu() {
             switch (choice) {
                 case 1 -> addMember();
                 case 2 -> seeMemberInformation();
-                case 3 -> ui.printText("edit member info is coming soon", ConsoleColor.WHITE);
+                case 3 -> editMember();
                 case 4 -> deleteMember();
                 case 5 -> addCoach();
                 case 6 -> exitMenu = true;
@@ -114,8 +114,8 @@ public void runCashierMenu() {
 
     public CompetitionMember createCompetitionMember() {
         CompetitionMember member;
-        String firstName = getMemberStringInput("first-name");
-        String lastName = getMemberStringInput("last-name");
+        String firstName = getMemberNameInput("first-name");
+        String lastName = getMemberNameInput("last-name");
         LocalDate date = getMemberDateInput();
         String gender = getGenderInput();
         boolean isActive = getMemberBooleanInput();
@@ -138,8 +138,8 @@ public void runCashierMenu() {
 
     public Member createMember() {
         Member member;
-        String firstName = getMemberStringInput("first-name");
-        String lastName = getMemberStringInput("last-name");
+        String firstName = getMemberNameInput("first-name");
+        String lastName = getMemberNameInput("last-name");
         LocalDate date = getMemberDateInput();
         String gender = getGenderInput();
         boolean isActive = getMemberBooleanInput();
@@ -161,7 +161,7 @@ public void runCashierMenu() {
         return gender;
     }
 
-    private String getMemberStringInput(String prompt) {
+    private String getMemberNameInput(String prompt) {
         ui.printText("Please enter the " + prompt + " of the member:", ConsoleColor.WHITE);
         return ui.getStringInput();
     }
@@ -206,6 +206,7 @@ public void runCashierMenu() {
         return ui.getBooleanInput();
     }
     public void seeMemberInformation(){
+        printMembers();
         Member member = getMember();
         ui.printMember(member);
     }
@@ -231,6 +232,66 @@ public void runCashierMenu() {
         coach.removeMemberByDiscipline(member, discipline);
         updateCoachInfoInFile(coach);
         updateCoaches();
+    }
+
+    public void editMember(){
+        printMembers();
+        Member member = getMember();
+        runEditMenu(member);
+        updateMemberInfoInFile(member);
+        updateMembers();
+    }
+
+    public  void runEditMenu(Member member) {
+        boolean exitMenu = false;
+        while (!exitMenu) {
+            ui.buildEditMenu();
+            int choice = menuInputHandler(5);
+            switch (choice) {
+                case 1 -> editName(member);
+                case 2 -> editActiveStatus(member);
+                case 3 -> {
+                    if (member instanceof CompetitionMember) {
+                        removeDiscipline((CompetitionMember) member);
+                    } else ui.printText("Member is not a competition member", ConsoleColor.RED);
+                }
+
+                case 4 -> {
+                    if (member instanceof CompetitionMember) {
+                        addDiscipline((CompetitionMember) member);
+                    } else ui.printText("Member is not a competition member", ConsoleColor.RED);
+                }
+                case 5 -> exitMenu = true;
+            }
+        }
+        }
+public void addDiscipline(CompetitionMember member){
+        ui.printText(member.getFirstName() + " is active in:" ,ConsoleColor.WHITE);
+        ui.printDisciplines(member.getDisciplines());
+        ui.printText("Which discipline would you like to add?", ConsoleColor.WHITE);
+        Discipline discipline = ui.getDiscipline();
+        member.addDisciplines(discipline);
+        Coach coach = member.getCoach();
+        coach.checkCompetitionMemberTeam(member);
+        updateCoachInfoInFile(coach);
+        updateCoaches();
+}
+public void removeDiscipline(CompetitionMember member){
+          ui.printText("Which discipline would you like to delete?", ConsoleColor.WHITE);
+          ui.printDisciplines(member.getDisciplines());
+          Discipline discipline = ui.getDiscipline();
+          member.deleteDiscipline(discipline);
+          deleteMemberByDiscipline(member,discipline);
+
+}
+
+
+    public void editName(Member member){
+        member.setFirstName(getMemberNameInput("first-name"));
+        member.setLastName(getMemberNameInput("last-name"));
+    }
+    public void editActiveStatus(Member member){
+        member.setIsActive(getMemberBooleanInput());
     }
 
 

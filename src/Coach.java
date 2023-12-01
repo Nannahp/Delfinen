@@ -69,17 +69,23 @@ public class Coach implements Serializable {
 
 
     //Checks the arraylist of disciplines of given member and puts in right arraylist
-    private void checkCompetitionMemberTeam(CompetitionMember member) {
+    public void checkCompetitionMemberTeam(CompetitionMember member) {
         ArrayList<Discipline> disciplines = member.getDisciplines();
+        boolean memberExist = false;
         for (Discipline discipline : disciplines) {
-            switch(discipline) {
-                case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
-                case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
-                case BUTTERFLY -> addToDisciplineList(member, juniorButterfly, seniorButterfly);
-                case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
-                case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
+            memberExist = checkIfMemberExistInList(member,discipline);
+            if(!memberExist) {
+                switch (discipline) {
+                    case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
+                    case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
+                    case BUTTERFLY -> addToDisciplineList(member, juniorButterfly, seniorButterfly);
+                    case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
+                    case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
+                }
             }
         }
+     if (!memberExist) {
+      System.out.println("Added to team");}
     }
 
     //Checks if competition member is a junior or senior
@@ -88,7 +94,6 @@ public class Coach implements Serializable {
         try {
             if (member.getIsActive()) {
                 addToTeam = true;
-                System.out.println("Added to team");
                 if (member.getTeam() == Team.JUNIOR) {  //getTeam()
                     juniorList.add(member);
                 } else {
@@ -124,16 +129,30 @@ public class Coach implements Serializable {
     }
 
     public void addTrainingScoreToMember(CompetitionMember member, TrainingScore trainingScore) {
-       boolean memberExists = false;
-        for (Discipline discipline:member.getDisciplines()){
-            if (findMemberInCoach(member, getJuniorList(discipline) )||
-            findMemberInCoach(member, getSeniorList(discipline))){
-                memberExists = true;
-            }
-        }
+       boolean memberExists = checkIfMemberExist(member);
         if (memberExists){
         member.updateTrainingScore(trainingScore);}
         else System.out.println("Member is not assigned to this coach");
+    }
+
+    //goes through one list and checks if there is a member
+    public boolean checkIfMemberExistInList(CompetitionMember member, Discipline discipline){
+        boolean memberExists = false;
+            if (findMemberInCoach(member, getJuniorList(discipline) )||
+                    findMemberInCoach(member, getSeniorList(discipline))){
+                memberExists = true;
+        }
+        return  memberExists;
+    }
+
+    //Goes through all disciplines and checks if there is a member
+    public boolean checkIfMemberExist(CompetitionMember member){
+        boolean memberExists = false;
+        for (Discipline discipline:member.getDisciplines()){
+           if(checkIfMemberExistInList(member,discipline)){
+                memberExists = true;}
+            }
+        return  memberExists;
     }
 
 
@@ -184,6 +203,8 @@ public class Coach implements Serializable {
             uniqueNames.add(member);
         }
     }
+
+
 
 
     public void updateMemberInCoach(CompetitionMember updatedMember) {

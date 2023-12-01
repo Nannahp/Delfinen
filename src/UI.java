@@ -145,6 +145,20 @@ public class UI {
             }
         }
     }
+    public void printDisciplines(ArrayList<Discipline> disciplines){
+        if (!disciplines.isEmpty()) {
+            for (Discipline discipline: disciplines) {
+                printText(discipline.toString(),ConsoleColor.WHITE);
+            }
+        }
+    }
+
+    public void printArrayList (ArrayList list){
+        for (int i =0; i< list.size(); i++){
+            printText((String) list.get(i), ConsoleColor.WHITE);
+        }
+    }
+
     public void printList(ArrayList<Object> list) {
 
         if (!list.isEmpty()) {
@@ -366,7 +380,14 @@ public class UI {
     public void buildSeeTop5Menu(){
         Menu seeTop5Menu = new Menu();
         seeTop5Menu.setMenuTitle("     SEE TOP 5 \n   Please enter a discipline ");
-        seeTop5Menu.setMenuItems("Crawl", "BackCrawl", "BreastStoke","Butterfly", "Medley","Return to Main Menu");
+        seeTop5Menu.setMenuItems("Crawl", "BackCrawl", "BreastStoke","Butterfly", "Medley");
+        seeTop5Menu.printMenu();
+
+    }
+    public void buildEditMenu(){
+        Menu seeTop5Menu = new Menu();
+        seeTop5Menu.setMenuTitle("     EDIT \n   What would you like to edit? ");
+        seeTop5Menu.setMenuItems("Name", "Active-status", "Remove Disciplin","Add Disciplines","Return to Main Menu");
         seeTop5Menu.printMenu();
 
     }

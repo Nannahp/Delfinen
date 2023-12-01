@@ -140,7 +140,11 @@ public boolean updateTrainingScore(TrainingScore trainingScore) {
     public ArrayList<Discipline> getDisciplines() {
         return disciplines;
     }
-
+    public void deleteDiscipline(Discipline discipline) {
+        if (doesMemberHaveDiscipline(discipline)) {
+            disciplines.remove(discipline);
+        } else System.out.println("This member is not active in this discipline");
+    }
 
     public Coach getCoach() {
         return coach;
