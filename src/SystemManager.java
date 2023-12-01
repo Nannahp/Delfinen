@@ -251,46 +251,38 @@ public void runCashierMenu() {
             switch (choice) {
                 case 1 -> editName(member);
                 case 2 -> editActiveStatus(member);
-                case 3 -> {
-                    if (member instanceof CompetitionMember) {
-                        removeDiscipline((CompetitionMember) member);
-                    } else ui.printText("Member is not a competition member", ConsoleColor.RED);
-                }
-
-                case 4 -> {
-                    if (member instanceof CompetitionMember) {
-                        addDiscipline((CompetitionMember) member);
-                    } else ui.printText("Member is not a competition member", ConsoleColor.RED);
-                }
+                case 3 -> removeDiscipline((CompetitionMember) member);
+                case 4 -> addDiscipline((CompetitionMember) member);
                 case 5 -> exitMenu = true;
             }
         }
         if ((member instanceof CompetitionMember)){
-            Coach coach = ((CompetitionMember) member).getCoach();
-            updateCoachInfoInFile(coach);
-            updateCoaches();
+            updateCoachInfo((CompetitionMember) member);
         }
         }
 
 
-public void addDiscipline(CompetitionMember member){
+public void addDiscipline(Member member){
+        if( member instanceof CompetitionMember){
         ui.printText(member.getFirstName() + " is active in:" ,ConsoleColor.WHITE);
-        ui.printDisciplines(member.getDisciplines());
+        ui.printDisciplines(((CompetitionMember) member).getDisciplines());
         ui.printText("Which discipline would you like to add?", ConsoleColor.WHITE);
         Discipline discipline = ui.getDiscipline();
-        member.addDisciplines(discipline);
-        Coach coach = member.getCoach();
-        coach.checkCompetitionMemberTeam(member);
-        updateCoachInfoInFile(coach);
-        updateCoaches();
+        ((CompetitionMember) member).addDisciplines(discipline);
+        Coach coach = ((CompetitionMember) member).getCoach();
+        coach.checkCompetitionMemberTeam((CompetitionMember) member);
 }
-public void removeDiscipline(CompetitionMember member){
-          ui.printText("Which discipline would you like to delete?", ConsoleColor.WHITE);
-          ui.printDisciplines(member.getDisciplines());
-          Discipline discipline = ui.getDiscipline();
-          member.deleteDiscipline(discipline);
-          deleteMemberByDiscipline(member,discipline);
+    else ui.printText("Member is not a competition member", ConsoleColor.RED);}
 
+public void removeDiscipline(Member member){
+    if( member instanceof CompetitionMember) {
+        ui.printText("Which discipline would you like to delete?", ConsoleColor.WHITE);
+        ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+        Discipline discipline = ui.getDiscipline();
+        ((CompetitionMember) member).deleteDiscipline(discipline);
+        deleteMemberByDiscipline((CompetitionMember) member, discipline);
+    }
+    else ui.printText("Member is not a competition member", ConsoleColor.RED);
 }
 
 
@@ -356,9 +348,7 @@ public void removeDiscipline(CompetitionMember member){
         Member member = getMember();
         if (member instanceof CompetitionMember){
         coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
-        coach.updateMemberInCoach((CompetitionMember) member);
-        updateMemberInfoInFile(member);
-        updateCoachInfoInFile(coach);     }
+        updateCoachInfo((CompetitionMember) member);   }
         else ui.printText("The member ID you have entered is not a competition member", ConsoleColor.RED);
 
     }
@@ -440,8 +430,9 @@ public void removeDiscipline(CompetitionMember member){
     public void updateNextMemberID(){
         if(members.size() ==0){
             nextMemberId = 1;}  //ensures that memberID can't be 0
-        else  nextMemberId = members.size() +1;
-    }
+        else  nextMemberId = Collections.max(members, Comparator.comparing(Member::getMemberID)).getMemberID() + 1;
+    }                        //ensures that the ID can't be the same if we delete a member and add a new one
+
 
     //Maybe not needed
     public Coach searchForCoach(){
@@ -462,6 +453,12 @@ public void removeDiscipline(CompetitionMember member){
     }
 
     // --- STARTUP / ARRAYS -----
+
+    private void updateCoachInfo(CompetitionMember competitionMember) {
+        Coach coach = competitionMember.getCoach();
+        updateCoachInfoInFile(coach);
+        updateCoaches();
+    }
 
     public void updateMembers(){
         members.clear();
