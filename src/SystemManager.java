@@ -1,6 +1,7 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SystemManager {
@@ -52,7 +53,7 @@ public void runCashierMenu() {
               int choice = menuInputHandler(3);
               switch (choice) {
                   case 1 -> showPaymentStatusForAllMembers();
-                  case 2 -> ui.printText("No action for now.", ConsoleColor.WHITE);
+                  case 2 -> registerPaymentStatus();
                   case 3 -> exitMenu = true;
                   default -> ui.printText("Invalid choice. Please select a valid option.", ConsoleColor.RED);
 
@@ -70,6 +71,14 @@ public void runCashierMenu() {
                 ui.printText("Member ID: " + member.getMemberID() + "-Payment Status:" + member.getPaymentStatus(), ConsoleColor.RED);
             }
         }
+    }
+
+    public void registerPaymentStatus(){
+        printMembers();
+        Member member = getMember();
+        ui.printText("Payment received? (y/n)",ConsoleColor.WHITE);
+        member.setPaymentStatus(ui.getBooleanInput());
+        updateMemberInfoInFile(member);
     }
 
 
@@ -420,7 +429,7 @@ public void runCashierMenu() {
 
     public void printMembers(){
         for (Member member: members) {
-            ui.printText(member.getMemberID() + " : " + member.getFirstName(),ConsoleColor.WHITE);
+            ui.printText("MemberID: " + member.getMemberID() + " : " + member.getFirstName(),ConsoleColor.WHITE);
         }
     }
 
@@ -463,9 +472,10 @@ public void runCashierMenu() {
         addTestCoach("Henry");
         addTestCoach("Maria");
         loadCoachesArray();
-        addTestCompetitionMember("Peter", "Parker", "m", 1988);
-        addTestCompetitionMember("Miles", "Morales","m", 2010);
-        addTestCompetitionMember("Felicia", "Hardy", "f", 1990);
+        addTestCompetitionMember("Peter", "Parker", "m", 1988,coaches.get(0));
+        addTestCompetitionMember("Miles", "Morales","m", 2010,coaches.get(0));
+        addTestCompetitionMember("Felicia", "Hardy", "f", 1990,coaches.get(0));
+        addTestCompetitionMember("Gwen", "Stacy", "f", 1991, coaches.get(1));
         addTestMember("MJ", "Watson", "f", 1988);
         addTestMember("Otto", "Octavious", "m", 1960);
 
@@ -476,6 +486,7 @@ public void runCashierMenu() {
         CompetitionMember peter = (CompetitionMember) members.get(0);
         CompetitionMember miles = (CompetitionMember) members.get(1);
         CompetitionMember felicia = (CompetitionMember) members.get(2);
+        CompetitionMember gwen = (CompetitionMember) members.get(3);
        // peter.addTestTrainingScore(new TrainingScore(38,LocalDate.now(),Discipline.CRAWL));
        // peter.addTestTrainingScore(new TrainingScore(120,LocalDate.now(),Discipline.BUTTERFLY));
        // miles.addTestTrainingScore(new TrainingScore(44, LocalDate.now(), Discipline.CRAWL));
@@ -493,12 +504,16 @@ public void runCashierMenu() {
         coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.BUTTERFLY));
         coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(55,LocalDate.now(),Discipline.CRAWL));
         coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(20,LocalDate.now(),Discipline.BUTTERFLY));
+        coaches.get(1).addTrainingScoreToMember(gwen, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(1).addTrainingScoreToMember(gwen, new TrainingScore(143,LocalDate.now(),Discipline.BUTTERFLY));
         updateMemberInfoInFile(peter);
         updateMemberInfoInFile(miles);
         updateMemberInfoInFile(felicia);
+        updateMemberInfoInFile(gwen);
         coaches.get(0).updateMemberInCoach(peter);
         coaches.get(0).updateMemberInCoach(miles);
         coaches.get(0).updateMemberInCoach(felicia);
+        coaches.get(1).updateMemberInCoach(gwen);
         updateCoachInfoInFile(coaches.get(0));
         updateCoachInfoInFile(coaches.get(1));
     }
@@ -509,10 +524,9 @@ public void runCashierMenu() {
 
     }
 
-    public void addTestCompetitionMember(String firstName, String lastName, String gender, int year){
+    public void addTestCompetitionMember(String firstName, String lastName, String gender, int year, Coach coach){
         LocalDate date = LocalDate.of(year,5,7);
         boolean isActive = true;
-        Coach coach = coaches.get(0);
         Discipline[] disciplines = new Discipline[]{Discipline.BUTTERFLY,Discipline.CRAWL};
         CompetitionMember member = new CompetitionMember(firstName, lastName, date, gender, isActive,coach,disciplines );
         member.setMemberID(nextMemberId++);

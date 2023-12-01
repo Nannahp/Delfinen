@@ -18,7 +18,7 @@ public class Member implements Serializable, Comparable {
         this.birthdate = birthdate;
         this.gender = gender;
         this.isActive = isActive;
-        setHasPaid(true); //Altid betalt ved oprettelse, kan settes til andet
+        setPaymentStatus(true); //Altid betalt ved oprettelse, kan settes til andet
         calculateMembershipPrice();
         calcTeamFromDate();
     }
@@ -90,13 +90,6 @@ public class Member implements Serializable, Comparable {
         this.gender = gender;
     }
 
-    public void setHasPaid(boolean hasPaid) {
-        this.hasPaid = hasPaid;
-    }
-
-    public boolean hasPaid() {
-        return hasPaid;
-    }
 
     public int getMembershipPrice() {
         return membershipPrice;
