@@ -66,7 +66,7 @@ public void runCashierMenu() {
         ui.printMembers(members);
         ui.printText("\n",ConsoleColor.WHITE);
         Member member = getMember();
-        ui.printText("\n Payment received? (y/n)",ConsoleColor.WHITE);
+        ui.printText("\n Payment received? (y/n): ",ConsoleColor.WHITE);
         member.setPaymentStatus(ui.getBooleanInput());
         updateMemberInfoInFile(member);
     }
