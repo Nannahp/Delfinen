@@ -212,6 +212,7 @@ public void runCashierMenu() {
     }
 
     public void deleteMember(){
+        printMembers();
         Member member = getMember();
         removeMemberFromFile(member);
         updateMembers(); //Updates the membersArrayList
@@ -264,7 +265,14 @@ public void runCashierMenu() {
                 case 5 -> exitMenu = true;
             }
         }
+        if ((member instanceof CompetitionMember)){
+            Coach coach = ((CompetitionMember) member).getCoach();
+            updateCoachInfoInFile(coach);
+            updateCoaches();
         }
+        }
+
+
 public void addDiscipline(CompetitionMember member){
         ui.printText(member.getFirstName() + " is active in:" ,ConsoleColor.WHITE);
         ui.printDisciplines(member.getDisciplines());
