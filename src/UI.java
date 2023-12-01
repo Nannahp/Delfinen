@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UI {
-    private Scanner in = new Scanner(System.in);
+    private static Scanner in = new Scanner(System.in);
 
 
     // Getting inout methods
@@ -23,14 +23,14 @@ public class UI {
         return stringInput;
     }
 
-    public int getIntInput() {
+    public static int getIntInput() {
         int intInput = 0;
         while (intInput == 0){
         try {
             intInput = in.nextInt();
         }
         catch (InputMismatchException e){
-            printText("Input not recognized, please enter a number:", ConsoleColor.RED);
+            printText("\nInput not recognized, please enter a number:", ConsoleColor.RED);
          }
         in.nextLine();//scannerbug?
         }
@@ -122,8 +122,8 @@ public class UI {
         System.out.println(date.format(dateFormatter));
     }
 
-    public void printText(String text, ConsoleColor color) {
-        System.out.println(text);
+    public static void printText(String text, ConsoleColor color) {
+        System.out.print(text);
     }
 
     public void printFormattedSecondsToReadableTime(int totalSecs) {
@@ -139,23 +139,26 @@ public class UI {
     }
 
     public void printListOfMembers(ArrayList<Member> members){
+        System.out.println("\n");
         if (!members.isEmpty()) {
             for (Member member: members) {
-                printText(member.toString(),ConsoleColor.WHITE);
+                printText(member.toString()+"\n",ConsoleColor.WHITE);
             }
         }
+        System.out.println("\n");
     }
+
     public void printDisciplines(ArrayList<Discipline> disciplines){
         if (!disciplines.isEmpty()) {
             for (Discipline discipline: disciplines) {
-                printText(discipline.toString(),ConsoleColor.WHITE);
+                printText(discipline.toString() + "\n",ConsoleColor.WHITE);
             }
         }
     }
 
     public void printArrayList (ArrayList list){
         for (int i =0; i< list.size(); i++){
-            printText((String) list.get(i), ConsoleColor.WHITE);
+            printText((String) list.get(i) + "\n", ConsoleColor.WHITE);
         }
     }
 
@@ -185,24 +188,24 @@ public class UI {
     }
 
     public void printMember(Member member) {
-        System.out.println("__________________________________________");
+        System.out.println(" _________________________________________________ ");
 
         if (member instanceof CompetitionMember) {
-            System.out.printf("COMPETITION-MEMBER №%d%20.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
+            System.out.printf(" COMPETITION-MEMBER №%d%28.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
         } else {
-            System.out.printf("MEMBER №%d%32.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
+            System.out.printf(" MEMBER №%d%39.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
         }
 
-        System.out.printf("%-10s %-12S%18.1s%n", member.getFirstName(), member.getLastName(), member.getGender().toUpperCase() );
-        System.out.printf("Born on: %1$td/%1$tm/%tY ", member.getBirthdate());
-        System.out.printf("%19s%d%n","Age:",  Period.between(member.getBirthdate(), LocalDate.now()).getYears());
-        System.out.printf("Team: %S%n", member.getTeam());
+        System.out.printf(" %-10s %-15S%23.1s%n", member.getFirstName(), member.getLastName(), member.getGender().toUpperCase() );
+        System.out.printf(" Born on: %1$td/%1$tm/%tY ", member.getBirthdate());
+        System.out.printf(" %26s%d%n","Age:",  Period.between(member.getBirthdate(), LocalDate.now()).getYears());
+        System.out.printf(" Team: %S%n", member.getTeam());
         if (member instanceof CompetitionMember) {
             ArrayList<Discipline> disciplines = ((CompetitionMember) member).getDisciplines();
             System.out.println();
-            System.out.println("_______________Competition________________");
-            System.out.printf("Coach: Coach %S%n", ((CompetitionMember) member).getCoach().getName());
-            System.out.printf("%s","Discipline(s): ");
+            System.out.println(" ___________________Competition___________________");
+            System.out.printf(" Coach: Coach %S%n", ((CompetitionMember) member).getCoach().getName());
+            System.out.printf(" %s","Discipline(s): ");
             for (int i = 0; i < disciplines.size(); i++) {
                 Discipline discipline = disciplines.get(i);
                 System.out.printf("%S", discipline); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
@@ -216,22 +219,25 @@ public class UI {
             System.out.println();
         }
         System.out.println();
-        System.out.println("________________Membership________________");
-        System.out.printf("Price:%d,-%10s%n", member.getMembershipPrice(), member.getPaymentStatus()?"Paid":"Not-Paid");
-        System.out.println("__________________________________________");
+        System.out.println(" ___________________Membership____________________");
+        System.out.printf(" Price:%d,-%30s%n", member.getMembershipPrice(), member.getPaymentStatus()?"Paid":"Not-Paid");
+        System.out.println(" _________________________________________________ ");
         System.out.println();
         System.out.println();
     }
 
     public void printTrainingScore(Discipline discipline, CompetitionMember member){
         int time =  member.findTrainingTime(discipline);
-        printText(member.getFirstName() + " " + member.getLastName() + " : " + time ,ConsoleColor.WHITE);
+        String info = member.getFirstName() + " " + member.getLastName() + " : " + time + "s";
+        printText("    " + info + " ".repeat(45-info.length()) + " ",ConsoleColor.WHITE);
     }
-
-    public void printTop5List(ArrayList<CompetitionMember> listOfMembers, Discipline discipline){
-        for( int i =0; i <listOfMembers.size(); i++){
-            printTrainingScore(discipline, listOfMembers.get(i));
-        }
+    public void printTop5List(ArrayList<CompetitionMember> listOfMembers, String prompt, Discipline discipline) {
+        String info = prompt + " in " + discipline.label + " top 5:_";
+        int seniorSpaceLength = (48 - info.length()) / 2;
+        System.out.println("\n " + "_".repeat(seniorSpaceLength) + info + "_".repeat(seniorSpaceLength) + " \n");
+        for (int i = 0; i < listOfMembers.size(); i++) {
+            printTrainingScore(discipline, listOfMembers.get(i));}
+        System.out.println("\n");
     }
     /// private boolean methods to check data type
 
@@ -301,7 +307,7 @@ public class UI {
                  discipline = d;}
             }
             if (discipline ==null){
-                printText("Discipline not recognised, please try again",ConsoleColor.RED);
+                printText("Discipline not recognised, please try again\n",ConsoleColor.RED);
             }
         }
         return  discipline;
@@ -316,80 +322,92 @@ public class UI {
 
             //Check payment status and print in red or green
             if (member.getPaymentStatus()) {
-                printText("Payment Status: Paid", ConsoleColor.GREEN);
+                printText("Payment Status: Paid\n", ConsoleColor.GREEN);
             } else {
-                printText("Payment Status: Not Paid", ConsoleColor.RED);
+                printText("Payment Status: Not Paid\n", ConsoleColor.RED);
             }
 
             System.out.println("_________________________________\n");
         }
     }
 
-
-
-    // HANDLE MENU CHOICES
-
-    public int getMenuChoiceFromUserInput() {
-        printText("Please enter the desired menu-number: ", ConsoleColor.RED);
-        return getIntInput();
+    public void printWelcomeMessage() {
+        System.out.println(" ________________________________________________ ");
+        System.out.println("                    DELFINEN                      ");
+        System.out.println(" ________________________________________________ ");
+        System.out.println("                                                  ");
+        System.out.println("                    WELCOME                       ");
+        System.out.println("                                                  ");
+        System.out.println(" ________________________________________________ ");
+        System.out.println("\n");
     }
+
+    public void printMembers(ArrayList<Member> members){
+        System.out.println(" " + "_".repeat(48) + " ");
+        for (Member member: members) {
+            String info = "MemberID: " + member.getMemberID() + " : " + member.getFirstName();
+            printText("    " + info + " ".repeat(45-info.length()) + " \n",ConsoleColor.WHITE);}
+        System.out.println(" " + "_".repeat(48) + " ");
+    }
+
 
 
     // ------ MENUS -------
 
-    public void buildMainMenu() {
+    public Menu buildMainMenu() {
         Menu mainMenu = new Menu();
-        mainMenu.setMenuTitle("     Which menu would you like to access?\n");
+        mainMenu.setMenuTitle("Which menu would you like to access?");
         mainMenu.setMenuItems("Cashier", "Manager ", "Coach", "Quit");
         mainMenu.printMenu();
+        return mainMenu;
     }
 
-    public void buildManagerMenu() {
+    public Menu buildManagerMenu() {
         Menu managerMenu = new Menu();
-        managerMenu.setMenuTitle("     MANAGER \n What would you like to do?");
+        managerMenu.setMenuTitle("MANAGER_");
         managerMenu.setMenuItems("Add member", "See member information","Edit member information", "Delete member", "Add new Coach", "Return to Main Menu");
         managerMenu.printMenu();
-
+        return managerMenu;
     }
 
-    public void buildCashierMenu() {
+    public Menu buildCashierMenu() {
         Menu cashierMenu = new Menu();
-        cashierMenu.setMenuTitle("     CASHIER \n");
+        cashierMenu.setMenuTitle("CASHIER_");
         cashierMenu.setMenuItems("See payment status for all members", "Register payment status","Return to Main Menu");
         cashierMenu.printMenu();
-
+        return cashierMenu;
     }
 
-    public void buildChooseCoachMenu(ArrayList<Coach> coaches) {
+    public Menu buildChooseCoachMenu(ArrayList<Coach> coaches) {
         Menu chooseCoachMenu = new Menu();
-        chooseCoachMenu.setMenuTitle("     COACHES \n");
+        chooseCoachMenu.setMenuTitle("COACHES_");
         for (Coach coach : coaches) {
             chooseCoachMenu.addMenuItems(coach.getName());
         }
         chooseCoachMenu.printMenu();
-
+        return chooseCoachMenu;
     }
 
-    public void buildCoachMenu(){
+    public Menu buildCoachMenu(){
         Menu coachMenu = new Menu();
-        coachMenu.setMenuTitle("     COACH \n");
+        coachMenu.setMenuTitle("COACH_");
         coachMenu.setMenuItems("See Top 5", "Register training score", "Register competition score","Return to Main Menu");
         coachMenu.printMenu();
-
+        return coachMenu;
     }
-    public void buildSeeTop5Menu(){
+    public Menu buildSeeTop5Menu(){
         Menu seeTop5Menu = new Menu();
-        seeTop5Menu.setMenuTitle("     SEE TOP 5 \n   Please enter a discipline ");
+        seeTop5Menu.setMenuTitle("SEE TOP 5_");
         seeTop5Menu.setMenuItems("Crawl", "BackCrawl", "BreastStoke","Butterfly", "Medley");
         seeTop5Menu.printMenu();
-
+        return seeTop5Menu;
     }
-    public void buildEditMenu(){
-        Menu seeTop5Menu = new Menu();
-        seeTop5Menu.setMenuTitle("     EDIT \n   What would you like to edit? ");
-        seeTop5Menu.setMenuItems("Name", "Active-status", "Remove Disciplin","Add Disciplines","Return to Main Menu");
-        seeTop5Menu.printMenu();
-
+    public Menu buildEditMenu(){
+        Menu editMenu = new Menu();
+        editMenu.setMenuTitle("EDIT");
+        editMenu.setMenuItems("Name", "Active-status", "Remove Disciplin","Add Disciplines","Return to Main Menu");
+        editMenu.printMenu();
+        return editMenu;
     }
 
 }

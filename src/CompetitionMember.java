@@ -83,7 +83,7 @@ public boolean updateTrainingScore(TrainingScore trainingScore) {
             //Checks if the trainingScores list has a score with given discipline, if not, just adds it
             if (!checkIfTrainingScoreExists(trainingScore.getDiscipline()) || updateExistingScore(trainingScore)){
                 trainingScores.add(trainingScore);
-                System.out.println("Training score updated");
+                System.out.println("\n Training score updated");
             } else System.out.println("This is not the best score for this member");
             return true;
         }
