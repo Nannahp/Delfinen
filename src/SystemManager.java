@@ -38,35 +38,51 @@ public class SystemManager {
     public int menuInputHandler(int upperLimitOfMenuItems) { //maybe should be in UI er menu
         int choice = ui.getMenuChoiceFromUserInput();
         while (choice < 0 || upperLimitOfMenuItems < choice) {
-            ui.printText("Not an option");
+            ui.printText("Not an option", ConsoleColor.WHITE);
             choice = ui.getMenuChoiceFromUserInput();
         }
         return choice;
     }
 
     // ---- CASHIER ----
+public void runCashierMenu() {
+        boolean exitMenu = false;
+          while (!exitMenu) {
+              ui.buildCashierMenu();
+              int choice = menuInputHandler(3);
+              switch (choice) {
+                  case 1 -> showPaymentStatusForAllMembers();
+                  case 2 -> ui.printText("No action for now.", ConsoleColor.WHITE);
+                  case 3 -> exitMenu = true;
+                  default -> ui.printText("Invalid choice. Please select a valid option.", ConsoleColor.RED);
 
-    public void runCashierMenu() {
-        //1 -> see payment status for alle i member-arrayListe
-        //2 -> ikke noget for nu
-        //3 -> exitMenu = true
-        ui.buildCashierMenu();
-        ui.printText("show members and their paymentStatus");
+
+              }
+          }
     }
 
+    public void showPaymentStatusForAllMembers() {
+        if (members.isEmpty()) {
+            ui.printText("No members found.", ConsoleColor.RED);
+        } else {
+            ui.printText("Payment Status for all members:" , ConsoleColor.RED);
+            for (Member member: members) {
+                ui.printText("Member ID: " + member.getMemberID() + "-Payment Status:" + member.getPaymentStatus(), ConsoleColor.RED);
+            }
+        }
+    }
 
 
     // ---- MANAGER -----
     public void runManagerMenu() {
         boolean exitMenu = false;
         while (!exitMenu) {
-            printMembers();
             ui.buildManagerMenu();
             int choice = menuInputHandler(6);
             switch (choice) {
                 case 1 -> addMember();
                 case 2 -> seeMemberInformation();
-                case 3 -> ui.printText("edit member info is coming soon");
+                case 3 -> ui.printText("edit member info is coming soon", ConsoleColor.WHITE);
                 case 4 -> deleteMember();
                 case 5 -> addCoach();
                 case 6 -> exitMenu = true;
@@ -82,7 +98,7 @@ public class SystemManager {
 
         members.add(member);
         FileHandler.appendObjectToFile("Members.txt", member);
-        ui.printText("Member added");
+        ui.printText("Member added", ConsoleColor.GREEN);
         ui.printMember(member);
     }
 
@@ -95,12 +111,12 @@ public class SystemManager {
         String gender = getGenderInput();
         boolean isActive = getMemberBooleanInput();
 
-        ui.printText("CompetitionMembers need to be assigned a coach ");
+        ui.printText("CompetitionMembers need to be assigned a coach ", ConsoleColor.WHITE);
         Coach coach = runChooseCoachMenu();
         ui.printText("""
                 CompetitionMembers need to be assigned a discipline.\s
                 (Crawl, BackCrawl, BreastStroke, Butterfly, Medley)
-                                                                """);
+                                                                """, ConsoleColor.WHITE);
         Discipline[] disciplines = chooseDisciplinesForMember();
         member = new CompetitionMember(firstName, lastName, date, gender, isActive, coach, disciplines);
         member.setMemberID(nextMemberId++);
@@ -122,30 +138,32 @@ public class SystemManager {
         member.setMemberID(nextMemberId++);
         return member;
     }
+
+    //SHOULD BE IN UI?
     private String getGenderInput() {
-        ui.printText("Please enter the gender of the member (F/M)");
+        ui.printText("Please enter the gender of the member (F/M)" ,ConsoleColor.WHITE);
         String gender = null;
         while (gender == null) {
             String input = ui.getStringInput();
             if (input.equalsIgnoreCase("f") || input.equalsIgnoreCase("m")) {
                 gender = input;
-            } else ui.printText("Please enter either \"f\" or \"m\"");
+            } else ui.printText("Please enter either \"f\" or \"m\"", ConsoleColor.RED);
         }
         return gender;
     }
 
     private String getMemberStringInput(String prompt) {
-        ui.printText("Please enter the " + prompt + " of the member:");
+        ui.printText("Please enter the " + prompt + " of the member:", ConsoleColor.WHITE);
         return ui.getStringInput();
     }
 
     private LocalDate getMemberDateInput() {
-        ui.printText("Please enter the birthdate of the member:");
+        ui.printText("Please enter the birthdate of the member:",ConsoleColor.WHITE);
         return ui.getLocalDateInput();
     }
 
     private boolean getMemberBooleanInput() {
-        ui.printText("Is the member active? (y/n)");
+        ui.printText("Is the member active? (y/n)",ConsoleColor.WHITE);
         return ui.getBooleanInput();
     }
 
@@ -155,7 +173,7 @@ public class SystemManager {
         disciplines.add(askForDiscipline());
         boolean needToAddMoreDisciplines;
         do{
-            ui.printText("Are there additional disciplines? (y/n)");
+            ui.printText("Are there additional disciplines? (y/n)",ConsoleColor.WHITE);
             needToAddMoreDisciplines = ui.getBooleanInput();
             if (needToAddMoreDisciplines){
                 Discipline discipline = askForDiscipline();
@@ -169,13 +187,13 @@ public class SystemManager {
 
 
     public Discipline askForDiscipline(){
-        ui.printText("Please enter a discipline:");
+        ui.printText("Please enter a discipline:",ConsoleColor.WHITE);
         return ui.getDiscipline();
     }
 
 
     public boolean isMemberACompetitionMember(){
-        ui.printText("Is the member a CompetitionMember? (y/n)");
+        ui.printText("Is the member a CompetitionMember? (y/n)",ConsoleColor.WHITE);
         return ui.getBooleanInput();
     }
     public void seeMemberInformation(){
@@ -190,7 +208,7 @@ public class SystemManager {
         if (member instanceof  CompetitionMember){
             deleteCompetitionMember((CompetitionMember) member);
         }
-        ui.printText("Member: " + member.getFirstName() + " " + member.getLastName() + " deleted");
+        ui.printText("Member: " + member.getFirstName() + " " + member.getLastName() + " deleted",ConsoleColor.GREEN);
     }
     public void deleteCompetitionMember(CompetitionMember member){
         Coach coach = member.getCoach();
@@ -208,12 +226,12 @@ public class SystemManager {
 
 
     public void addCoach(){
-        ui.printText("What is the name of the coach?");
+        ui.printText("What is the name of the coach?",ConsoleColor.WHITE);
         String name = ui.getStringInput();
         Coach coach = createCoach(name);
         coaches.add(coach);
         FileHandler.appendObjectToFile("Coaches.txt", coach);
-        ui.printText("Coach added");
+        ui.printText("Coach added",ConsoleColor.GREEN);
 
     }
     public Coach createCoach(String name){
@@ -225,13 +243,13 @@ public class SystemManager {
     public Coach runChooseCoachMenu() {
         Coach coach = null;
         ui.buildChooseCoachMenu(coaches);
-        ui.printText("Which coach do you want? ");
+        ui.printText("Which coach do you want? ",ConsoleColor.WHITE);
         while (coach == null) {
             int choice = ui.getIntInput();
             if (choice >= 1 && choice <= coaches.size()) {
                 coach = coaches.get(choice - 1);
             } else {
-                System.out.println("Invalid choice. Please select a valid option.");
+                ui.printText("Invalid choice. Please select a valid option.",ConsoleColor.RED);
             }
         }
         return coach;
@@ -255,7 +273,7 @@ public class SystemManager {
     }
 
     public void registerTrainingScore(Coach coach){
-        ui.printText("Which member you would like to add a training score to?");
+        ui.printText("Which member you would like to add a training score to?", ConsoleColor.WHITE);
         ui.printListOfMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
@@ -263,14 +281,14 @@ public class SystemManager {
         coach.updateMemberInCoach((CompetitionMember) member);
         updateMemberInfoInFile(member);
         updateCoachInfoInFile(coach);     }
-        else ui.printText("The member ID you have entered is not a competition member");
+        else ui.printText("The member ID you have entered is not a competition member", ConsoleColor.RED);
 
     }
 
     public TrainingScore createTrainingScore(){
-        ui.printText("Please enter discipline");
+        ui.printText("Please enter discipline",ConsoleColor.WHITE);
         Discipline discipline = ui.getDiscipline();
-        ui.printText("Please enter the training-time (in seconds)");
+        ui.printText("Please enter the training-time (in seconds)",ConsoleColor.WHITE);
         int time = ui.getIntInput();
         LocalDate date = LocalDate.now();
         return  new TrainingScore(time, date,discipline);
@@ -291,9 +309,9 @@ public class SystemManager {
     public void seeTop5(Coach coach, Discipline discipline){
         ArrayList seniors = sortTop5Members(coach.getSeniorList(discipline),discipline);
         ArrayList juniors = sortTop5Members(coach.getJuniorList(discipline),discipline);
-        ui.printText("\nSeniors in " + discipline.label + " top 5:\n");
+        ui.printText("\nSeniors in " + discipline.label + " top 5:\n",ConsoleColor.WHITE);
         ui.printTop5List(seniors, discipline);
-        ui.printText("\nJuniors in " + discipline.label + " top 5:\n");
+        ui.printText("\nJuniors in " + discipline.label + " top 5:\n",ConsoleColor.WHITE);
         ui.printTop5List(juniors, discipline);
     }
 
@@ -313,7 +331,7 @@ public class SystemManager {
 
     public void registerCompetitionScore() {
         getMember();
-        ui.printText("coming soon ;)");
+        ui.printText("coming soon ;)",ConsoleColor.RED);
     }
 
 
@@ -334,7 +352,7 @@ public class SystemManager {
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            ui.printText("Please enter the MemberId of the member you would like to access:");
+            ui.printText("Please enter the MemberId of the member you would like to access:",ConsoleColor.WHITE);
             int memberId = ui.getIntInput();
             member = searchForMember(memberId);
         }
@@ -351,7 +369,7 @@ public class SystemManager {
     public Coach searchForCoach(){
         Coach coachToReturn = null;
         while(coachToReturn==null){
-            ui.printText("Please enter the name of the Coach you want");
+            ui.printText("Please enter the name of the Coach you want",ConsoleColor.WHITE);
             String name = ui.getStringInput();
             for (Coach coach: coaches) {
                 if (coach.getName().equals(name)){
@@ -402,13 +420,13 @@ public class SystemManager {
 
     public void printMembers(){
         for (Member member: members) {
-            ui.printText(member.getMemberID() + " : " + member.getFirstName());
+            ui.printText(member.getMemberID() + " : " + member.getFirstName(),ConsoleColor.WHITE);
         }
     }
 
     public void printCoaches(){
         for (Coach coach: coaches) {
-            ui.printText(coach.getName());
+            ui.printText(coach.getName(),ConsoleColor.WHITE);
         }
     }
 

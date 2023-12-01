@@ -30,7 +30,7 @@ public class UI {
             intInput = in.nextInt();
         }
         catch (InputMismatchException e){
-            printText("Input not recognized, please enter a number:");
+            printText("Input not recognized, please enter a number:", ConsoleColor.RED);
          }
         in.nextLine();//scannerbug?
         }
@@ -122,7 +122,7 @@ public class UI {
         System.out.println(date.format(dateFormatter));
     }
 
-    public void printText(String text) {
+    public void printText(String text, ConsoleColor color) {
         System.out.println(text);
     }
 
@@ -141,7 +141,7 @@ public class UI {
     public void printListOfMembers(ArrayList<Member> members){
         if (!members.isEmpty()) {
             for (Member member: members) {
-                printText(member.toString());
+                printText(member.toString(),ConsoleColor.WHITE);
             }
         }
     }
@@ -211,7 +211,7 @@ public class UI {
 
     public void printTrainingScore(Discipline discipline, CompetitionMember member){
         int time =  member.findTrainingTime(discipline);
-        printText(member.getFirstName() + " " + member.getLastName() + " : " + time );
+        printText(member.getFirstName() + " " + member.getLastName() + " : " + time ,ConsoleColor.WHITE);
     }
 
     public void printTop5List(ArrayList<CompetitionMember> listOfMembers, Discipline discipline){
@@ -287,18 +287,36 @@ public class UI {
                  discipline = d;}
             }
             if (discipline ==null){
-                printText("Discipline not recognised, please try again");
+                printText("Discipline not recognised, please try again",ConsoleColor.RED);
             }
         }
         return  discipline;
+    }
+
+    public void printAllMembers(ArrayList<Member> members) {
+        for (Member member : members) {
+            System.out.println("------------------------");
+            System.out.printf("Member ID: %d%n", member.getMemberID());
+            System.out.printf("Name: %s %s%n", member.getFirstName(), member.getLastName());
+            System.out.printf("Membership Price: %d,-%n", member.getMembershipPrice());
+
+            //Check payment status and print in red or green
+            if (member.hasPaid()) {
+                printText("Payment Status: Paid", ConsoleColor.GREEN);
+            } else {
+                printText("Payment Status: Not Paid", ConsoleColor.RED);
+            }
+
+            System.out.println("_________________________________\n");
+        }
     }
 
 
 
     // HANDLE MENU CHOICES
 
-    public int getMenuChoiceFromUserInput(){
-        printText("Please enter the desired menu-number: ");
+    public int getMenuChoiceFromUserInput() {
+        printText("Please enter the desired menu-number: ", ConsoleColor.RED);
         return getIntInput();
     }
 
@@ -323,7 +341,7 @@ public class UI {
     public void buildCashierMenu() {
         Menu cashierMenu = new Menu();
         cashierMenu.setMenuTitle("     CASHIER \n");
-        cashierMenu.setMenuItems("Return to Main Menu");
+        cashierMenu.setMenuItems("See payment status for all members", "Register payment status","Return to Main Menu");
         cashierMenu.printMenu();
 
     }

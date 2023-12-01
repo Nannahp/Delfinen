@@ -126,6 +126,10 @@ public class Member implements Serializable, Comparable {
         this.hasPaid = hasPaid;
     }
 
+    public boolean getPaymentStatus() {
+        return hasPaid;
+    }
+
     @Override
     public String toString() {
         return "Member Id: " + getMemberID() + " " + getFirstName() + " " + getLastName();
