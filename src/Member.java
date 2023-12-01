@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Member implements Serializable {
+public class Member implements Serializable, Comparable {
     private String firstName;
     private String lastName;
     private LocalDate birthdate;
@@ -12,7 +12,7 @@ public class Member implements Serializable {
     private int memberID;
     private Team team;
 
-    public Member(String firstName,String lastName, LocalDate birthdate, String gender, boolean isActive) {
+    public Member(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
@@ -93,6 +93,7 @@ public class Member implements Serializable {
     public void setHasPaid(boolean hasPaid) {
         this.hasPaid = hasPaid;
     }
+
     public boolean hasPaid() {
         return hasPaid;
     }
@@ -101,10 +102,13 @@ public class Member implements Serializable {
         return membershipPrice;
     }
 
-    public int getMemberID() { return memberID; }
+    public int getMemberID() {
+        return memberID;
+    }
 
-    public void setMemberID(int memberID)
-    {this.memberID = memberID;}
+    public void setMemberID(int memberID) {
+        this.memberID = memberID;
+    }
 
     public boolean getIsActive() {
         return isActive;
@@ -114,8 +118,26 @@ public class Member implements Serializable {
         this.isActive = isActive;
     }
 
-    public Team getTeam() {return team;}
+    public Team getTeam() {
+        return team;
+    }
+
     public void setPaymentStatus(boolean hasPaid) {
         this.hasPaid = hasPaid;
+    }
+
+    @Override
+    public String toString() {
+        return "Member Id: " + getMemberID() + " " + getFirstName() + " " + getLastName();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        // IDK why it has to be this complicated, it should not be
+        int returnValue = 0;
+        if (o instanceof Member) {
+            returnValue = Integer.compare(this.memberID, ((Member) o).getMemberID());
+        }
+        return returnValue;
     }
 }

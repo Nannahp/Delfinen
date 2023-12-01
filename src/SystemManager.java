@@ -14,8 +14,8 @@ public class SystemManager {
     public void runMainMenu() {
         //initializeFiles(); //Maybe needs to run if you don't have the files
         readyArraysAtStartup();
-         printMembers();//for testing - to see that it works
-         printCoaches(); //for testing - to see that it works
+        // printMembers();//for testing - to see that it works
+        // printCoaches(); //for testing - to see that it works
         while (systemRunning) {
             ui.buildMainMenu();
             sendFromMainMenu();
@@ -47,9 +47,14 @@ public class SystemManager {
     // ---- CASHIER ----
 
     public void runCashierMenu() {
+        //1 -> see payment status for alle i member-arrayListe
+        //2 -> ikke noget for nu
+        //3 -> exitMenu = true
         ui.buildCashierMenu();
         ui.printText("show members and their paymentStatus");
     }
+
+
 
     // ---- MANAGER -----
     public void runManagerMenu() {
@@ -194,6 +199,12 @@ public class SystemManager {
         updateCoaches();
     }
 
+    public void deleteMemberByDiscipline(CompetitionMember member, Discipline discipline){
+        Coach coach = member.getCoach();
+        coach.removeMemberByDiscipline(member, discipline);
+        updateCoachInfoInFile(coach);
+        updateCoaches();
+    }
 
 
     public void addCoach(){
@@ -228,14 +239,14 @@ public class SystemManager {
 
     public void runCoachMenu() {
         Coach coach = runChooseCoachMenu();
-        ui.printText(coach.toString());
+       // ui.printText(coach.toString()); for testing
         boolean exitMenu = false;
         while (!exitMenu) {
             ui.buildCoachMenu();
             int choice = menuInputHandler(4);
             switch (choice) {
                 case 1 -> runSeeTop5Menu(coach);
-                case 2 -> ui.printText("coming soon");//registerTrainingScore();
+                case 2 -> registerTrainingScore(coach);
                 case 3 -> registerCompetitionScore();
                 case 4 -> exitMenu = true;
             }
@@ -243,8 +254,28 @@ public class SystemManager {
 
     }
 
+    public void registerTrainingScore(Coach coach){
+        ui.printText("Which member you would like to add a training score to?");
+        ui.printListOfMembers(coach.getAllMembers());
+        Member member = getMember();
+        if (member instanceof CompetitionMember){
+        coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
+        coach.updateMemberInCoach((CompetitionMember) member);
+        updateMemberInfoInFile(member);
+        updateCoachInfoInFile(coach);     }
+        else ui.printText("The member ID you have entered is not a competition member");
+
+    }
+
+    public TrainingScore createTrainingScore(){
+        ui.printText("Please enter discipline");
+        Discipline discipline = ui.getDiscipline();
+        ui.printText("Please enter the training-time (in seconds)");
+        int time = ui.getIntInput();
+        LocalDate date = LocalDate.now();
+        return  new TrainingScore(time, date,discipline);
+    }
     public void runSeeTop5Menu(Coach coach) {
-        //need coach to see top 5
         ui.buildSeeTop5Menu();
         int choice = menuInputHandler(5);
         switch (choice) {
@@ -273,24 +304,13 @@ public class SystemManager {
         // Returns top five members in the list, but doesn't crash if there are fewer than 5 members
     }
 
-//for testing:
-    public void checkTrainingScores(){
-        CompetitionMember member = (CompetitionMember) members.get(0);
-        System.out.println("Member info");
-        System.out.println(member.getTrainingScores().get(0).toString());
-        System.out.println("Coach info");
-        System.out.println(coaches.get(0).getMemberNamesInList(coaches.get(0).getSeniorList(Discipline.CRAWL)));
-        System.out.println(coaches.get(0).getSeniorList(Discipline.CRAWL).get(0));
-        CompetitionMember member2 = coaches.get(0).getSeniorList(Discipline.CRAWL).get(0);
-        System.out.println(member2.getTrainingScores().get(0).toString());
-        System.out.println(coaches.get(0).getSeniorList(Discipline.CRAWL).get(0).getTrainingScores().get(0).toString());
-    }
     public void printCoachList(Coach coach) {
         ArrayList<CompetitionMember> seniorMedleyList = coach.getSeniorList(Discipline.MEDLEY);
         for (CompetitionMember member : seniorMedleyList) {
             System.out.println(member.getFirstName()); //Det virker, men her er det specifik seniorMedley
         }
     }
+
     public void registerCompetitionScore() {
         getMember();
         ui.printText("coming soon ;)");
@@ -314,7 +334,6 @@ public class SystemManager {
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            ui.printText("enter id");
             ui.printText("Please enter the MemberId of the member you would like to access:");
             int memberId = ui.getIntInput();
             member = searchForMember(memberId);
@@ -439,12 +458,23 @@ public class SystemManager {
         CompetitionMember peter = (CompetitionMember) members.get(0);
         CompetitionMember miles = (CompetitionMember) members.get(1);
         CompetitionMember felicia = (CompetitionMember) members.get(2);
-        peter.addTestTrainingScore(new TrainingScore(38,LocalDate.now(),Discipline.CRAWL));
-        peter.addTestTrainingScore(new TrainingScore(120,LocalDate.now(),Discipline.BUTTERFLY));
-        miles.addTestTrainingScore(new TrainingScore(44, LocalDate.now(), Discipline.CRAWL));
-        miles.addTestTrainingScore(new TrainingScore(62,LocalDate.now(),Discipline.BUTTERFLY));
-        felicia.addTestTrainingScore(new TrainingScore(50,LocalDate.now(),Discipline.CRAWL));
-        felicia.addTestTrainingScore(new TrainingScore(66,LocalDate.now(),Discipline.BUTTERFLY));
+       // peter.addTestTrainingScore(new TrainingScore(38,LocalDate.now(),Discipline.CRAWL));
+       // peter.addTestTrainingScore(new TrainingScore(120,LocalDate.now(),Discipline.BUTTERFLY));
+       // miles.addTestTrainingScore(new TrainingScore(44, LocalDate.now(), Discipline.CRAWL));
+       // miles.addTestTrainingScore(new TrainingScore(62,LocalDate.now(),Discipline.BUTTERFLY));
+       // felicia.addTestTrainingScore(new TrainingScore(50,LocalDate.now(),Discipline.CRAWL));
+       // felicia.addTestTrainingScore(new TrainingScore(66,LocalDate.now(),Discipline.BUTTERFLY));
+
+        coaches.get(0).addTrainingScoreToMember(peter, new TrainingScore(80,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(0).addTrainingScoreToMember(peter, new TrainingScore(133,LocalDate.now(),Discipline.BUTTERFLY));
+        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(111,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(38,LocalDate.now(),Discipline.BACKCRAWL));
+        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.MEDLEY));
+        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.BUTTERFLY));
+        coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(55,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(20,LocalDate.now(),Discipline.BUTTERFLY));
         updateMemberInfoInFile(peter);
         updateMemberInfoInFile(miles);
         updateMemberInfoInFile(felicia);

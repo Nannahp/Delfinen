@@ -138,6 +138,13 @@ public class UI {
         }
     }
 
+    public void printListOfMembers(ArrayList<Member> members){
+        if (!members.isEmpty()) {
+            for (Member member: members) {
+                printText(member.toString());
+            }
+        }
+    }
     public void printList(ArrayList<Object> list) {
 
         if (!list.isEmpty()) {

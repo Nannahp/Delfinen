@@ -55,4 +55,5 @@ public class TrainingScore implements Serializable, Comparable {
                 ", discipline=" + discipline +
                 '}';
     }
+
 }
