@@ -78,18 +78,9 @@ public class Member implements Serializable, Comparable {
         return birthdate;
     }
 
-    public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
-    }
-
     public String getGender() {
         return gender;
     }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
 
     public int getMembershipPrice() {
         return membershipPrice;

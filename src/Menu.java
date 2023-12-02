@@ -26,14 +26,14 @@ public class Menu {
     // HANDLE MENU CHOICES
 
     public int getMenuChoiceFromUserInput() {
-        System.out.print(" Please enter the desired menu-number: ");
+        UI.printText(" Please enter the desired menu-number: ",ConsoleColor.RESET);
         return UI.getIntInput();
     }
 
     public int menuInputHandler() {
         int choice = getMenuChoiceFromUserInput();
         while (choice < 0 || getMenuItemsSize() < choice) {
-            UI.printText("Not an option", ConsoleColor.WHITE);
+            UI.printText("Not an option", ConsoleColor.RESET);
             choice = getMenuChoiceFromUserInput();
         }
         return choice;

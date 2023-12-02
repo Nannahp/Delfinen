@@ -6,10 +6,11 @@ public class CompetitionMember extends Member{
 
     private ArrayList<Discipline> disciplines = new ArrayList<>();
     private ArrayList<TrainingScore> trainingScores = new ArrayList<>(); //liste, da der er flere discipliner
-    private ArrayList<DummyCompetitionScore> competitionScores = new ArrayList<>();
+    private ArrayList<CompetitionScore> competitionScores = new ArrayList<>();
     private Coach coach;
+    UI ui = new UI();
 
-    // Konstruktør, der kun tager disciplines og coach som parametre
+    //Constructor that only takes disciplin and coach as parameters
     public CompetitionMember(String firstName, String lastName, LocalDate birthdate, String gender, boolean isActive, Coach coach, Discipline... disciplines) {
         super(firstName, lastName, birthdate, gender, isActive);
         //Metode til at adde dicipplines til listen
@@ -19,55 +20,17 @@ public class CompetitionMember extends Member{
         this.coach = coach;
     }
 
+    //Adds discipline to member
     public void addDisciplines(Discipline discipline) {
         if (!this.disciplines.contains(discipline)){
             this.disciplines.add(discipline);
         } else {
-            System.out.println("A member can only be assigned to a discipline once");
+            UI.printText("A member can only be assigned to a discipline once\n", ConsoleColor.RED);
         }
     }
 
-    public void addTestTrainingScore(TrainingScore trainingScore) {
-        if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
-            //Loop checks if the trainingScores list has a score with given discipline
-            if (trainingScores.size() == 0 || !doesTrainingScoresContainsDiscipline(trainingScore.getDiscipline())) {
-                trainingScores.add(trainingScore);
-            }
-        }
-    }
-/*
-    //Checks if member has discipline, if score already exists and updates accordingly
-    public boolean updateTrainingScore(TrainingScore trainingScore) {
-        try {
-            if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
-                //Loop checks if the trainingScores list has a score with given discipline
-                if (trainingScores.size() ==0 || !doesTrainingScoresContainsDiscipline(trainingScore.getDiscipline()) ){
-                    trainingScores.add(trainingScore);
-                }
-                for (TrainingScore existingScore : trainingScores) {
-                    if (existingScore.getDiscipline().equals(trainingScore.getDiscipline())) {
-                        if (existingScore.getTime() > trainingScore.getTime()) {
-                            existingScore.setTime(trainingScore.getTime());
-                            existingScore.setDate(trainingScore.getDate());
-                            return true;
-                        }  else {
-                            System.out.println("The score is not the best score for this discipline");
-                            return false;
-                        }
-                    }
-                }
-                trainingScores.add(trainingScore);
-                return true;
-            }
-        } catch (Exception e) {
-            System.err.println("An error occurred while updating training score: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
-    }
-*/
-
-public boolean checkIfTrainingScoreExists(Discipline discipline){
+    //Loops through trainingScore list to see if there is a score with given disciplin
+    public boolean checkIfTrainingScoreExists(Discipline discipline){
     boolean scoreExists = false;
     for (TrainingScore score: trainingScores) {
         if( score.getDiscipline().equals(discipline)){
@@ -76,25 +39,30 @@ public boolean checkIfTrainingScoreExists(Discipline discipline){
     }
     return scoreExists;
 }
-public boolean updateTrainingScore(TrainingScore trainingScore) {
-    try {
-        //Checks if Member has the discipline
-        if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
-            //Checks if the trainingScores list has a score with given discipline, if not, just adds it
-            if (!checkIfTrainingScoreExists(trainingScore.getDiscipline()) || updateExistingScore(trainingScore)){
-                trainingScores.add(trainingScore);
-                System.out.println("\n Training score updated");
-            } else System.out.println("This is not the best score for this member");
-            return true;
-        }
-        System.out.println("This member is not active in: " + trainingScore.getDiscipline());
+
+    //Uses a trainingScore object to add a trainingScore to member
+    public boolean addTrainingScore(TrainingScore trainingScore) {
+        try {
+            //Checks if Member has the discipline
+            if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
+                //Checks if the trainingScores list has a score with given discipline, if not, just adds it
+                if (!checkIfTrainingScoreExists(trainingScore.getDiscipline()) || updateExistingScore(trainingScore)){
+                    trainingScores.add(trainingScore);
+                    ui.printText("\n Training score updated", ConsoleColor.RESET);
+                } else {
+                    UI.printText("This is not the best score for this member", ConsoleColor.RED);
+                }
+            } else {
+                UI.printText(" This member is not active in: " + trainingScore.getDiscipline() + "\n", ConsoleColor.RED);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("An error occurred while updating training score: " + e.getMessage());
+            e.printStackTrace();}
         return false;
-    } catch (Exception e) {
-        System.err.println("An error occurred while updating training score: " + e.getMessage());
-        e.printStackTrace();
     }
-    return false;
-}
+
+    //If the TrainingScore exist, this method is used to update it
     private boolean updateExistingScore(TrainingScore trainingScore) {
         //If it has existing score
         for (TrainingScore existingScore : trainingScores) {
@@ -111,7 +79,7 @@ public boolean updateTrainingScore(TrainingScore trainingScore) {
         return false;
     }
 
-
+//Finds a trainingScore for top 5
     public int findTrainingTime(Discipline discipline) {
         int time = 0;
         for (TrainingScore score : trainingScores) {
@@ -122,28 +90,37 @@ public boolean updateTrainingScore(TrainingScore trainingScore) {
         return time;
     }
 
-
-    public boolean doesTrainingScoresContainsDiscipline(Discipline discipline) {
-        for (TrainingScore score : trainingScores) {
-            if (score.getDiscipline().equals(discipline)) {
+    //Adds competitionScore to member
+    public boolean addCompetitionScore(CompetitionScore competitionScore) {
+        try {
+            //Checks if Member has the discipline
+            if (doesMemberHaveDiscipline(competitionScore.getDiscipline())) {
+                competitionScores.add(competitionScore);
+                System.out.println("Competition score added to member");
                 return true;
-            }
-        }
+            } else {
+                UI.printText(" This member is not active in: " + competitionScore.getDiscipline() + "\n", ConsoleColor.RED);
+                return false;}
+        } catch (Exception e) {
+            System.err.println(" An error occurred while updating training score: " + e.getMessage());
+            e.printStackTrace();}
         return false;
     }
 
-    //Metode til at sikre, at medlemmet har disciplinen i træningsscore
+    //Method to make sure the member has the disciplin
     private boolean doesMemberHaveDiscipline(Discipline discipline) {
         return getDisciplines().contains(discipline);
     }
 
-    public ArrayList<Discipline> getDisciplines() {
-        return disciplines;
-    }
+    //Deletes disciplin from member
     public void deleteDiscipline(Discipline discipline) {
         if (doesMemberHaveDiscipline(discipline)) {
             disciplines.remove(discipline);
-        } else System.out.println("This member is not active in this discipline");
+        } else UI.printText("This member is not active in this discipline\n", ConsoleColor.RED);
+    }
+
+    public ArrayList<Discipline> getDisciplines() {
+        return disciplines;
     }
 
     public Coach getCoach() {
@@ -154,7 +131,7 @@ public boolean updateTrainingScore(TrainingScore trainingScore) {
         return trainingScores;
     }
 
-    public ArrayList<DummyCompetitionScore> getCompetitionScores(){
+    public ArrayList<CompetitionScore> getCompetitionScores(){
         return competitionScores;
     }
     @Override

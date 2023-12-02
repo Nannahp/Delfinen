@@ -1,14 +1,15 @@
 
+import java.io.Serializable;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UI {
+public class UI implements  Serializable {
     private static Scanner in = new Scanner(System.in);
 
 
@@ -17,7 +18,7 @@ public class UI {
         String stringInput = in.nextLine();
 
         while (!isString(stringInput)) {
-            System.out.println("You didn't use a string. Try again.");
+            printText("You didn't use a string. Try again.\n", ConsoleColor.RED);
             stringInput = in.nextLine();
         }
         return stringInput;
@@ -30,8 +31,8 @@ public class UI {
             intInput = in.nextInt();
         }
         catch (InputMismatchException e){
-            printText("\nInput not recognized, please enter a number:", ConsoleColor.RED);
-         }
+            printText("\nInput not recognized, please enter a number: ", ConsoleColor.RED);
+        }
         in.nextLine();//scannerbug?
         }
         return intInput;
@@ -41,13 +42,26 @@ public class UI {
         String booleanInput = in.nextLine();
 
         while (!isStringBoolean(booleanInput)) {
-            System.out.println("Boolean input non-identified. Try again.");
+            printText(" Boolean input non-identified. Try again: ", ConsoleColor.RED);
             booleanInput = in.nextLine();
         }
 
         return whichBooleanIsString(booleanInput);
     }
 
+    public String getGenderInput() {
+        UI.printText("\n Please enter the gender of the member (F/M)" ,ConsoleColor.RESET);
+        String gender = null;
+        while (gender == null) {
+            String input = getStringInput();
+            if (input.equalsIgnoreCase("f") || input.equalsIgnoreCase("m")) {
+                gender = input;
+            } else UI.printText("\n Please enter either \"f\" or \"m\"", ConsoleColor.RED);
+        }
+        return gender;
+    }
+
+    //Yes we know it's a f*cking long method
     public LocalDate getLocalDateInput() {
         int day = 0, month = 0, year = 0;
 
@@ -58,7 +72,7 @@ public class UI {
                 in.nextLine();
 
                 if (inputDay < 1 || inputDay > 31) {
-                    System.out.println("Invalid day. Please ensure the day is between 1 and 31.");
+                    printText("Invalid day. Please ensure the day is between 1 and 31: ", ConsoleColor.RED);
                     continue;
                 }
                 day = inputDay;
@@ -68,7 +82,7 @@ public class UI {
                 in.nextLine();
 
                 if (inputMonth < 1 || inputMonth > 12) {
-                    System.out.println("Invalid month. Please ensure the month is between 1 and 12.");
+                    printText("Invalid month. Please ensure the month is between 1 and 12: ", ConsoleColor.RED);
                     continue;
                 }
                 month = inputMonth;
@@ -78,17 +92,17 @@ public class UI {
                 in.nextLine();
 
                 if (inputYear < 1915 || inputYear > LocalDate.now().getYear()) {
-                    System.out.println("Invalid year. Please ensure the year is between 1915 and this year.");
+                    printText("Invalid year. Please ensure the year is between 1915 and this year: ", ConsoleColor.RED);
                     continue;
                 }
 
                 // Check if the selected month has fewer than 31 days
                 if (inputDay > 28 && inputMonth == 2 && !isLeapYear(inputYear)) {
-                    System.out.println("Invalid day for February in a non-leap year. Please choose a valid day.");
+                    printText("Invalid day for February in a non-leap year. Please choose a valid day: ", ConsoleColor.RED);
                     day = 0; // Reset day to 0 to force re-entry
                     continue;
                 } else if (inputDay > 29 && inputMonth == 2 && isLeapYear(inputYear)) {
-                    System.out.println("Invalid day for February in a leap year. Please choose a valid day.");
+                    printText("Invalid day for February in a leap year. Please choose a valid day: ", ConsoleColor.RED);
                     day = 0; // Reset day to 0 to force re-entry
                     continue;
                 }
@@ -96,7 +110,7 @@ public class UI {
                 // Check if the selected date is before the current date
                 LocalDate selectedDate = LocalDate.of(inputYear, inputMonth, inputDay);
                 if (selectedDate.isAfter(LocalDate.now())) {
-                    System.out.println("You can't register someone that isn't born yet. Try again.");
+                    printText("You can't register someone that isn't born yet. Try again: ", ConsoleColor.RED);
                     day = 0; // Reset day to 0 to force re-entry
                     continue;
                 }
@@ -104,10 +118,10 @@ public class UI {
                 year = inputYear;
 
             } catch (InputMismatchException e) {
-                System.out.println("Invalid input. Please enter numeric values for the date.");
+                printText("Invalid input. Please enter numeric values for the date: ", ConsoleColor.RED);
                 in.nextLine(); // Clear the input buffer
             } catch (Exception e) {
-                System.out.println("An unexpected error occurred. Please try again.");
+                printText("An unexpected error occurred. Please try again: ", ConsoleColor.RED);
                 in.nextLine(); // Clear the input buffer
             }
         }
@@ -116,33 +130,29 @@ public class UI {
     }
 
 
-    // Printing methods
-    public void printLocalDate(LocalDate date) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        System.out.println(date.format(dateFormatter));
-    }
-
     public static void printText(String text, ConsoleColor color) {
-        System.out.print(text);
+        System.out.print(color + text + ConsoleColor.RESET);
     }
 
+    //Should be used to print trainingScore times but not implemented yet
     public void printFormattedSecondsToReadableTime(int totalSecs) {
         int hours = totalSecs / 3600;
         int minutes = (totalSecs % 3600) / 60;
         int seconds = totalSecs % 60;
 
         if (hours > 0) {
-            System.out.printf("%02d:%02d:%02d%n", hours, minutes, seconds);
+            System.out.printf("%02dh:%02dm:%02ds%n", hours, minutes, seconds);
         } else {
-            System.out.printf("%02d:%02d%n", minutes, seconds);
+            System.out.printf("%02dm:%02ds%n", minutes, seconds);
         }
     }
 
+    //where did we use this?
     public void printListOfMembers(ArrayList<Member> members){
         System.out.println("\n");
         if (!members.isEmpty()) {
             for (Member member: members) {
-                printText(member.toString()+"\n",ConsoleColor.WHITE);
+                printText(member.toString()+"\n",ConsoleColor.RESET);
             }
         }
         System.out.println("\n");
@@ -151,14 +161,14 @@ public class UI {
     public void printDisciplines(ArrayList<Discipline> disciplines){
         if (!disciplines.isEmpty()) {
             for (Discipline discipline: disciplines) {
-                printText(discipline.toString() + "\n",ConsoleColor.WHITE);
+                printText(discipline.toString() + "\n",ConsoleColor.RESET);
             }
         }
     }
 
     public void printArrayList (ArrayList list){
         for (int i =0; i< list.size(); i++){
-            printText((String) list.get(i) + "\n", ConsoleColor.WHITE);
+            printText((String) list.get(i) + "\n", ConsoleColor.RESET);
         }
     }
 
@@ -180,10 +190,9 @@ public class UI {
                     }
                 }
             } else {
-                System.out.println("Unsupported object type in the list.");
-            }
+                printText("Unsupported object type in the list: ", ConsoleColor.RED); }
         } else {
-            System.out.println("This list empty.");
+            printText("This list empty.", ConsoleColor.RED);
         }
     }
 
@@ -228,8 +237,9 @@ public class UI {
 
     public void printTrainingScore(Discipline discipline, CompetitionMember member){
         int time =  member.findTrainingTime(discipline);
-        String info = member.getFirstName() + " " + member.getLastName() + " : " + time + "s";
-        printText("    " + info + " ".repeat(45-info.length()) + " ",ConsoleColor.WHITE);
+        String info = member.getFirstName() + " " + member.getLastName() + " : ";
+        printText("    " + info,ConsoleColor.RESET);
+        printFormattedSecondsToReadableTime(time);
     }
     public void printTop5List(ArrayList<CompetitionMember> listOfMembers, String prompt, Discipline discipline) {
         String info = prompt + " in " + discipline.label + " top 5:_";
@@ -237,7 +247,6 @@ public class UI {
         System.out.println("\n " + "_".repeat(seniorSpaceLength) + info + "_".repeat(seniorSpaceLength) + " \n");
         for (int i = 0; i < listOfMembers.size(); i++) {
             printTrainingScore(discipline, listOfMembers.get(i));}
-        System.out.println("\n");
     }
     /// private boolean methods to check data type
 
@@ -307,7 +316,7 @@ public class UI {
                  discipline = d;}
             }
             if (discipline ==null){
-                printText("Discipline not recognised, please try again\n",ConsoleColor.RED);
+                printText("Discipline not recognised, please try again: \n",ConsoleColor.RED);
             }
         }
         return  discipline;
@@ -339,17 +348,34 @@ public class UI {
         System.out.println("                    WELCOME                       ");
         System.out.println("                                                  ");
         System.out.println(" ________________________________________________ ");
-        System.out.println("\n");
     }
 
     public void printMembers(ArrayList<Member> members){
         System.out.println(" " + "_".repeat(48) + " ");
         for (Member member: members) {
             String info = "MemberID: " + member.getMemberID() + " : " + member.getFirstName();
-            printText("    " + info + " ".repeat(45-info.length()) + " \n",ConsoleColor.WHITE);}
+            printText("    " + info + " ".repeat(45-info.length()) + " \n",ConsoleColor.RESET);}
         System.out.println(" " + "_".repeat(48) + " ");
     }
 
+    public void showPaymentStatusForAllMembers(ArrayList<Member> members) {
+        printText("\n __________________PAYMENT STATUS_________________\n", ConsoleColor.RESET);
+        for (Member member : members) {
+            printMemberPaymentStatus(member);
+        }
+        printText(" _________________________________________________\n", ConsoleColor.RESET);
+    }
+
+    public void printMemberPaymentStatus(Member member) {
+        System.out.printf(" Member ID: %d", member.getMemberID());
+        System.out.printf(" %s %s ", member.getFirstName(), member.getLastName());
+
+        if(member.getPaymentStatus()) {
+            printText(" Paid\n", ConsoleColor.GREEN);
+        } else {
+            printText(" Not Payed\n", ConsoleColor.RED);
+        }
+    }
 
 
     // ------ MENUS -------
@@ -373,7 +399,7 @@ public class UI {
     public Menu buildCashierMenu() {
         Menu cashierMenu = new Menu();
         cashierMenu.setMenuTitle("CASHIER_");
-        cashierMenu.setMenuItems("See payment status for all members", "Register payment status","Return to Main Menu");
+        cashierMenu.setMenuItems("Show payment status for all members", "Register payment status","Return to Main Menu");
         cashierMenu.printMenu();
         return cashierMenu;
     }
