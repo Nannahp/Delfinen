@@ -13,8 +13,8 @@ public class SystemManager {
 
 
     public void runProgram(){
-        ui.printWelcomeMessage();
         readyArraysAtStartup();
+        ui.printWelcomeMessage();
         while (systemRunning) {
             runMainMenu();
         }
@@ -247,7 +247,7 @@ public class SystemManager {
             }
         }
         if ((member instanceof CompetitionMember)){
-            updateCoachInfo((CompetitionMember) member);
+            updateCoachInfo( ((CompetitionMember) member).getCoach());
         }
         }
 
@@ -342,7 +342,8 @@ public void removeDiscipline(Member member){
         Member member = getMember();
         if (member instanceof CompetitionMember){
         coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
-        updateCoachInfo((CompetitionMember) member);   }
+        updateCoachInfo(((CompetitionMember) member).getCoach());
+        updateMemberInfo(member);}
         else UI.printText("\n The member ID you have entered is not a competition member", ConsoleColor.RED);
 
     }
@@ -391,7 +392,8 @@ public void removeDiscipline(Member member){
         Member member = getMember();
         if (member instanceof CompetitionMember){
             coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore());
-            updateCoachInfo((CompetitionMember) member);   }
+            updateCoachInfo(((CompetitionMember) member).getCoach());
+            updateMemberInfo(member);}
         else UI.printText("\n The member ID you have entered is not a competition member \n", ConsoleColor.RED);
     }
 
@@ -463,10 +465,13 @@ public void removeDiscipline(Member member){
 
     // --- STARTUP / ARRAYS -----
     //Updates the coach attributes every time there is an edit for a member
-    private void updateCoachInfo(CompetitionMember competitionMember) {
-        Coach coach = competitionMember.getCoach();
+    private void updateCoachInfo(Coach coach) {
         updateCoachInfoInFile(coach);
         updateCoaches();
+    }
+    private void updateMemberInfo(Member member) {
+        updateMemberInfoInFile(member);
+        updateMembers();
     }
 
     //Updates and loads for the files to always be up-to-date

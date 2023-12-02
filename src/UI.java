@@ -341,7 +341,7 @@ public class UI implements  Serializable {
     }
 
     public void printWelcomeMessage() {
-        System.out.println(" ________________________________________________ ");
+        System.out.println("\n ________________________________________________ ");
         System.out.println("                    DELFINEN                      ");
         System.out.println(" ________________________________________________ ");
         System.out.println("                                                  ");
