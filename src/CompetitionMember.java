@@ -40,46 +40,38 @@ public class CompetitionMember extends Member{
     return scoreExists;
 }
 
-    //Uses a trainingScore object to add a trainingScore to member
-    public boolean addTrainingScore(TrainingScore trainingScore) {
-        try {
-            //Checks if Member has the discipline
-            if (doesMemberHaveDiscipline(trainingScore.getDiscipline())) {
-                //Checks if the trainingScores list has a score with given discipline, if not, just adds it
-                if (!checkIfTrainingScoreExists(trainingScore.getDiscipline()) || updateExistingScore(trainingScore)){
-                    trainingScores.add(trainingScore);
-                    ui.printText("\n Training score updated", ConsoleColor.RESET);
-                } else {
-                    UI.printText("This is not the best score for this member", ConsoleColor.RED);
-                }
-            } else {
-                UI.printText(" This member is not active in: " + trainingScore.getDiscipline() + "\n", ConsoleColor.RED);
-                return false;
+
+    public void editTrainingScores(TrainingScore trainingScore){
+        if( doesMemberHaveDiscipline(trainingScore.getDiscipline())){
+            if (checkIfTrainingScoreExists(trainingScore.getDiscipline())){
+                updateExistingScore(trainingScore);
             }
-        } catch (Exception e) {
-            System.err.println("An error occurred while updating training score: " + e.getMessage());
-            e.printStackTrace();}
-        return false;
+            else trainingScores.add(trainingScore);
+        }
+        else {
+            UI.printText(" This member is not active in: " + trainingScore.getDiscipline() + "\n", ConsoleColor.RED);
+        }
     }
 
     //If the TrainingScore exist, this method is used to update it
-    private boolean updateExistingScore(TrainingScore trainingScore) {
-        //If it has existing score
+    private void updateExistingScore(TrainingScore trainingScore) {
+        // If it has an existing score
         for (TrainingScore existingScore : trainingScores) {
-            //Finds the score with the right discipline
+            // Finds the score with the right discipline
             if (existingScore.getDiscipline().equals(trainingScore.getDiscipline())) {
-                //Checks if it really is the best score
+                // Checks if it really is the best score
                 if (existingScore.getTime() > trainingScore.getTime()) {
                     existingScore.setTime(trainingScore.getTime());
                     existingScore.setDate(trainingScore.getDate());
-                    return true;
+                    System.out.println(" Training score updated");
+                } else {
+                    System.out.println(" This is not the best time for this member.");
                 }
             }
         }
-        return false;
-    }
+}
 
-//Finds a trainingScore for top 5
+    //Finds a trainingScore for top 5
     public int findTrainingTime(Discipline discipline) {
         int time = 0;
         for (TrainingScore score : trainingScores) {

@@ -1,4 +1,6 @@
-public class CompetitionScore {
+import java.io.Serializable;
+
+public class CompetitionScore implements Serializable {
     private String competitionName;
     private int placement;
     private int time;
@@ -15,4 +17,15 @@ public class CompetitionScore {
         return discipline;
     }
 
+    public String getCompetitionName() {
+        return competitionName;
+    }
+
+    public int getPlacement() {
+        return placement;
+    }
+
+    public int getTime() {
+        return time;
+    }
 }

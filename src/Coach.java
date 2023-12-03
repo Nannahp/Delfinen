@@ -127,7 +127,7 @@ public class Coach implements Serializable {
     public void addTrainingScoreToMember(CompetitionMember member, TrainingScore trainingScore) {
        boolean memberExists = checkIfMemberExist(member);
         if (memberExists){
-            member.addTrainingScore(trainingScore);}
+            member.editTrainingScores(trainingScore);}
         else UI.printText("Member is not assigned to this coach!", ConsoleColor.RED);
     }
 

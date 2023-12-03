@@ -211,21 +211,20 @@ public class UI implements  Serializable {
         System.out.printf(" Team: %S%n", member.getTeam());
         if (member instanceof CompetitionMember) {
             ArrayList<Discipline> disciplines = ((CompetitionMember) member).getDisciplines();
+            ArrayList<CompetitionScore> competitions = ((CompetitionMember) member).getCompetitionScores();
             System.out.println();
             System.out.println(" ___________________Competition___________________");
             System.out.printf(" Coach: Coach %S%n", ((CompetitionMember) member).getCoach().getName());
-            System.out.printf(" %s","Discipline(s): ");
-            for (int i = 0; i < disciplines.size(); i++) {
-                Discipline discipline = disciplines.get(i);
-                System.out.printf("%S", discipline); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
-
-                // Check if the current discipline is not the last one
-                if (i < disciplines.size() - 1) {
-                    System.out.print(", ");
+            System.out.printf(" %s","Discipline(s): \n");
+            for (Discipline discipline: disciplines) {
+                System.out.printf("   %S | Best training score: ", discipline.label); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
+                printFormattedSecondsToReadableTime(((CompetitionMember) member).findTrainingTime(discipline));
                 }
+            System.out.println("\n Competition(s): ");
+            for (CompetitionScore score: competitions) {
+                System.out.printf("  %S: Discipline: %S | Placement: %d | Time: ", score.getCompetitionName(),score.getDiscipline(),score.getPlacement()); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
+                printFormattedSecondsToReadableTime(score.getTime());
             }
-            // ADD CODE HERE TO ADD COMPETITION SCORES AND OTHER DATA
-            System.out.println();
         }
         System.out.println();
         System.out.println(" ___________________Membership____________________");

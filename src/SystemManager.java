@@ -64,8 +64,8 @@ public class SystemManager {
         UI.printText("\n",ConsoleColor.RESET);
         Member member = getMember();
         UI.printText("\n Payment received? (y/n): ",ConsoleColor.RESET);
-        UI.printText(" Payment status updated\n", ConsoleColor.RESET);
         member.setPaymentStatus(ui.getBooleanInput());
+        UI.printText(" Payment status updated\n", ConsoleColor.RESET);
         updateMemberInfoInFile(member);
     }
 
@@ -342,8 +342,9 @@ public void removeDiscipline(Member member){
         Member member = getMember();
         if (member instanceof CompetitionMember){
         coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
-        updateCoachInfo(((CompetitionMember) member).getCoach());
-        updateMemberInfo(member);}
+            updateMemberInfoInFile(member);
+            coach.updateMemberInCoach((CompetitionMember) member);
+            updateCoachInfoInFile(coach);}
         else UI.printText("\n The member ID you have entered is not a competition member", ConsoleColor.RED);
 
     }
@@ -392,8 +393,9 @@ public void removeDiscipline(Member member){
         Member member = getMember();
         if (member instanceof CompetitionMember){
             coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore());
-            updateCoachInfo(((CompetitionMember) member).getCoach());
-            updateMemberInfo(member);}
+            updateMemberInfoInFile(member);
+            coach.updateMemberInCoach((CompetitionMember) member);
+            updateCoachInfoInFile(coach);}
         else UI.printText("\n The member ID you have entered is not a competition member \n", ConsoleColor.RED);
     }
 
