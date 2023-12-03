@@ -1,6 +1,5 @@
 
 import java.io.Serializable;
-import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class UI implements  Serializable {
         String stringInput = in.nextLine();
 
         while (!isString(stringInput)) {
-            printText("You didn't use a string. Try again.\n", ConsoleColor.RED);
+            printText(" You didn't use a string. Try again: \n", ConsoleColor.RED);
             stringInput = in.nextLine();
         }
         return stringInput;
@@ -31,7 +30,7 @@ public class UI implements  Serializable {
             intInput = in.nextInt();
         }
         catch (InputMismatchException e){
-            printText("\nInput not recognized, please enter a number: ", ConsoleColor.RED);
+            printText("\n Input not recognized, please enter a number: ", ConsoleColor.RED);
         }
         in.nextLine();//scannerbug?
         }
@@ -50,7 +49,7 @@ public class UI implements  Serializable {
     }
 
     public String getGenderInput() {
-        UI.printText("\n Please enter the gender of the member (F/M)" ,ConsoleColor.RESET);
+        UI.printText("\n Please enter the gender of the member (F/M): " ,ConsoleColor.RESET);
         String gender = null;
         while (gender == null) {
             String input = getStringInput();
@@ -72,7 +71,7 @@ public class UI implements  Serializable {
                 in.nextLine();
 
                 if (inputDay < 1 || inputDay > 31) {
-                    printText("Invalid day. Please ensure the day is between 1 and 31: ", ConsoleColor.RED);
+                    printText(" Invalid day. Please ensure the day is between 1 and 31: ", ConsoleColor.RED);
                     continue;
                 }
                 day = inputDay;
@@ -82,7 +81,7 @@ public class UI implements  Serializable {
                 in.nextLine();
 
                 if (inputMonth < 1 || inputMonth > 12) {
-                    printText("Invalid month. Please ensure the month is between 1 and 12: ", ConsoleColor.RED);
+                    printText(" Invalid month. Please ensure the month is between 1 and 12: ", ConsoleColor.RED);
                     continue;
                 }
                 month = inputMonth;
@@ -92,17 +91,17 @@ public class UI implements  Serializable {
                 in.nextLine();
 
                 if (inputYear < 1915 || inputYear > LocalDate.now().getYear()) {
-                    printText("Invalid year. Please ensure the year is between 1915 and this year: ", ConsoleColor.RED);
+                    printText(" Invalid year. Please ensure the year is between 1915 and this year: ", ConsoleColor.RED);
                     continue;
                 }
 
                 // Check if the selected month has fewer than 31 days
                 if (inputDay > 28 && inputMonth == 2 && !isLeapYear(inputYear)) {
-                    printText("Invalid day for February in a non-leap year. Please choose a valid day: ", ConsoleColor.RED);
+                    printText(" Invalid day for February in a non-leap year. Please choose a valid day: ", ConsoleColor.RED);
                     day = 0; // Reset day to 0 to force re-entry
                     continue;
                 } else if (inputDay > 29 && inputMonth == 2 && isLeapYear(inputYear)) {
-                    printText("Invalid day for February in a leap year. Please choose a valid day: ", ConsoleColor.RED);
+                    printText(" Invalid day for February in a leap year. Please choose a valid day: ", ConsoleColor.RED);
                     day = 0; // Reset day to 0 to force re-entry
                     continue;
                 }
@@ -110,7 +109,7 @@ public class UI implements  Serializable {
                 // Check if the selected date is before the current date
                 LocalDate selectedDate = LocalDate.of(inputYear, inputMonth, inputDay);
                 if (selectedDate.isAfter(LocalDate.now())) {
-                    printText("You can't register someone that isn't born yet. Try again: ", ConsoleColor.RED);
+                    printText(" You can't register someone that isn't born yet. Try again: ", ConsoleColor.RED);
                     day = 0; // Reset day to 0 to force re-entry
                     continue;
                 }
@@ -118,10 +117,10 @@ public class UI implements  Serializable {
                 year = inputYear;
 
             } catch (InputMismatchException e) {
-                printText("Invalid input. Please enter numeric values for the date: ", ConsoleColor.RED);
+                printText(" Invalid input. Please enter numeric values for the date: ", ConsoleColor.RED);
                 in.nextLine(); // Clear the input buffer
             } catch (Exception e) {
-                printText("An unexpected error occurred. Please try again: ", ConsoleColor.RED);
+                printText(" An unexpected error occurred. Please try again: ", ConsoleColor.RED);
                 in.nextLine(); // Clear the input buffer
             }
         }
@@ -141,9 +140,9 @@ public class UI implements  Serializable {
         int seconds = totalSecs % 60;
 
         if (hours > 0) {
-            System.out.printf("%02dh:%02dm:%02ds%n", hours, minutes, seconds);
+            System.out.printf(" %02dh:%02dm:%02ds%n", hours, minutes, seconds);
         } else {
-            System.out.printf("%02dm:%02ds%n", minutes, seconds);
+            System.out.printf(" %02dm:%02ds%n", minutes, seconds);
         }
     }
 
@@ -190,9 +189,9 @@ public class UI implements  Serializable {
                     }
                 }
             } else {
-                printText("Unsupported object type in the list: ", ConsoleColor.RED); }
+                printText(" Unsupported object type in the list! ", ConsoleColor.RED); }
         } else {
-            printText("This list empty.", ConsoleColor.RED);
+            printText(" This list empty.", ConsoleColor.RED);
         }
     }
 
@@ -315,7 +314,7 @@ public class UI implements  Serializable {
                  discipline = d;}
             }
             if (discipline ==null){
-                printText("Discipline not recognised, please try again: \n",ConsoleColor.RED);
+                printText(" Discipline not recognised, please try again: \n",ConsoleColor.RED);
             }
         }
         return  discipline;
@@ -353,7 +352,7 @@ public class UI implements  Serializable {
         System.out.println(" " + "_".repeat(48) + " ");
         for (Member member: members) {
             String info = "MemberID: " + member.getMemberID() + " : " + member.getFirstName();
-            printText("    " + info + " ".repeat(45-info.length()) + " \n",ConsoleColor.RESET);}
+            printText( "    " + info + " ".repeat(45-info.length()) + " \n",ConsoleColor.RESET);}
         System.out.println(" " + "_".repeat(48) + " ");
     }
 
@@ -381,7 +380,7 @@ public class UI implements  Serializable {
 
     public Menu buildMainMenu() {
         Menu mainMenu = new Menu();
-        mainMenu.setMenuTitle("Which menu would you like to access?");
+        mainMenu.setMenuTitle(" Which menu would you like to access?");
         mainMenu.setMenuItems("Cashier", "Manager ", "Coach", "Quit");
         mainMenu.printMenu();
         return mainMenu;

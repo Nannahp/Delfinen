@@ -116,7 +116,7 @@ public class Member implements Serializable, Comparable {
 
     @Override
     public String toString() {
-        return "Member Id: " + getMemberID() + " " + getFirstName() + " " + getLastName();
+        return " Member Id: " + getMemberID() + " " + getFirstName() + " " + getLastName();
     }
 
     @Override

@@ -33,7 +33,7 @@ public class Menu {
     public int menuInputHandler() {
         int choice = getMenuChoiceFromUserInput();
         while (choice < 0 || getMenuItemsSize() < choice) {
-            UI.printText("Not an option", ConsoleColor.RESET);
+            UI.printText(" Not an option", ConsoleColor.RED);
             choice = getMenuChoiceFromUserInput();
         }
         return choice;

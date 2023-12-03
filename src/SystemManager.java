@@ -65,7 +65,7 @@ public class SystemManager {
         Member member = getMember();
         UI.printText("\n Payment received? (y/n): ",ConsoleColor.RESET);
         member.setPaymentStatus(ui.getBooleanInput());
-        UI.printText(" Payment status updated\n", ConsoleColor.RESET);
+        UI.printText(" Payment status updated\n", ConsoleColor.GREEN);
         updateMemberInfoInFile(member);
     }
 
@@ -142,17 +142,17 @@ public class SystemManager {
 
     //Methods to get information for member
     private String getMemberNameInput(String prompt) {
-        UI.printText("\n Please enter the " + prompt + " of the member:", ConsoleColor.RESET);
+        UI.printText("\n Please enter the " + prompt + " of the member: ", ConsoleColor.RESET);
         return ui.getStringInput();
     }
 
     private LocalDate getMemberDateInput() {
-        UI.printText("\n Please enter the birthdate of the member:",ConsoleColor.RESET);
+        UI.printText("\n Please enter the birthdate of the member: ",ConsoleColor.RESET);
         return ui.getLocalDateInput();
     }
 
     private boolean getMemberBooleanInput() {
-        UI.printText("\n Is the member active? (y/n):",ConsoleColor.RESET);
+        UI.printText("\n Is the member active? (y/n): ",ConsoleColor.RESET);
         return ui.getBooleanInput();
     }
 
@@ -162,7 +162,7 @@ public class SystemManager {
         disciplines.add(askForDiscipline());
         boolean needToAddMoreDisciplines;
         do{
-            UI.printText("\n Are there additional disciplines? (y/n)",ConsoleColor.RESET);
+            UI.printText("\n Are there additional disciplines? (y/n): ",ConsoleColor.RESET);
             needToAddMoreDisciplines = ui.getBooleanInput();
             if (needToAddMoreDisciplines){
                 Discipline discipline = askForDiscipline();
@@ -175,13 +175,13 @@ public class SystemManager {
 
     //Methods for CompetitionMember
     public Discipline askForDiscipline(){
-        UI.printText("\n Please enter a discipline:",ConsoleColor.RESET);
+        UI.printText("\n Please enter a discipline: ",ConsoleColor.RESET);
         return ui.getDiscipline();
     }
 
 
     public boolean isMemberACompetitionMember(){
-        UI.printText("\n Is the member a CompetitionMember? (y/n)",ConsoleColor.RESET);
+        UI.printText("\n Is the member a CompetitionMember? (y/n): ",ConsoleColor.RESET);
         return ui.getBooleanInput();
     }
 
@@ -254,9 +254,9 @@ public class SystemManager {
     //Add disciplin through edit
 public void addDiscipline(Member member){
         if( member instanceof CompetitionMember){
-        UI.printText("\n " +member.getFirstName() + " is active in:" ,ConsoleColor.RESET);
+        UI.printText("\n " +member.getFirstName() + " is active in: " ,ConsoleColor.RESET);
         ui.printDisciplines(((CompetitionMember) member).getDisciplines());
-        UI.printText("\n Which discipline would you like to add?", ConsoleColor.RESET);
+        UI.printText("\n Which discipline would you like to add? ", ConsoleColor.RESET);
         Discipline discipline = ui.getDiscipline();
         ((CompetitionMember) member).addDisciplines(discipline);
         Coach coach = ((CompetitionMember) member).getCoach();
@@ -267,7 +267,7 @@ public void addDiscipline(Member member){
     //Remove disciplin through edit
 public void removeDiscipline(Member member){
     if( member instanceof CompetitionMember) {
-        UI.printText("\n Which discipline would you like to delete?", ConsoleColor.RESET);
+        UI.printText("\n Which discipline would you like to delete? ", ConsoleColor.RESET);
         ui.printDisciplines(((CompetitionMember) member).getDisciplines());
         Discipline discipline = ui.getDiscipline();
         ((CompetitionMember) member).deleteDiscipline(discipline);
@@ -337,7 +337,7 @@ public void removeDiscipline(Member member){
 
     //Register trainingscore based on specific coach
     public void registerTrainingScore(Coach coach){
-        UI.printText("\n Which member you would like to add a training score to?  Please write here:\n", ConsoleColor.RESET);
+        UI.printText("\n Which member you would like to add a training score to? ", ConsoleColor.RESET);
         ui.printMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
@@ -345,7 +345,7 @@ public void removeDiscipline(Member member){
             updateMemberInfoInFile(member);
             coach.updateMemberInCoach((CompetitionMember) member);
             updateCoachInfoInFile(coach);}
-        else UI.printText("\n The member ID you have entered is not a competition member", ConsoleColor.RED);
+        else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
 
     }
     //Asks questions and creates the trainingscore to be registered
@@ -388,7 +388,7 @@ public void removeDiscipline(Member member){
 
     //Registers competitionScore by coach
     public void registerCompetitionScore(Coach coach){
-        UI.printText("\n Which member would you like to add a competition score to? Please write here: \n", ConsoleColor.RESET);
+        UI.printText("\n Which member would you like to add a competition score to? Please write here: ", ConsoleColor.RESET);
         ui.printMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
@@ -396,7 +396,7 @@ public void removeDiscipline(Member member){
             updateMemberInfoInFile(member);
             coach.updateMemberInCoach((CompetitionMember) member);
             updateCoachInfoInFile(coach);}
-        else UI.printText("\n The member ID you have entered is not a competition member \n", ConsoleColor.RED);
+        else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
     }
 
     //Asks questions for competitionScore to be registeres
@@ -421,7 +421,7 @@ public void removeDiscipline(Member member){
                 if (member.getMemberID() == memberID)
                     return member;
             }
-            throw new IllegalArgumentException("Member with given ID not found");
+            throw new IllegalArgumentException("Member with given ID not found!");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return null;
@@ -432,7 +432,7 @@ public void removeDiscipline(Member member){
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            UI.printText(" \n Please enter the MemberId of the member you would like to access:",ConsoleColor.RESET);
+            UI.printText(" \n Please enter the MemberId of the member you would like to access: ",ConsoleColor.RESET);
             int memberId = UI.getIntInput();
             member = searchForMember(memberId);
         }
@@ -451,7 +451,7 @@ public void removeDiscipline(Member member){
     public Coach searchForCoach(){
         Coach coachToReturn = null;
         while(coachToReturn==null){
-            UI.printText(" \nPlease enter the name of the Coach you want",ConsoleColor.RESET);
+            UI.printText(" \nPlease enter the name of the Coach you want: ",ConsoleColor.RESET);
             String name = ui.getStringInput();
             for (Coach coach: coaches) {
                 if (coach.getName().equals(name)){

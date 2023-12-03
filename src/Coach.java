@@ -102,7 +102,7 @@ public class Coach implements Serializable {
                 }
             }
         } catch (Exception e) {
-            System.err.println("An error occurred while adding a member to the team:" + e.getMessage());
+            System.err.println(" An error occurred while adding a member to the team: " + e.getMessage());
         }
     }
 
@@ -119,7 +119,7 @@ public class Coach implements Serializable {
             case BREASTSTROKE -> {return juniorBreaststroke;}
             case MEDLEY -> {return juniorMedley;}
         }
-        UI.printText("Something went wrong while retrieving the junior team list!", ConsoleColor.RED);
+        UI.printText(" Something went wrong while retrieving the junior team list!\n", ConsoleColor.RED);
         return null;
     }
 
@@ -128,7 +128,7 @@ public class Coach implements Serializable {
        boolean memberExists = checkIfMemberExist(member);
         if (memberExists){
             member.editTrainingScores(trainingScore);}
-        else UI.printText("Member is not assigned to this coach!", ConsoleColor.RED);
+        else UI.printText(" Member is not assigned to this coach!\n", ConsoleColor.RED);
     }
 
     //Goes through one list and checks if there is a member
@@ -162,7 +162,7 @@ public class Coach implements Serializable {
         }
         if (memberExists){
             member.addCompetitionScore(competitionScore);}
-        else UI.printText("Member is not assigned to this coach!\n", ConsoleColor.RED);
+        else UI.printText(" Member is not assigned to this coach!\n", ConsoleColor.RED);
     }
 
     //Returns senior list based on disciplin
@@ -174,7 +174,7 @@ public class Coach implements Serializable {
             case BREASTSTROKE -> {return seniorBreaststroke;}
             case MEDLEY -> {return seniorMedley;}
         }
-        UI.printText("Something went wrong while retrieving the senior team list!\n", ConsoleColor.RED);
+        UI.printText(" Something went wrong while retrieving the senior team list!\n", ConsoleColor.RED);
         return null;
     }
 
@@ -254,7 +254,7 @@ public class Coach implements Serializable {
     @Override
     public String toString() {
         return "Coach{" +
-                "name='" + name + '\'' +
+                "Name ='" + name + '\'' +
                 ", juniorCrawl=" + getMemberInList(juniorCrawl) +
                 ", juniorBackcrawl=" + getMemberInList(juniorBackcrawl) +
                 ", juniorBreaststroke=" + getMemberInList(juniorBreaststroke) +

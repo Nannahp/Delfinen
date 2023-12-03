@@ -12,7 +12,6 @@ public class TrainingScore implements Serializable, Comparable {
         this.discipline = discipline;
     }
 
-    // Getter - metode for at få og indstille score, tid, dato og disciplin.
     public int getTime() {
         return time;
     }
@@ -25,7 +24,6 @@ public class TrainingScore implements Serializable, Comparable {
         return discipline;
     }
 
-    // Setter - metode for at få of indstille tid og dato.
     public void setTime(int time) {
         this.time = time;
     }

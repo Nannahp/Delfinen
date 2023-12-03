@@ -25,7 +25,7 @@ public class CompetitionMember extends Member{
         if (!this.disciplines.contains(discipline)){
             this.disciplines.add(discipline);
         } else {
-            UI.printText("A member can only be assigned to a discipline once\n", ConsoleColor.RED);
+            UI.printText(" A member can only be assigned to a discipline once!\n", ConsoleColor.RED);
         }
     }
 
@@ -63,9 +63,9 @@ public class CompetitionMember extends Member{
                 if (existingScore.getTime() > trainingScore.getTime()) {
                     existingScore.setTime(trainingScore.getTime());
                     existingScore.setDate(trainingScore.getDate());
-                    System.out.println(" Training score updated");
+                    UI.printText(" Training score updated", ConsoleColor.GREEN);
                 } else {
-                    System.out.println(" This is not the best time for this member.");
+                    UI.printText(" This is not the best time for this member!", ConsoleColor.RED);
                 }
             }
         }
@@ -88,7 +88,7 @@ public class CompetitionMember extends Member{
             //Checks if Member has the discipline
             if (doesMemberHaveDiscipline(competitionScore.getDiscipline())) {
                 competitionScores.add(competitionScore);
-                System.out.println("Competition score added to member");
+                UI.printText(" Competition score added to member", ConsoleColor.GREEN);
                 return true;
             } else {
                 UI.printText(" This member is not active in: " + competitionScore.getDiscipline() + "\n", ConsoleColor.RED);
@@ -108,7 +108,7 @@ public class CompetitionMember extends Member{
     public void deleteDiscipline(Discipline discipline) {
         if (doesMemberHaveDiscipline(discipline)) {
             disciplines.remove(discipline);
-        } else UI.printText("This member is not active in this discipline\n", ConsoleColor.RED);
+        } else UI.printText(" This member is not active in this discipline\n", ConsoleColor.RED);
     }
 
     public ArrayList<Discipline> getDisciplines() {
