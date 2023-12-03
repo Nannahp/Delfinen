@@ -254,7 +254,7 @@ public class SystemManager {
     //Add disciplin through edit
 public void addDiscipline(Member member){
         if( member instanceof CompetitionMember){
-        UI.printText("\n " +member.getFirstName() + " is active in: " ,ConsoleColor.RESET);
+        UI.printText("\n " +member.getFirstName() + " is active in: \n" ,ConsoleColor.RESET);
         ui.printDisciplines(((CompetitionMember) member).getDisciplines());
         UI.printText("\n Which discipline would you like to add? ", ConsoleColor.RESET);
         Discipline discipline = ui.getDiscipline();
@@ -388,11 +388,11 @@ public void removeDiscipline(Member member){
 
     //Registers competitionScore by coach
     public void registerCompetitionScore(Coach coach){
-        UI.printText("\n Which member would you like to add a competition score to? Please write here: ", ConsoleColor.RESET);
+        UI.printText("\n Which member would you like to add a competition score to?\n\n", ConsoleColor.RESET);
         ui.printMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
-            coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore());
+            coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member));
             updateMemberInfoInFile(member);
             coach.updateMemberInCoach((CompetitionMember) member);
             updateCoachInfoInFile(coach);}
@@ -400,7 +400,9 @@ public void removeDiscipline(Member member){
     }
 
     //Asks questions for competitionScore to be registeres
-    public CompetitionScore createCompetitionScore(){
+    public CompetitionScore createCompetitionScore(CompetitionMember member){
+        System.out.print("This member has these disciplines: \n");
+        ui.printDisciplines(member.getDisciplines());
         UI.printText("\n Please enter discipline: ",ConsoleColor.RESET);
         Discipline discipline = ui.getDiscipline();
         UI.printText("\n Please enter the competition name: ",ConsoleColor.RESET);

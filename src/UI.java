@@ -17,7 +17,7 @@ public class UI implements  Serializable {
         String stringInput = in.nextLine();
 
         while (!isString(stringInput)) {
-            printText(" You didn't use a string. Try again: \n", ConsoleColor.RED);
+            printText(" You didn't use a string. Try again: ", ConsoleColor.RED);
             stringInput = in.nextLine();
         }
         return stringInput;
@@ -30,7 +30,7 @@ public class UI implements  Serializable {
             intInput = in.nextInt();
         }
         catch (InputMismatchException e){
-            printText("\n Input not recognized, please enter a number: ", ConsoleColor.RED);
+            printText(" Input not recognized, please enter a number: ", ConsoleColor.RED);
         }
         in.nextLine();//scannerbug?
         }
@@ -49,13 +49,13 @@ public class UI implements  Serializable {
     }
 
     public String getGenderInput() {
-        UI.printText("\n Please enter the gender of the member (F/M): " ,ConsoleColor.RESET);
+        UI.printText(" Please enter the gender of the member (F/M): " ,ConsoleColor.RESET);
         String gender = null;
         while (gender == null) {
             String input = getStringInput();
             if (input.equalsIgnoreCase("f") || input.equalsIgnoreCase("m")) {
                 gender = input;
-            } else UI.printText("\n Please enter either \"f\" or \"m\"", ConsoleColor.RED);
+            } else UI.printText(" Please enter either \"f\" or \"m\"", ConsoleColor.RED);
         }
         return gender;
     }
@@ -66,7 +66,7 @@ public class UI implements  Serializable {
 
         while (year == 0) {
             try {
-                System.out.print("Day('DD)': ");
+                System.out.print("\n Day('DD)': ");
                 int inputDay = in.nextInt();
                 in.nextLine();
 
@@ -76,7 +76,7 @@ public class UI implements  Serializable {
                 }
                 day = inputDay;
 
-                System.out.print("Month('MM'): ");
+                System.out.print(" Month('MM'): ");
                 int inputMonth = in.nextInt();
                 in.nextLine();
 
@@ -86,7 +86,7 @@ public class UI implements  Serializable {
                 }
                 month = inputMonth;
 
-                System.out.print("Year('YYYY'): ");
+                System.out.print(" Year('YYYY'): ");
                 int inputYear = in.nextInt();
                 in.nextLine();
 
@@ -147,7 +147,7 @@ public class UI implements  Serializable {
     }
 
     //where did we use this?
-    public void printListOfMembers(ArrayList<Member> members){
+    /*public void printListOfMembers(ArrayList<Member> members){
         System.out.println("\n");
         if (!members.isEmpty()) {
             for (Member member: members) {
@@ -155,7 +155,7 @@ public class UI implements  Serializable {
             }
         }
         System.out.println("\n");
-    }
+    }*/
 
     public void printDisciplines(ArrayList<Discipline> disciplines){
         if (!disciplines.isEmpty()) {
@@ -165,14 +165,13 @@ public class UI implements  Serializable {
         }
     }
 
-    public void printArrayList (ArrayList list){
+    /*public void printArrayList (ArrayList list){
         for (int i =0; i< list.size(); i++){
             printText((String) list.get(i) + "\n", ConsoleColor.RESET);
         }
-    }
+    }*/
 
-    public void printList(ArrayList<Object> list) {
-
+    /*public void printList(ArrayList<Object> list) {
         if (!list.isEmpty()) {
 
             String objectClass = list.get(0).getClass().getName();
@@ -193,10 +192,10 @@ public class UI implements  Serializable {
         } else {
             printText(" This list empty.", ConsoleColor.RED);
         }
-    }
+    }*/
 
     public void printMember(Member member) {
-        System.out.println(" _________________________________________________ ");
+        System.out.println("\n\n _________________________________________________ ");
 
         if (member instanceof CompetitionMember) {
             System.out.printf(" COMPETITION-MEMBER №%d%28.7s%n", member.getMemberID(), member.getIsActive()?"Active":"Passive");
@@ -254,11 +253,9 @@ public class UI implements  Serializable {
 
     private boolean isStringBoolean(String strBool) {
         if (strBool.equalsIgnoreCase("y")
-                || strBool.equalsIgnoreCase("t")
                 || strBool.equalsIgnoreCase("true")
                 || strBool.equalsIgnoreCase("yes")
                 || strBool.equalsIgnoreCase("n")
-                || strBool.equalsIgnoreCase("f")
                 || strBool.equalsIgnoreCase("false")
                 || strBool.equalsIgnoreCase("no")) {
             return true;
@@ -279,7 +276,7 @@ public class UI implements  Serializable {
         }
     }
 
-    private boolean isNumeric(String strNum) {
+    /*private boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
         }
@@ -289,7 +286,7 @@ public class UI implements  Serializable {
             return false;
         }
         return true;
-    }
+    }*/
 
 
     private boolean isString(String str) {
@@ -320,7 +317,7 @@ public class UI implements  Serializable {
         return  discipline;
     }
 
-    public void printAllMembers(ArrayList<Member> members) {
+    /*public void printAllMembers(ArrayList<Member> members) {
         for (Member member : members) {
             System.out.println("------------------------");
             System.out.printf("Member ID: %d%n", member.getMemberID());
@@ -336,7 +333,7 @@ public class UI implements  Serializable {
 
             System.out.println("_________________________________\n");
         }
-    }
+    }*/
 
     public void printWelcomeMessage() {
         System.out.println("\n ________________________________________________ ");
@@ -365,8 +362,8 @@ public class UI implements  Serializable {
     }
 
     public void printMemberPaymentStatus(Member member) {
-        System.out.printf(" Member ID: %d", member.getMemberID());
-        System.out.printf(" %s %s ", member.getFirstName(), member.getLastName());
+        System.out.printf(" Member ID: %d -", member.getMemberID());
+        System.out.printf(" %s %s -", member.getFirstName(), member.getLastName());
 
         if(member.getPaymentStatus()) {
             printText(" Paid\n", ConsoleColor.GREEN);
@@ -429,7 +426,7 @@ public class UI implements  Serializable {
     public Menu buildEditMenu(){
         Menu editMenu = new Menu();
         editMenu.setMenuTitle("EDIT");
-        editMenu.setMenuItems("Name", "Active-status", "Remove Disciplin","Add Disciplines","Return to Main Menu");
+        editMenu.setMenuItems("Name", "Active-status", "Remove Disciplin","Add Disciplines","Return to Previous Menu");
         editMenu.printMenu();
         return editMenu;
     }

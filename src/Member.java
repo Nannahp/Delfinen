@@ -100,6 +100,7 @@ public class Member implements Serializable, Comparable {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+        calculateMembershipPrice();
     }
 
     public Team getTeam() {
