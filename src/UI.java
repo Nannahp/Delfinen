@@ -160,7 +160,7 @@ public class UI implements  Serializable {
     public void printDisciplines(ArrayList<Discipline> disciplines){
         if (!disciplines.isEmpty()) {
             for (Discipline discipline: disciplines) {
-                printText(discipline.toString() + "\n",ConsoleColor.RESET);
+                printText(" "+discipline.toString() + "\n",ConsoleColor.RESET);
             }
         }
     }
