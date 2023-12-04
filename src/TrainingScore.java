@@ -7,14 +7,11 @@ public class TrainingScore implements Serializable, Comparable {
     private Discipline discipline;
 
     public TrainingScore(int time, LocalDate date, Discipline discipline) {
-        // this.score = score;
         this.time = time;
         this.date = date;
         this.discipline = discipline;
     }
 
-
-    // Getter - metode for at få og indstille score, tid, dato og disciplin.
     public int getTime() {
         return time;
     }
@@ -27,17 +24,12 @@ public class TrainingScore implements Serializable, Comparable {
         return discipline;
     }
 
-    // Setter - metode for at få of indstille tid, dato og disciplin.
     public void setTime(int time) {
         this.time = time;
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public void setDiscipline(Discipline discipline) {
-        this.discipline = discipline;
     }
 
     @Override

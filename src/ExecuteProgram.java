@@ -6,9 +6,8 @@ public class ExecuteProgram {
         new ExecuteProgram().run();
     }
 
-
-    //Runs the system until runMainMenu is false
+    //Runs the system until runProgram is false
     public void run() {
-        manager.runMainMenu();
+        manager.runProgram();
     }
 }

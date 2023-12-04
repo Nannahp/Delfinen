@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Coach implements Serializable {
     String name;
-    private int coachId;
+    UI ui = new UI();
     private ArrayList<CompetitionMember> juniorCrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBackcrawl = new ArrayList<CompetitionMember>();
     private ArrayList<CompetitionMember> juniorBreaststroke = new ArrayList<CompetitionMember>();
@@ -19,11 +19,12 @@ public class Coach implements Serializable {
     Coach(String name) {
         this.name = name;
     }
-
+    //Adds a member to coach
     public void addMemberToCoach(CompetitionMember member){
         checkCompetitionMemberTeam(member);
     }
 
+    //Deletes a member by team
     public void removeMemberFromCoachLists(CompetitionMember member) {
         if (member.getTeam() == Team.JUNIOR) {
             deleteMemberInList(juniorCrawl, member);
@@ -39,10 +40,13 @@ public class Coach implements Serializable {
             deleteMemberInList(seniorMedley, member);
         }
     }
+
+    //Deletes a member by Id
     public void deleteMemberInList(ArrayList<CompetitionMember> list, CompetitionMember memberToDelete) {
         list.removeIf(member -> member.getMemberID() == memberToDelete.getMemberID());
     }
 
+    //Deletes a member by disciplin. Used when a member's disciplin is deleted
     public void removeMemberByDiscipline(CompetitionMember member, Discipline discipline) {
         if (member.getTeam() == Team.JUNIOR) {
             switch (discipline) {
@@ -65,30 +69,32 @@ public class Coach implements Serializable {
 
 
 
-
-
-
     //Checks the arraylist of disciplines of given member and puts in right arraylist
-    private void checkCompetitionMemberTeam(CompetitionMember member) {
+    public void checkCompetitionMemberTeam(CompetitionMember member) {
         ArrayList<Discipline> disciplines = member.getDisciplines();
+        boolean memberExist = false;
         for (Discipline discipline : disciplines) {
-            switch(discipline) {
-                case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
-                case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
-                case BUTTERFLY -> addToDisciplineList(member, juniorButterfly, seniorButterfly);
-                case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
-                case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
+            memberExist = checkIfMemberExistInList(member,discipline);
+            if(!memberExist) {
+                switch (discipline) {
+                    case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
+                    case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
+                    case BUTTERFLY -> addToDisciplineList(member, juniorButterfly, seniorButterfly);
+                    case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
+                    case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
+                }
             }
         }
+     if (!memberExist) {
+      ui.printText(" Added to team",ConsoleColor.RESET);}
     }
 
-    //Checks if competition member is a junior or senior
+    //Checks if a member is a junior or a senior
     public void addToDisciplineList(CompetitionMember member, ArrayList<CompetitionMember> juniorList, ArrayList<CompetitionMember> seniorList) {
         boolean addToTeam = false;
         try {
             if (member.getIsActive()) {
                 addToTeam = true;
-                System.out.println("Added to team");
                 if (member.getTeam() == Team.JUNIOR) {  //getTeam()
                     juniorList.add(member);
                 } else {
@@ -96,21 +102,15 @@ public class Coach implements Serializable {
                 }
             }
         } catch (Exception e) {
-            System.err.println("An error occurred while adding a member to the team:" + e.getMessage());
+            System.err.println(" An error occurred while adding a member to the team: " + e.getMessage());
         }
-    }
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setCoachId(int coachId) {
-        this.coachId = coachId;
-    }
-
+    //Returns junior list
     public ArrayList<CompetitionMember> getJuniorList(Discipline discipline) {
         switch(discipline) {
             case CRAWL -> {return juniorCrawl;}
@@ -119,27 +119,53 @@ public class Coach implements Serializable {
             case BREASTSTROKE -> {return juniorBreaststroke;}
             case MEDLEY -> {return juniorMedley;}
         }
-        System.out.println("Something went wrong while retrieving the junior team list");
+        UI.printText(" Something went wrong while retrieving the junior team list!\n", ConsoleColor.RED);
         return null;
     }
 
+    //Adds trainingScore to member
     public void addTrainingScoreToMember(CompetitionMember member, TrainingScore trainingScore) {
-       boolean memberExists = false;
-        for (Discipline discipline:member.getDisciplines()){
+       boolean memberExists = checkIfMemberExist(member);
+        if (memberExists){
+            member.editTrainingScores(trainingScore);}
+        else UI.printText(" Member is not assigned to this coach!\n", ConsoleColor.RED);
+    }
+
+    //Goes through one list and checks if there is a member
+    public boolean checkIfMemberExistInList(CompetitionMember member, Discipline discipline){
+        boolean memberExists = false;
             if (findMemberInCoach(member, getJuniorList(discipline) )||
-            findMemberInCoach(member, getSeniorList(discipline))){
+                    findMemberInCoach(member, getSeniorList(discipline))){
+                memberExists = true;
+        }
+        return  memberExists;
+    }
+
+    //Goes through all disciplines and checks if there is a member
+    public boolean checkIfMemberExist(CompetitionMember member){
+        boolean memberExists = false;
+        for (Discipline discipline:member.getDisciplines()){
+           if(checkIfMemberExistInList(member,discipline)){
+                memberExists = true;}
+            }
+        return  memberExists;
+    }
+
+    //Adds competitionScore to member
+    public void addCompetitionScoreToMember(CompetitionMember member, CompetitionScore competitionScore) {
+        boolean memberExists = false;
+        for (Discipline discipline : member.getDisciplines()){
+            if (findMemberInCoach(member, getJuniorList(discipline) )||
+                    findMemberInCoach(member, getSeniorList(discipline))){
                 memberExists = true;
             }
         }
         if (memberExists){
-        member.updateTrainingScore(trainingScore);}
-        else System.out.println("Member is not assigned to this coach");
+            member.addCompetitionScore(competitionScore);}
+        else UI.printText(" Member is not assigned to this coach!\n", ConsoleColor.RED);
     }
 
-
-
-
-
+    //Returns senior list based on disciplin
     public ArrayList<CompetitionMember> getSeniorList(Discipline discipline) {
         switch(discipline) {
             case CRAWL -> {return seniorCrawl;}
@@ -148,13 +174,12 @@ public class Coach implements Serializable {
             case BREASTSTROKE -> {return seniorBreaststroke;}
             case MEDLEY -> {return seniorMedley;}
         }
-        System.out.println("Something went wrong while retrieving the senior team list");
+        UI.printText(" Something went wrong while retrieving the senior team list!\n", ConsoleColor.RED);
         return null;
     }
 
-
-
-    public ArrayList<String> getMemberNamesInList(ArrayList<CompetitionMember> members){
+    //Gets all the members in a specific list
+    public ArrayList<String> getMemberInList(ArrayList<CompetitionMember> members){
         ArrayList<String> names = new ArrayList<>();
         for (Member member: members) {
            names.add(member.getFirstName() + " " + member.getLastName());
@@ -162,6 +187,7 @@ public class Coach implements Serializable {
         return names;
     }
 
+    //Gets all the members assigned to coach, but only once per member
     public ArrayList<Member> getAllMembers() {
         Set<Member> uniqueNames = new HashSet<>(); // Using a set to ensure uniqueness
         addMemberNamesToSet(uniqueNames, juniorCrawl);
@@ -179,13 +205,14 @@ public class Coach implements Serializable {
         return list;
     }
 
+    //Used for hardcoded members
     private void addMemberNamesToSet(Set<Member> uniqueNames, ArrayList<CompetitionMember> members) {
         for (Member member : members) {
             uniqueNames.add(member);
         }
     }
 
-
+    //Used to update the member every time there is an edit for member
     public void updateMemberInCoach(CompetitionMember updatedMember) {
         if (updatedMember.getTeam().equals(Team.JUNIOR)){
             updateList(juniorCrawl,updatedMember);
@@ -204,6 +231,7 @@ public class Coach implements Serializable {
         }
     }
 
+    //Used to update member
     public void updateList(ArrayList<CompetitionMember> list, CompetitionMember updatedMember){
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getMemberID() == updatedMember.getMemberID()) {
@@ -211,6 +239,8 @@ public class Coach implements Serializable {
             }
         }
     }
+
+    //Used to find a specific member in a specific list
     public boolean findMemberInCoach(CompetitionMember memberToFind, ArrayList<CompetitionMember> list){
        boolean found = false;
         for (CompetitionMember member: list) {
@@ -221,22 +251,20 @@ public class Coach implements Serializable {
         return  found;
     }
 
-
     @Override
     public String toString() {
         return "Coach{" +
-                "name='" + name + '\'' +
-                "id='" + coachId + '\'' +
-                ", juniorCrawl=" + getMemberNamesInList(juniorCrawl) +
-                ", juniorBackcrawl=" + getMemberNamesInList(juniorBackcrawl) +
-                ", juniorBreaststroke=" + getMemberNamesInList(juniorBreaststroke) +
-                ", juniorButterfly=" + getMemberNamesInList(juniorButterfly) +
-                ", juniorMedley=" + getMemberNamesInList(juniorMedley) +
-                ", seniorCrawl=" + getMemberNamesInList(seniorCrawl) +
-                ", seniorBackcrawl=" + getMemberNamesInList(seniorBackcrawl) +
-                ", seniorBreaststroke=" + getMemberNamesInList(seniorBreaststroke) +
-                ", seniorButterfly=" + getMemberNamesInList(seniorButterfly) +
-                ", seniorMedley=" + getMemberNamesInList(seniorMedley) +
+                "Name ='" + name + '\'' +
+                ", juniorCrawl=" + getMemberInList(juniorCrawl) +
+                ", juniorBackcrawl=" + getMemberInList(juniorBackcrawl) +
+                ", juniorBreaststroke=" + getMemberInList(juniorBreaststroke) +
+                ", juniorButterfly=" + getMemberInList(juniorButterfly) +
+                ", juniorMedley=" + getMemberInList(juniorMedley) +
+                ", seniorCrawl=" + getMemberInList(seniorCrawl) +
+                ", seniorBackcrawl=" + getMemberInList(seniorBackcrawl) +
+                ", seniorBreaststroke=" + getMemberInList(seniorBreaststroke) +
+                ", seniorButterfly=" + getMemberInList(seniorButterfly) +
+                ", seniorMedley=" + getMemberInList(seniorMedley) +
                 '}';
     }
 

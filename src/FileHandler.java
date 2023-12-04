@@ -69,9 +69,9 @@ public class FileHandler {
         try {
             File newFile = new File("src\\files\\"+fileName);
             if (newFile.createNewFile()) {
-                System.out.println("File created: " + newFile.getName());
+                UI.printText("File created: " + newFile.getName(), ConsoleColor.GREEN);
             } else {
-                System.out.println("File already exists.");
+                UI.printText("File already exists!\n", ConsoleColor.RED);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

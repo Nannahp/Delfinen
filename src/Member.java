@@ -18,7 +18,7 @@ public class Member implements Serializable, Comparable {
         this.birthdate = birthdate;
         this.gender = gender;
         this.isActive = isActive;
-        setHasPaid(true); //Altid betalt ved oprettelse, kan settes til andet
+        setPaymentStatus(true); //Altid betalt ved oprettelse, kan settes til andet
         calculateMembershipPrice();
         calcTeamFromDate();
     }
@@ -78,24 +78,8 @@ public class Member implements Serializable, Comparable {
         return birthdate;
     }
 
-    public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
-    }
-
     public String getGender() {
         return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public void setHasPaid(boolean hasPaid) {
-        this.hasPaid = hasPaid;
-    }
-
-    public boolean hasPaid() {
-        return hasPaid;
     }
 
     public int getMembershipPrice() {
@@ -116,6 +100,7 @@ public class Member implements Serializable, Comparable {
 
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
+        calculateMembershipPrice();
     }
 
     public Team getTeam() {
@@ -126,9 +111,13 @@ public class Member implements Serializable, Comparable {
         this.hasPaid = hasPaid;
     }
 
+    public boolean getPaymentStatus() {
+        return hasPaid;
+    }
+
     @Override
     public String toString() {
-        return "Member Id: " + getMemberID() + " " + getFirstName() + " " + getLastName();
+        return " Member Id: " + getMemberID() + " " + getFirstName() + " " + getLastName();
     }
 
     @Override
