@@ -23,13 +23,33 @@ public class Menu {
         return menuItems.size();
     }
 
+    // HANDLE MENU CHOICES
+
+    public int getMenuChoiceFromUserInput() {
+        UI.printText(" Please enter the desired menu-number: ",ConsoleColor.RESET);
+        return UI.getIntInput();
+    }
+
+    public int menuInputHandler() {
+        int choice = getMenuChoiceFromUserInput();
+        while (choice < 0 || getMenuItemsSize() < choice) {
+            UI.printText(" Not an option", ConsoleColor.RED);
+            choice = getMenuChoiceFromUserInput();
+        }
+        return choice;
+    }
+
     // Prints the heading text and the menu
     public void printMenu() {
-        String printString = menuTitle + "\n";
-
+        int titleLength = menuTitle.length();
+        int spaceLength = (49-titleLength)/2;
+        System.out.println("\n");
+        System.out.println(" "+"_".repeat(spaceLength) +  menuTitle + "_".repeat(spaceLength)+"\n");
         for (int i = 0; i < menuItems.size(); i++) {
-            printString += (i+1) +") " + menuItems.get(i) + "\n";
+            String line = (i+1) +") " + menuItems.get(i);
+            System.out.println("   "+line);
         }
-        System.out.println("\n" + printString);
+        System.out.println(" ________________________________________________ ");
+        System.out.println("\n");
     }
 }
