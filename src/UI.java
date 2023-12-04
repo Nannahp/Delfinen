@@ -26,13 +26,13 @@ public class UI implements  Serializable {
     public static int getIntInput() {
         int intInput = 0;
         while (intInput == 0){
-        try {
-            intInput = in.nextInt();
-        }
-        catch (InputMismatchException e){
-            printText(" Input not recognized, please enter a number: ", ConsoleColor.RED);
-        }
-        in.nextLine();//scannerbug?
+            try {
+                intInput = in.nextInt();
+                in.nextLine(); //Scanner bug
+            }
+            catch (InputMismatchException e){
+                printText(" Input not recognized, please enter a number: ", ConsoleColor.RED);
+            }
         }
         return intInput;
     }
@@ -60,7 +60,7 @@ public class UI implements  Serializable {
         return gender;
     }
 
-    //Yes we know it's a f*cking long method
+    //Yes we know it's a long method, but it's needed!
     public LocalDate getLocalDateInput() {
         int day = 0, month = 0, year = 0;
 
@@ -348,7 +348,7 @@ public class UI implements  Serializable {
     public void printMembers(ArrayList<Member> members){
         System.out.println(" " + "_".repeat(48) + " ");
         for (Member member: members) {
-            String info = "MemberID: " + member.getMemberID() + " : " + member.getFirstName();
+            String info = "MemberID: " + member.getMemberID() + " - " + member.getFirstName();
             printText( "    " + info + " ".repeat(45-info.length()) + " \n",ConsoleColor.RESET);}
         System.out.println(" " + "_".repeat(48) + " ");
     }
