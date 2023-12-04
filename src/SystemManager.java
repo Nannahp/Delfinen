@@ -401,7 +401,7 @@ public void removeDiscipline(Member member){
 
     //Asks questions for competitionScore to be registeres
     public CompetitionScore createCompetitionScore(CompetitionMember member){
-        System.out.print("This member has these disciplines: \n");
+        System.out.print(" This member has these disciplines: \n");
         ui.printDisciplines(member.getDisciplines());
         UI.printText("\n Please enter discipline: ",ConsoleColor.RESET);
         Discipline discipline = ui.getDiscipline();
