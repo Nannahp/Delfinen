@@ -449,20 +449,6 @@ public void removeDiscipline(Member member){
     }                        //ensures that the ID can't be the same if we delete a member and add a new one
 
 
-    //Maybe not needed  - But might if we add Delete Coach in edit
-    public Coach searchForCoach(){
-        Coach coachToReturn = null;
-        while(coachToReturn==null){
-            UI.printText(" \nPlease enter the name of the Coach you want: ",ConsoleColor.RESET);
-            String name = ui.getStringInput();
-            for (Coach coach: coaches) {
-                if (coach.getName().equals(name)){
-                    coachToReturn = coach;
-                }
-            }
-        }return coachToReturn;
-    }
-
     public void quitProgram() {
         systemRunning = false;
     }
@@ -472,10 +458,6 @@ public void removeDiscipline(Member member){
     private void updateCoachInfo(Coach coach) {
         updateCoachInfoInFile(coach);
         updateCoaches();
-    }
-    private void updateMemberInfo(Member member) {
-        updateMemberInfoInFile(member);
-        updateMembers();
     }
 
     //Updates and loads for the files to always be up-to-date
@@ -513,14 +495,6 @@ public void removeDiscipline(Member member){
         }
     }
 
-    /*
-    public void printCoaches(){
-        for (Coach coach: coaches) {
-            UI.printText(coach.getName(),ConsoleColor.WHITE);
-        }
-    }
-    */
-
      //Methods to updates files
     public void updateMemberInfoInFile(Member member){
         FileHandler.modifyObjectInFile("Members.txt", member, true);
@@ -532,11 +506,6 @@ public void removeDiscipline(Member member){
         FileHandler.modifyObjectInFile("Members.txt", member,false);
     }
 
-    //Method to create files if the files should get lost
-    public void initializeFiles(){
-        FileHandler.createFile("Members.txt");
-        FileHandler.createFile("Coaches.txt");
-    }
 
     public void readyArraysAtStartup(){
         loadArrays();

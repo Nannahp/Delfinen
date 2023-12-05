@@ -67,8 +67,6 @@ public class Coach implements Serializable {
         }
     }
 
-
-
     //Checks the arraylist of disciplines of given member and puts in right arraylist
     public void checkCompetitionMemberTeam(CompetitionMember member) {
         ArrayList<Discipline> disciplines = member.getDisciplines();

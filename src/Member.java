@@ -18,11 +18,12 @@ public class Member implements Serializable, Comparable {
         this.birthdate = birthdate;
         this.gender = gender;
         this.isActive = isActive;
-        setPaymentStatus(true); //Altid betalt ved oprettelse, kan settes til andet
-        calculateMembershipPrice();
-        calcTeamFromDate();
+        setPaymentStatus(true); //Always paid when member is created. Can be changed afterward
+        calculateMembershipPrice(); //Calculates price when member is created
+        calcTeamFromDate(); //Calculates team when Member is created
     }
 
+    //Calculates team from date
     public Team calcTeamFromDate() {
         int age = calculateAge();
         if (age < 18) {
@@ -32,7 +33,7 @@ public class Member implements Serializable, Comparable {
         }
     }
 
-    //Metode der kan beregne Membership price ud fra alder
+    //Method to calculate membership price based on age
     public int calculateMembershipPrice() {
         int age = calculateAge();
         int juniorRate = 1000;
@@ -54,10 +55,12 @@ public class Member implements Serializable, Comparable {
         }
     }
 
+    //method to calculate age
     private int calculateAge() {
         return LocalDate.now().getYear() - this.birthdate.getYear();
     }
 
+    //appropriate getters and setters
     public String getFirstName() {
         return firstName;
     }
@@ -98,6 +101,7 @@ public class Member implements Serializable, Comparable {
         return isActive;
     }
 
+    //calculates membership price based on activity every time it is changed
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
         calculateMembershipPrice();

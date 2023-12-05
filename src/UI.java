@@ -49,7 +49,7 @@ public class UI implements  Serializable {
     }
 
     public String getGenderInput() {
-        UI.printText(" Please enter the gender of the member (F/M): " ,ConsoleColor.RESET);
+        UI.printText(" Please enter the gender of the member (f/m): " ,ConsoleColor.RESET);
         String gender = null;
         while (gender == null) {
             String input = getStringInput();
@@ -60,74 +60,106 @@ public class UI implements  Serializable {
         return gender;
     }
 
-    //Yes we know it's a long method, but it's needed!
+    //Date input for creating a member and creating a local date for it
     public LocalDate getLocalDateInput() {
         int day = 0, month = 0, year = 0;
 
         while (year == 0) {
             try {
-                System.out.print("\n Day('DD)': ");
-                int inputDay = in.nextInt();
-                in.nextLine();
-
-                if (inputDay < 1 || inputDay > 31) {
-                    printText(" Invalid day. Please ensure the day is between 1 and 31: ", ConsoleColor.RED);
-                    continue;
-                }
-                day = inputDay;
-
-                System.out.print(" Month('MM'): ");
-                int inputMonth = in.nextInt();
-                in.nextLine();
-
-                if (inputMonth < 1 || inputMonth > 12) {
-                    printText(" Invalid month. Please ensure the month is between 1 and 12: ", ConsoleColor.RED);
-                    continue;
-                }
-                month = inputMonth;
-
-                System.out.print(" Year('YYYY'): ");
-                int inputYear = in.nextInt();
-                in.nextLine();
-
-                if (inputYear < 1915 || inputYear > LocalDate.now().getYear()) {
-                    printText(" Invalid year. Please ensure the year is between 1915 and this year: ", ConsoleColor.RED);
-                    continue;
-                }
-
-                // Check if the selected month has fewer than 31 days
-                if (inputDay > 28 && inputMonth == 2 && !isLeapYear(inputYear)) {
-                    printText(" Invalid day for February in a non-leap year. Please choose a valid day: ", ConsoleColor.RED);
-                    day = 0; // Reset day to 0 to force re-entry
-                    continue;
-                } else if (inputDay > 29 && inputMonth == 2 && isLeapYear(inputYear)) {
-                    printText(" Invalid day for February in a leap year. Please choose a valid day: ", ConsoleColor.RED);
-                    day = 0; // Reset day to 0 to force re-entry
-                    continue;
-                }
-
-                // Check if the selected date is before the current date
-                LocalDate selectedDate = LocalDate.of(inputYear, inputMonth, inputDay);
-                if (selectedDate.isAfter(LocalDate.now())) {
-                    printText(" You can't register someone that isn't born yet. Try again: ", ConsoleColor.RED);
-                    day = 0; // Reset day to 0 to force re-entry
-                    continue;
-                }
-
-                year = inputYear;
+                day = getDayInput();
+                month = getMonthInput();
+                year = getYearInput(day, month);
 
             } catch (InputMismatchException e) {
-                printText(" Invalid input. Please enter numeric values for the date: ", ConsoleColor.RED);
-                in.nextLine(); // Clear the input buffer
+                inputMismatch();
             } catch (Exception e) {
-                printText(" An unexpected error occurred. Please try again: ", ConsoleColor.RED);
-                in.nextLine(); // Clear the input buffer
+                unexpectedError();
             }
         }
-
         return LocalDate.of(year, month, day);
     }
 
+    //Ask for day input
+    private int getDayInput() {
+        int inputDay = 0;
+        boolean isValid = false;
+
+        while(!isValid) {
+            System.out.print("\n Day('DD)': ");
+            inputDay = in.nextInt();
+            in.nextLine();
+
+            if (inputDay >= 1 && inputDay <= 31) {
+                isValid = true;
+            } else {
+                printText(" Invalid day. Please ensure the day is between 1 and 31. ", ConsoleColor.RED);
+            }
+        }
+        return inputDay;
+    }
+
+    //Ask for month inpput
+    private int getMonthInput() {
+        int inputMonth = 0;
+        boolean isValid = false;
+
+        while(!isValid) {
+            System.out.print(" Month('MM'): ");
+            inputMonth = in.nextInt();
+            in.nextLine();
+
+            if (inputMonth >= 1 && inputMonth <= 12) {
+                isValid = true;
+            } else {
+                printText(" Invalid month. Please ensure the month is between 1 and 12. \n", ConsoleColor.RED);
+            }
+        }
+        return inputMonth;
+    }
+
+    //Ask for year input while checking what year it is
+    private int getYearInput(int day, int month) {
+        int inputYear = 0;
+        boolean isValid = false;
+
+        while(!isValid) {
+            System.out.print(" Year('YYYY'): ");
+            inputYear = in.nextInt();
+            in.nextLine();
+
+            if (inputYear >= 1915 && inputYear <= LocalDate.now().getYear()) {
+                // Check if selected month has fewer than 31 days
+                if (day > 28 && month == 2 && !isLeapYear(inputYear)) {
+                    printText(" Invalid day for February in a non-leap year. Please choose a valid day: ", ConsoleColor.RED);
+                } else if (day > 29 && month == 2 && isLeapYear(inputYear)) {
+                    printText(" Invalid day for February in a leap year. Please choose a valid day: ", ConsoleColor.RED);
+                } else {
+                    // Check if selected date is before current date
+                    LocalDate selectedDate = LocalDate.of(inputYear, month, day);
+                    if (selectedDate.isAfter(LocalDate.now())) {
+                        printText(" You can't register someone that isn't born yet. Try again: ", ConsoleColor.RED);
+                    } else {
+                        isValid = true;
+                    }
+                }
+            } else {
+                printText(" Invalid year. Please ensure the year is between 1915 and this year. \n", ConsoleColor.RED);
+            }
+        }
+        return inputYear;
+    }
+
+    //Error code
+    private void inputMismatch() {
+        printText(" Invalid input. Please enter numeric values for the date: ", ConsoleColor.RED);
+        in.nextLine(); // Clear input
+    }
+
+    //Error code
+    private void unexpectedError() {
+        printText(" An unexpected error occurred. Please try again: ", ConsoleColor.RED);
+        in.nextLine(); // Clear input
+    }
 
     public static void printText(String text, ConsoleColor color) {
         System.out.print(color + text + ConsoleColor.RESET);
@@ -146,17 +178,6 @@ public class UI implements  Serializable {
         }
     }
 
-    //where did we use this?
-    /*public void printListOfMembers(ArrayList<Member> members){
-        System.out.println("\n");
-        if (!members.isEmpty()) {
-            for (Member member: members) {
-                printText(member.toString()+"\n",ConsoleColor.RESET);
-            }
-        }
-        System.out.println("\n");
-    }*/
-
     public void printDisciplines(ArrayList<Discipline> disciplines){
         if (!disciplines.isEmpty()) {
             for (Discipline discipline: disciplines) {
@@ -164,35 +185,6 @@ public class UI implements  Serializable {
             }
         }
     }
-
-    /*public void printArrayList (ArrayList list){
-        for (int i =0; i< list.size(); i++){
-            printText((String) list.get(i) + "\n", ConsoleColor.RESET);
-        }
-    }*/
-
-    /*public void printList(ArrayList<Object> list) {
-        if (!list.isEmpty()) {
-
-            String objectClass = list.get(0).getClass().getName();
-            if (objectClass.equalsIgnoreCase("Member")) {
-                for (Object obj : list) {
-                    if (obj instanceof Member member) {
-                        printMember(member);
-                    }
-                }
-            } else if (objectClass.equalsIgnoreCase("Coach")) {
-                for (Object obj : list) {
-                    if (obj instanceof Coach coach) {
-                        System.out.println("Coach " + coach.getName());
-                    }
-                }
-            } else {
-                printText(" Unsupported object type in the list! ", ConsoleColor.RED); }
-        } else {
-            printText(" This list empty.", ConsoleColor.RED);
-        }
-    }*/
 
     public void printMember(Member member) {
         System.out.println("\n\n _________________________________________________ ");
@@ -276,22 +268,8 @@ public class UI implements  Serializable {
         }
     }
 
-    /*private boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }*/
-
-
     private boolean isString(String str) {
-        Pattern pattern = Pattern.compile("^[a-zA-Z]+$"); // regex - complicated
-        // Pattern with regex for letters only
+        Pattern pattern = Pattern.compile("^[a-zA-Z]+$"); // regex - complicated - Pattern for letters only
 
         //check if StringInput matches our letter pattern
         Matcher matcher = pattern.matcher(str);
@@ -311,29 +289,11 @@ public class UI implements  Serializable {
                  discipline = d;}
             }
             if (discipline ==null){
-                printText(" Discipline not recognised, please try again: \n",ConsoleColor.RED);
+                printText(" Discipline not recognised, please try again: ",ConsoleColor.RED);
             }
         }
         return  discipline;
     }
-
-    /*public void printAllMembers(ArrayList<Member> members) {
-        for (Member member : members) {
-            System.out.println("------------------------");
-            System.out.printf("Member ID: %d%n", member.getMemberID());
-            System.out.printf("Name: %s %s%n", member.getFirstName(), member.getLastName());
-            System.out.printf("Membership Price: %d,-%n", member.getMembershipPrice());
-
-            //Check payment status and print in red or green
-            if (member.getPaymentStatus()) {
-                printText("Payment Status: Paid\n", ConsoleColor.GREEN);
-            } else {
-                printText("Payment Status: Not Paid\n", ConsoleColor.RED);
-            }
-
-            System.out.println("_________________________________\n");
-        }
-    }*/
 
     public void printWelcomeMessage() {
         System.out.println("\n ________________________________________________ ");
