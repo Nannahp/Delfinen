@@ -282,9 +282,18 @@ public void removeDiscipline(Member member){
         member.setLastName(getMemberNameInput("last-name"));
     }
 
-    //Edit activity status
+    //Edit activity status, adds an active member to a coach or removes an inactive member.
     public void editActiveStatus(Member member){
         member.setIsActive(getMemberBooleanInput());
+        if (member instanceof CompetitionMember) {
+            Coach coach = ((CompetitionMember) member).getCoach();
+            if (member.getIsActive()) {
+                coach.addMemberToCoach((CompetitionMember) member);
+            } else {
+                coach.removeMemberFromCoachLists((CompetitionMember) member);
+            }
+        }
+        ui.printText("\n Status updated",ConsoleColor.GREEN);
     }
 
 
@@ -337,7 +346,7 @@ public void removeDiscipline(Member member){
 
     //Register trainingscore based on specific coach
     public void registerTrainingScore(Coach coach){
-        UI.printText("\n Which member you would like to add a training score to? ", ConsoleColor.RESET);
+        UI.printText("\n Which member you would like to add a training score to?\n ", ConsoleColor.RESET);
         ui.printMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
@@ -345,7 +354,7 @@ public void removeDiscipline(Member member){
             updateMemberInfoInFile(member);
             coach.updateMemberInCoach((CompetitionMember) member);
             updateCoachInfoInFile(coach);}
-        else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
+        else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
 
     }
     //Asks questions and creates the trainingscore to be registered
@@ -434,7 +443,7 @@ public void removeDiscipline(Member member){
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            UI.printText(" \n Please enter the MemberId of the member you would like to access: ",ConsoleColor.RESET);
+            UI.printText(" \n Please enter the MemberId of the member you\n would like to access: ",ConsoleColor.RESET);
             int memberId = UI.getIntInput();
             member = searchForMember(memberId);
         }

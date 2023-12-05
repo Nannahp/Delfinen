@@ -41,7 +41,7 @@ public class Coach implements Serializable {
         }
     }
 
-    //Deletes a member by Id
+    //Deletes a member by ID
     public void deleteMemberInList(ArrayList<CompetitionMember> list, CompetitionMember memberToDelete) {
         list.removeIf(member -> member.getMemberID() == memberToDelete.getMemberID());
     }
@@ -73,7 +73,7 @@ public class Coach implements Serializable {
         boolean memberExist = false;
         for (Discipline discipline : disciplines) {
             memberExist = checkIfMemberExistInList(member,discipline);
-            if(!memberExist) {
+            if(!memberExist && member.getIsActive()) {
                 switch (discipline) {
                     case CRAWL -> addToDisciplineList(member, juniorCrawl, seniorCrawl);
                     case BACKCRAWL -> addToDisciplineList(member, juniorBackcrawl, seniorBackcrawl);
@@ -81,7 +81,7 @@ public class Coach implements Serializable {
                     case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
                     case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
                 }
-            }
+            } else ui.printText(" Member is not active or is already assigned to this coach", ConsoleColor.RED);
         }
      if (!memberExist) {
       ui.printText(" Added to team",ConsoleColor.RESET);}

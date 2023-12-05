@@ -1,7 +1,9 @@
 
 import java.io.Serializable;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -63,20 +65,18 @@ public class UI implements  Serializable {
     //Date input for creating a member and creating a local date for it
     public LocalDate getLocalDateInput() {
         int day = 0, month = 0, year = 0;
-
-        while (year == 0) {
+        day = getDayInput();
+        month = getMonthInput();
+        year = getYearInput();
+        LocalDate date = null;
+        while (date == null) {
             try {
-                day = getDayInput();
-                month = getMonthInput();
-                year = getYearInput(day, month);
-
-            } catch (InputMismatchException e) {
-                inputMismatch();
-            } catch (Exception e) {
-                unexpectedError();
+                date = LocalDate.of(year, month, day);
+            } catch (DateTimeException e) {
+                printText(" The date you have entered is invalid, please enter a valid date:", ConsoleColor.RED);
+                return getLocalDateInput();
             }
-        }
-        return LocalDate.of(year, month, day);
+        } return  date;
     }
 
     //Ask for day input
@@ -118,31 +118,19 @@ public class UI implements  Serializable {
     }
 
     //Ask for year input while checking what year it is
-    private int getYearInput(int day, int month) {
+    private int getYearInput() {
         int inputYear = 0;
-        boolean isValid = false;
+        boolean endLoop = false;
 
-        while(!isValid) {
+        while(!endLoop) {
             System.out.print(" Year('YYYY'): ");
             inputYear = in.nextInt();
             in.nextLine();
 
             if (inputYear >= 1915 && inputYear <= LocalDate.now().getYear()) {
-                // Check if selected month has fewer than 31 days
-                if (day > 28 && month == 2 && !isLeapYear(inputYear)) {
-                    printText(" Invalid day for February in a non-leap year. Please choose a valid day: ", ConsoleColor.RED);
-                } else if (day > 29 && month == 2 && isLeapYear(inputYear)) {
-                    printText(" Invalid day for February in a leap year. Please choose a valid day: ", ConsoleColor.RED);
-                } else {
-                    // Check if selected date is before current date
-                    LocalDate selectedDate = LocalDate.of(inputYear, month, day);
-                    if (selectedDate.isAfter(LocalDate.now())) {
-                        printText(" You can't register someone that isn't born yet. Try again: ", ConsoleColor.RED);
-                    } else {
-                        isValid = true;
+                        endLoop = true;
                     }
-                }
-            } else {
+             else {
                 printText(" Invalid year. Please ensure the year is between 1915 and this year. \n", ConsoleColor.RED);
             }
         }
