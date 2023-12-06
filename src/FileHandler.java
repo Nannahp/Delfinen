@@ -4,7 +4,7 @@ import java.util.*;
 public class FileHandler {
 
     public static void saveObjectsToFile(String fileName, List<Object> objects) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src\\files\\"+fileName))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src" + File.separator + "files" + File.separator + fileName))) {
             for (Object object : objects) {
                 oos.writeObject(object);
             }
@@ -21,7 +21,7 @@ public class FileHandler {
 
     public static List<Object> loadObjectsFromFile(String fileName) {
         List<Object> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src\\files\\"+fileName))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src" + File.separator + "files" + File.separator + fileName))) {
             Object object;
             while ((object = ois.readObject()) != null) {
                 objects.add(object);
@@ -68,7 +68,7 @@ public class FileHandler {
     //Not needed right now because file is created, but might be needed afterwards
     /*public static void createFile(String fileName) {
         try {
-            File newFile = new File("src\\files\\"+fileName);
+            File newFile = new File("src" + File.separator + "files" + File.separator + fileName);
             if (newFile.createNewFile()) {
                 UI.printText("File created: " + newFile.getName(), ConsoleColor.GREEN);
             } else {
@@ -80,7 +80,7 @@ public class FileHandler {
     }*/
 
     public static void clearFile(String fileName) {
-        try (FileWriter fw = new FileWriter("src\\files\\"+fileName, false)) {
+        try (FileWriter fw = new FileWriter("src" + File.separator + "files" + File.separator + fileName, false)) {
         } catch (IOException e) {
             e.printStackTrace();
         }
