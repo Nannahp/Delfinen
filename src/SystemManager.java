@@ -354,16 +354,20 @@ public void removeDiscipline(Member member){
 
     //Register trainingscore based on specific coach
     public void registerTrainingScore(Coach coach){
-        UI.printText("\n Which member you would like to add a training score to?\n ", ConsoleColor.RESET);
-        ui.printMembers(coach.getAllMembers());
-        Member member = getMember();
-        if (member instanceof CompetitionMember){
-        coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
-            updateMemberInfoInFile(member);
-            coach.updateMemberInCoach((CompetitionMember) member);
-            updateCoachInfoInFile(coach);}
-        else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
-
+        if (!coach.getAllMembers().isEmpty()) {
+            UI.printText("\n Which member you would like to add a training score to?\n ", ConsoleColor.RESET);
+            ui.printMembers(coach.getAllMembers());
+            Member member = getMember();
+            if (coach.getAllMembers().contains(member)){
+            if (member instanceof CompetitionMember) {
+                coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
+                updateMemberInfoInFile(member);
+                coach.updateMemberInCoach((CompetitionMember) member);
+                updateCoachInfoInFile(coach);
+            } else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
+            } else  UI.printText("\n This member is not assigned to this coach\n", ConsoleColor.RED);
+        }
+        else UI.printText("\n No members assigned to this coach\n", ConsoleColor.RED);
     }
     //Asks questions and creates the trainingscore to be registered
     public TrainingScore createTrainingScore(){
@@ -404,18 +408,21 @@ public void removeDiscipline(Member member){
     }
 
     //Registers competitionScore by coach
-    public void registerCompetitionScore(Coach coach){
-        UI.printText("\n Which member would you like to add a competition score to?\n\n", ConsoleColor.RESET);
-        ui.printMembers(coach.getAllMembers());
-        Member member = getMember();
-        if (member instanceof CompetitionMember){
-            coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member));
-            updateMemberInfoInFile(member);
-            coach.updateMemberInCoach((CompetitionMember) member);
-            updateCoachInfoInFile(coach);}
-        else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
+    public void registerCompetitionScore(Coach coach) {
+        if (!coach.getAllMembers().isEmpty()) {
+            UI.printText("\n Which member would you like to add a competition score to?\n\n", ConsoleColor.RESET);
+            ui.printMembers(coach.getAllMembers());
+            Member member = getMember();
+            if (coach.getAllMembers().contains(member)){
+            if (member instanceof CompetitionMember) {
+                coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member));
+                updateMemberInfoInFile(member);
+                coach.updateMemberInCoach((CompetitionMember) member);
+                updateCoachInfoInFile(coach);
+            } else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
+            } else  UI.printText("\n This member is not assigned to this coach\n", ConsoleColor.RED);
+        } else UI.printText("\n No members assigned to this coach\n", ConsoleColor.RED);
     }
-
     //Asks questions for competitionScore to be registeres
     public CompetitionScore createCompetitionScore(CompetitionMember member){
         System.out.print(" This member has these disciplines: \n");
