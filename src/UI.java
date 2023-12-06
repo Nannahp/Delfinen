@@ -202,8 +202,10 @@ public class UI implements  Serializable {
             System.out.printf(" %s","Discipline(s): \n");
             for (Discipline discipline: disciplines) {
                 System.out.printf("   %S | Best training score: ", discipline.label); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
+                int time = ((CompetitionMember) member).findTrainingTime(discipline);
+                if (time!= Integer.MAX_VALUE){
                 printFormattedSecondsToReadableTime(((CompetitionMember) member).findTrainingTime(discipline));
-                }
+                }}
             System.out.println("\n Competition(s): ");
             for (CompetitionScore score: competitions) {
                 System.out.printf("  %S: Discipline: %S | Placement: %d | Time: ", score.getCompetitionName(),score.getDiscipline(),score.getPlacement()); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES

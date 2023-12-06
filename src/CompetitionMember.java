@@ -90,8 +90,7 @@ public class CompetitionMember extends Member{
                 UI.printText(" Competition score added to member", ConsoleColor.GREEN);
                 return true;
             } else {
-                UI.printText(" This member is not active in: " + competitionScore.getDiscipline() + "\n", ConsoleColor.RED);
-                return false;}
+                 return false;}
         } catch (Exception e) {
             System.err.println(" An error occurred while updating training score: " + e.getMessage());
             e.printStackTrace();}
