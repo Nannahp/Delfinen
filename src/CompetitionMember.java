@@ -32,14 +32,13 @@ public class CompetitionMember extends Member{
     //Loops through trainingScore list to see if there is a score with given disciplin
     public boolean checkIfTrainingScoreExists(Discipline discipline){
     boolean scoreExists = false;
-    for (TrainingScore score: trainingScores) {
-        if( score.getDiscipline().equals(discipline)){
-            scoreExists = true;
+        for (TrainingScore score: trainingScores) {
+            if( score.getDiscipline().equals(discipline)){
+                scoreExists = true;
+            }
         }
-    }
     return scoreExists;
-}
-
+    }
 
     public void editTrainingScores(TrainingScore trainingScore){
         if( doesMemberHaveDiscipline(trainingScore.getDiscipline())){
@@ -117,10 +116,6 @@ public class CompetitionMember extends Member{
 
     public Coach getCoach() {
         return coach;
-    }
-
-    public ArrayList<TrainingScore> getTrainingScores() {
-        return trainingScores;
     }
 
     public ArrayList<CompetitionScore> getCompetitionScores(){

@@ -282,9 +282,18 @@ public void removeDiscipline(Member member){
         member.setLastName(getMemberNameInput("last-name"));
     }
 
-    //Edit activity status
+    //Edit activity status, adds an active member to a coach or removes an inactive member.
     public void editActiveStatus(Member member){
         member.setIsActive(getMemberBooleanInput());
+        if (member instanceof CompetitionMember) {
+            Coach coach = ((CompetitionMember) member).getCoach();
+            if (member.getIsActive()) {
+                coach.addMemberToCoach((CompetitionMember) member);
+            } else {
+                coach.removeMemberFromCoachLists((CompetitionMember) member);
+            }
+        }
+        ui.printText("\n Status updated",ConsoleColor.GREEN);
     }
 
 
@@ -337,7 +346,7 @@ public void removeDiscipline(Member member){
 
     //Register trainingscore based on specific coach
     public void registerTrainingScore(Coach coach){
-        UI.printText("\n Which member you would like to add a training score to? ", ConsoleColor.RESET);
+        UI.printText("\n Which member you would like to add a training score to?\n ", ConsoleColor.RESET);
         ui.printMembers(coach.getAllMembers());
         Member member = getMember();
         if (member instanceof CompetitionMember){
@@ -345,7 +354,7 @@ public void removeDiscipline(Member member){
             updateMemberInfoInFile(member);
             coach.updateMemberInCoach((CompetitionMember) member);
             updateCoachInfoInFile(coach);}
-        else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
+        else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
 
     }
     //Asks questions and creates the trainingscore to be registered
@@ -434,7 +443,7 @@ public void removeDiscipline(Member member){
     public Member getMember() {
         Member member = null;
         while (member == null) {  //not tested!
-            UI.printText(" \n Please enter the MemberId of the member you would like to access: ",ConsoleColor.RESET);
+            UI.printText(" \n Please enter the MemberId of the member you\n would like to access: ",ConsoleColor.RESET);
             int memberId = UI.getIntInput();
             member = searchForMember(memberId);
         }
@@ -449,20 +458,6 @@ public void removeDiscipline(Member member){
     }                        //ensures that the ID can't be the same if we delete a member and add a new one
 
 
-    //Maybe not needed  - But might if we add Delete Coach in edit
-    public Coach searchForCoach(){
-        Coach coachToReturn = null;
-        while(coachToReturn==null){
-            UI.printText(" \nPlease enter the name of the Coach you want: ",ConsoleColor.RESET);
-            String name = ui.getStringInput();
-            for (Coach coach: coaches) {
-                if (coach.getName().equals(name)){
-                    coachToReturn = coach;
-                }
-            }
-        }return coachToReturn;
-    }
-
     public void quitProgram() {
         systemRunning = false;
     }
@@ -472,10 +467,6 @@ public void removeDiscipline(Member member){
     private void updateCoachInfo(Coach coach) {
         updateCoachInfoInFile(coach);
         updateCoaches();
-    }
-    private void updateMemberInfo(Member member) {
-        updateMemberInfoInFile(member);
-        updateMembers();
     }
 
     //Updates and loads for the files to always be up-to-date
@@ -513,14 +504,6 @@ public void removeDiscipline(Member member){
         }
     }
 
-    /*
-    public void printCoaches(){
-        for (Coach coach: coaches) {
-            UI.printText(coach.getName(),ConsoleColor.WHITE);
-        }
-    }
-    */
-
      //Methods to updates files
     public void updateMemberInfoInFile(Member member){
         FileHandler.modifyObjectInFile("Members.txt", member, true);
@@ -532,11 +515,6 @@ public void removeDiscipline(Member member){
         FileHandler.modifyObjectInFile("Members.txt", member,false);
     }
 
-    //Method to create files if the files should get lost
-    public void initializeFiles(){
-        FileHandler.createFile("Members.txt");
-        FileHandler.createFile("Coaches.txt");
-    }
 
     public void readyArraysAtStartup(){
         loadArrays();

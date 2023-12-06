@@ -65,7 +65,8 @@ public class FileHandler {
     }
 }
 
-    public static void createFile(String fileName) {
+    //Not needed right now because file is created, but might be needed afterwards
+    /*public static void createFile(String fileName) {
         try {
             File newFile = new File("src\\files\\"+fileName);
             if (newFile.createNewFile()) {
@@ -76,26 +77,13 @@ public class FileHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
-    public static void printFile(String fileName) { //To print file
-        try {
-            File file = new File("src\\"+fileName);
-            Scanner myReader = new Scanner(file); //UI
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                System.out.println(data);
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+    public static void clearFile(String fileName) {
+        try (FileWriter fw = new FileWriter("src\\files\\"+fileName, false)) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
-        public static void clearFile(String fileName) {
-            try (FileWriter fw = new FileWriter("src\\files\\"+fileName, false)) {
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
 }
