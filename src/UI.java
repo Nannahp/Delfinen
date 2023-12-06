@@ -220,9 +220,10 @@ public class UI implements  Serializable {
 
     public void printTrainingScore(Discipline discipline, CompetitionMember member){
         int time =  member.findTrainingTime(discipline);
+        if(time != 1000){
         String info = member.getFirstName() + " " + member.getLastName() + " : ";
         printText("    " + info,ConsoleColor.RESET);
-        printFormattedSecondsToReadableTime(time);
+        printFormattedSecondsToReadableTime(time);}
     }
     public void printTop5List(ArrayList<CompetitionMember> listOfMembers, String prompt, Discipline discipline) {
         String info = prompt + " in " + discipline.label + " top 5:_";
