@@ -198,12 +198,20 @@ public class SystemManager {
         ui.printMembers(members);
         UI.printText("\n", ConsoleColor.RESET);
         Member member = getMember();
-        removeMemberFromFile(member);
-        updateMembers();
-        if (member instanceof  CompetitionMember){
-            deleteCompetitionMember((CompetitionMember) member);
+        UI.printText("\n Are you sure? (y/n) ", ConsoleColor.CYAN);
+
+        if (ui.getStringInput().equalsIgnoreCase("y")) {
+            removeMemberFromFile(member);
+            updateMembers();
+            if (member instanceof  CompetitionMember){
+                deleteCompetitionMember((CompetitionMember) member);
+            }
+            UI.printText("\n " + member.getFirstName() + " " + member.getLastName() + " is no longer a member.",ConsoleColor.RED);
+        } else {
+            UI.printText("\n " + member.getFirstName() + " " + member.getLastName() + " is still a member.",ConsoleColor.GREEN);
+            runManagerMenu();
         }
-        UI.printText("\n Member: " + member.getFirstName() + " " + member.getLastName() + " deleted",ConsoleColor.GREEN);
+
     }
 
     //Specifically for CompetitionMember
@@ -293,7 +301,7 @@ public void removeDiscipline(Member member){
                 coach.removeMemberFromCoachLists((CompetitionMember) member);
             }
         }
-        ui.printText("\n Status updated",ConsoleColor.GREEN);
+        UI.printText("\n Status updated",ConsoleColor.GREEN);
     }
 
 
