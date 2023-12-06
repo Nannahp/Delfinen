@@ -72,7 +72,7 @@ public class CompetitionMember extends Member{
 
     //Finds a trainingScore for top 5
     public int findTrainingTime(Discipline discipline) {
-        int time = 1000;
+        int time = Integer. MAX_VALUE;
         for (TrainingScore score : trainingScores) {
             if (score.getDiscipline().equals(discipline)) {
                 time = score.getTime();

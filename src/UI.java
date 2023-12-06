@@ -220,7 +220,7 @@ public class UI implements  Serializable {
 
     public void printTrainingScore(Discipline discipline, CompetitionMember member){
         int time =  member.findTrainingTime(discipline);
-        if(time != 1000){
+        if(time != Integer. MAX_VALUE){
         String info = member.getFirstName() + " " + member.getLastName() + " : ";
         printText("    " + info,ConsoleColor.RESET);
         printFormattedSecondsToReadableTime(time);}
