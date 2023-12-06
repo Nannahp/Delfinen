@@ -13,6 +13,7 @@ public class UI implements  Serializable {
     private static Scanner in = new Scanner(System.in);
 
 
+
     // Getting inout methods
     public String getStringInput() {
         String stringInput = in.nextLine();
@@ -24,9 +25,14 @@ public class UI implements  Serializable {
         return stringInput;
     }
 
+    public static String getStringWithNumbersInput(){
+        String stringInput = in.nextLine();
+        return stringInput;
+    }
+
     public static int getIntInput() {
-        int intInput = 0;
-        while (intInput == 0){
+        int intInput = Integer.MIN_VALUE;
+        while (intInput == Integer.MIN_VALUE){
             try {
                 intInput = in.nextInt();
                 in.nextLine(); //Scanner bug
@@ -199,16 +205,17 @@ public class UI implements  Serializable {
             System.out.println();
             System.out.println(" ___________________Competition___________________");
             System.out.printf(" Coach: Coach %S%n", ((CompetitionMember) member).getCoach().getName());
-            System.out.printf(" %s","Discipline(s): \n");
+            System.out.printf(" %s","Discipline(s): \n\n");
             for (Discipline discipline: disciplines) {
                 System.out.printf("   %S | Best training score: ", discipline.label); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
                 int time = ((CompetitionMember) member).findTrainingTime(discipline);
                 if (time!= Integer.MAX_VALUE){
                 printFormattedSecondsToReadableTime(((CompetitionMember) member).findTrainingTime(discipline));
-                }}
+                } else System.out.println();
+            }
             System.out.println("\n Competition(s): ");
             for (CompetitionScore score: competitions) {
-                System.out.printf("  %S: Discipline: %S | Placement: %d | Time: ", score.getCompetitionName(),score.getDiscipline(),score.getPlacement()); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
+                System.out.printf("%n   %S:%n         Discipline: %S %n         Placement: %d %n         Time:", score.getCompetitionName(),score.getDiscipline(),score.getPlacement()); // ADD CODE HERE TO PRINT DISCIPLE TRAINING SCORES
                 printFormattedSecondsToReadableTime(score.getTime());
             }
         }

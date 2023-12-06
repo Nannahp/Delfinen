@@ -81,7 +81,7 @@ public class Coach implements Serializable {
                     case BREASTSTROKE -> addToDisciplineList(member, juniorBreaststroke, seniorBreaststroke);
                     case MEDLEY -> addToDisciplineList(member, juniorMedley, seniorMedley);
                 }
-            } else ui.printText(" Member is not active or is already assigned to this coach", ConsoleColor.RED);
+            }
         }
      if (!memberExist) {
       ui.printText(" Added to team",ConsoleColor.RESET);}
@@ -153,7 +153,7 @@ public class Coach implements Serializable {
     public void addCompetitionScoreToMember(CompetitionMember member, CompetitionScore competitionScore) {
         boolean memberExists = false;
         for (Discipline discipline : member.getDisciplines()){
-            if (findMemberInCoach(member, getJuniorList(discipline) )||
+            if (findMemberInCoach(member, getJuniorList(discipline) ) ||
                     findMemberInCoach(member, getSeniorList(discipline))){
                 memberExists = true;
             }
@@ -241,11 +241,9 @@ public class Coach implements Serializable {
     //Used to find a specific member in a specific list
     public boolean findMemberInCoach(CompetitionMember memberToFind, ArrayList<CompetitionMember> list){
        boolean found = false;
-        for (CompetitionMember member: list) {
-            if(member.equals(memberToFind)){
-                found =  true;
+       if(list.contains(memberToFind)){
+           found =  true;
             }
-        }
         return  found;
     }
 

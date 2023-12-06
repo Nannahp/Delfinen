@@ -165,11 +165,15 @@ public class SystemManager {
             UI.printText("\n Are there additional disciplines? (y/n): ",ConsoleColor.RESET);
             needToAddMoreDisciplines = ui.getBooleanInput();
             if (needToAddMoreDisciplines){
+
                 Discipline discipline = askForDiscipline();
+                if (disciplines.contains(discipline)){
+                    UI.printText(" \n Member already active in this discipline \n", ConsoleColor.RED);
+                } else
                 disciplines.add(discipline);
             }
         }
-        while (needToAddMoreDisciplines);
+        while (needToAddMoreDisciplines && disciplines.size()<5);
         return disciplines.toArray(new Discipline[disciplines.size()]);
     }
 
@@ -275,11 +279,15 @@ public void addDiscipline(Member member){
     //Remove disciplin through edit
 public void removeDiscipline(Member member){
     if( member instanceof CompetitionMember) {
-        UI.printText("\n Which discipline would you like to delete? ", ConsoleColor.RESET);
+        if(!((CompetitionMember) member).getDisciplines().isEmpty()){
+        UI.printText("\n Which discipline would you like to delete?\n", ConsoleColor.RESET);
         ui.printDisciplines(((CompetitionMember) member).getDisciplines());
         Discipline discipline = ui.getDiscipline();
         ((CompetitionMember) member).deleteDiscipline(discipline);
         deleteMemberByDiscipline((CompetitionMember) member, discipline);
+    }
+        else UI.printText(" This member is not active in any disciplines\n", ConsoleColor.RED);
+
     }
     else UI.printText("\n Member is not a competition member", ConsoleColor.RED);
 }
@@ -359,20 +367,23 @@ public void removeDiscipline(Member member){
             ui.printMembers(coach.getAllMembers());
             Member member = getMember();
             if (coach.getAllMembers().contains(member)){
-            if (member instanceof CompetitionMember) {
-                coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore());
+             if (member instanceof CompetitionMember) {
+                 System.out.print(" This member has these disciplines: \n");
+                 ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+                 Discipline discipline = checkIfMemberHasDiscipline((CompetitionMember) member);
+                 if (discipline != null){
+                coach.addTrainingScoreToMember((CompetitionMember) member, createTrainingScore(discipline));
                 updateMemberInfoInFile(member);
                 coach.updateMemberInCoach((CompetitionMember) member);
-                updateCoachInfoInFile(coach);
-            } else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
+                updateCoachInfoInFile(coach);}
+             } else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
             } else  UI.printText("\n This member is not assigned to this coach\n", ConsoleColor.RED);
         }
         else UI.printText("\n No members assigned to this coach\n", ConsoleColor.RED);
     }
+
     //Asks questions and creates the trainingscore to be registered
-    public TrainingScore createTrainingScore(){
-        UI.printText("\n Please enter discipline: ",ConsoleColor.RESET);
-        Discipline discipline = ui.getDiscipline();
+    public TrainingScore createTrainingScore(Discipline discipline){
         UI.printText("\n Please enter the training-time (in seconds): ",ConsoleColor.RESET);
         int time = UI.getIntInput();
         LocalDate date = LocalDate.now();
@@ -415,22 +426,33 @@ public void removeDiscipline(Member member){
             Member member = getMember();
             if (coach.getAllMembers().contains(member)){
             if (member instanceof CompetitionMember) {
-                coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member));
+                System.out.print(" This member has these disciplines: \n");
+                ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+                Discipline discipline = checkIfMemberHasDiscipline((CompetitionMember) member);
+                if (discipline != null){
+                coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member,discipline));
                 updateMemberInfoInFile(member);
                 coach.updateMemberInCoach((CompetitionMember) member);
-                updateCoachInfoInFile(coach);
+                updateCoachInfoInFile(coach);}
             } else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
             } else  UI.printText("\n This member is not assigned to this coach\n", ConsoleColor.RED);
         } else UI.printText("\n No members assigned to this coach\n", ConsoleColor.RED);
     }
-    //Asks questions for competitionScore to be registeres
-    public CompetitionScore createCompetitionScore(CompetitionMember member){
-        System.out.print(" This member has these disciplines: \n");
-        ui.printDisciplines(member.getDisciplines());
+
+    public Discipline checkIfMemberHasDiscipline(CompetitionMember member){
         UI.printText("\n Please enter discipline: ",ConsoleColor.RESET);
         Discipline discipline = ui.getDiscipline();
+         if (member.doesMemberHaveDiscipline(discipline)){
+             return discipline;}
+        else {
+            UI.printText("\n Member is not active in this discipline\n", ConsoleColor.RED);
+        return null;}
+    }
+
+    //Asks questions for competitionScore to be registeres
+    public CompetitionScore createCompetitionScore(CompetitionMember member, Discipline discipline){
         UI.printText("\n Please enter the competition name: ",ConsoleColor.RESET);
-        String competitionName = ui.getStringInput();
+        String competitionName = ui.getStringWithNumbersInput();
         UI.printText("\n Please enter placement: ",ConsoleColor.RESET);
         int placement = UI.getIntInput();
         UI.printText("\n Please enter the competition-time (in seconds): ",ConsoleColor.RESET);
@@ -447,7 +469,7 @@ public void removeDiscipline(Member member){
                 if (member.getMemberID() == memberID)
                     return member;
             }
-            throw new IllegalArgumentException("Member with given ID not found!");
+            throw new IllegalArgumentException("\n Member with given ID not found!");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return null;
@@ -457,7 +479,7 @@ public void removeDiscipline(Member member){
     //Returns a specific member
     public Member getMember() {
         Member member = null;
-        while (member == null) {  //not tested!
+        while (member == null) {
             UI.printText(" \n Please enter the MemberId of the member you\n would like to access: ",ConsoleColor.RESET);
             int memberId = UI.getIntInput();
             member = searchForMember(memberId);
@@ -606,10 +628,6 @@ public void removeDiscipline(Member member){
         coaches.get(0).addTrainingScoreToMember(peter, new TrainingScore(133,LocalDate.now(),Discipline.BUTTERFLY));
 
         coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(111,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(38,LocalDate.now(),Discipline.BACKCRAWL));
-        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.MEDLEY));
         coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.BUTTERFLY));
 
         coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(55,LocalDate.now(),Discipline.CRAWL));
@@ -620,16 +638,11 @@ public void removeDiscipline(Member member){
 
         coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(91,LocalDate.now(),Discipline.CRAWL));
         coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(200,LocalDate.now(),Discipline.BUTTERFLY));
-        coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(119,LocalDate.now(),Discipline.CRAWL));
 
         coaches.get(3).addTrainingScoreToMember(may, new TrainingScore(98,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(3).addTrainingScoreToMember(may, new TrainingScore(112,LocalDate.now(),Discipline.BACKCRAWL));
-        coaches.get(3).addTrainingScoreToMember(may, new TrainingScore(240,LocalDate.now(),Discipline.MEDLEY));
 
         coaches.get(3).addTrainingScoreToMember(mayday, new TrainingScore(47,LocalDate.now(),Discipline.BUTTERFLY));
         coaches.get(3).addTrainingScoreToMember(mayday, new TrainingScore(100,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(3).addTrainingScoreToMember(mayday, new TrainingScore(67,LocalDate.now(),Discipline.BUTTERFLY));
 
         coaches.get(3).addTrainingScoreToMember(benjy, new TrainingScore(148,LocalDate.now(),Discipline.CRAWL));
         coaches.get(3).addTrainingScoreToMember(benjy, new TrainingScore(126,LocalDate.now(),Discipline.BUTTERFLY));
