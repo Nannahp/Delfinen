@@ -538,45 +538,96 @@ public void removeDiscipline(Member member){
     public void initializeData(){
         FileHandler.clearFile("Members.txt"); //clears the files, so it's easier to assess if the data is correct.
         FileHandler.clearFile("Coaches.txt");
-        addTestCoach("Henry");
-        addTestCoach("Maria");
+
+        addTestCoach("Tony Stark");
+        addTestCoach("Dr. Otto Octavius");
+        addTestCoach("Norman Osborn");
+        addTestCoach("Ben Parker");
+
         loadCoachesArray();
+
         addTestCompetitionMember("Peter", "Parker", "m", 1988,coaches.get(0));
         addTestCompetitionMember("Miles", "Morales","m", 2010,coaches.get(0));
-        addTestCompetitionMember("Felicia", "Hardy", "f", 1990,coaches.get(0));
+        addTestCompetitionMember("Felicia", "Hardy", "f", 1990,coaches.get(2));
         addTestCompetitionMember("Gwen", "Stacy", "f", 1991, coaches.get(1));
-        addTestMember("MJ", "Watson", "f", 1988);
-        addTestMember("Otto", "Octavious", "m", 1960);
+        addTestCompetitionMember("Harry", "Osborn", "m", 1988, coaches.get(2));
+        addTestCompetitionMember("May", "Parker", "f", 1963, coaches.get(3));
+        addTestCompetitionMember("Mayday", "Parker", "f", 2018, coaches.get(3));
+        addTestCompetitionMember("Benjy", "Parker", "m", 2020, coaches.get(3));
+
+        addTestMember("Mary-Jane", "Watson", "f", 1988);
+        addTestMember("J. Jonah", "Jameson", "m", 1951);
+        addTestMember("Flash", "Thompson", "m", 1987);
+
     }
 
     public void initializeTrainingScores(){
         loadMemberArray();
+
         CompetitionMember peter = (CompetitionMember) members.get(0);
         CompetitionMember miles = (CompetitionMember) members.get(1);
         CompetitionMember felicia = (CompetitionMember) members.get(2);
         CompetitionMember gwen = (CompetitionMember) members.get(3);
+        CompetitionMember harry = (CompetitionMember) members.get(4);
+        CompetitionMember may = (CompetitionMember) members.get(5);
+        CompetitionMember mayday = (CompetitionMember) members.get(6);
+        CompetitionMember benjy = (CompetitionMember) members.get(7);
+
         coaches.get(0).addTrainingScoreToMember(peter, new TrainingScore(80,LocalDate.now(),Discipline.CRAWL));
         coaches.get(0).addTrainingScoreToMember(peter, new TrainingScore(133,LocalDate.now(),Discipline.BUTTERFLY));
-        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(111,LocalDate.now(),Discipline.CRAWL));
-        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(38,LocalDate.now(),Discipline.BACKCRAWL));
-        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.MEDLEY));
-        coaches.get(0).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.BUTTERFLY));
+
+        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(111,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(38,LocalDate.now(),Discipline.BACKCRAWL));
+        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.MEDLEY));
+        coaches.get(2).addTrainingScoreToMember(felicia, new TrainingScore(100,LocalDate.now(),Discipline.BUTTERFLY));
+
         coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(55,LocalDate.now(),Discipline.CRAWL));
         coaches.get(0).addTrainingScoreToMember(miles, new TrainingScore(20,LocalDate.now(),Discipline.BUTTERFLY));
+
         coaches.get(1).addTrainingScoreToMember(gwen, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
         coaches.get(1).addTrainingScoreToMember(gwen, new TrainingScore(143,LocalDate.now(),Discipline.BUTTERFLY));
+
+        coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(91,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(200,LocalDate.now(),Discipline.BUTTERFLY));
+        coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(120,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(2).addTrainingScoreToMember(harry, new TrainingScore(119,LocalDate.now(),Discipline.CRAWL));
+
+        coaches.get(3).addTrainingScoreToMember(may, new TrainingScore(98,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(3).addTrainingScoreToMember(may, new TrainingScore(112,LocalDate.now(),Discipline.BACKCRAWL));
+        coaches.get(3).addTrainingScoreToMember(may, new TrainingScore(240,LocalDate.now(),Discipline.MEDLEY));
+
+        coaches.get(3).addTrainingScoreToMember(mayday, new TrainingScore(47,LocalDate.now(),Discipline.BUTTERFLY));
+        coaches.get(3).addTrainingScoreToMember(mayday, new TrainingScore(100,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(3).addTrainingScoreToMember(mayday, new TrainingScore(67,LocalDate.now(),Discipline.BUTTERFLY));
+
+        coaches.get(3).addTrainingScoreToMember(benjy, new TrainingScore(148,LocalDate.now(),Discipline.CRAWL));
+        coaches.get(3).addTrainingScoreToMember(benjy, new TrainingScore(126,LocalDate.now(),Discipline.BUTTERFLY));
+
         updateMemberInfoInFile(peter);
         updateMemberInfoInFile(miles);
         updateMemberInfoInFile(felicia);
         updateMemberInfoInFile(gwen);
+        updateMemberInfoInFile(harry);
+        updateMemberInfoInFile(may);
+        updateMemberInfoInFile(mayday);
+        updateMemberInfoInFile(benjy);
+
         coaches.get(0).updateMemberInCoach(peter);
         coaches.get(0).updateMemberInCoach(miles);
-        coaches.get(0).updateMemberInCoach(felicia);
+        coaches.get(2).updateMemberInCoach(felicia);
         coaches.get(1).updateMemberInCoach(gwen);
+        coaches.get(2).updateMemberInCoach(harry);
+        coaches.get(3).updateMemberInCoach(may);
+        coaches.get(3).updateMemberInCoach(mayday);
+        coaches.get(3).updateMemberInCoach(benjy);
+
+
         updateCoachInfoInFile(coaches.get(0));
         updateCoachInfoInFile(coaches.get(1));
+        updateCoachInfoInFile(coaches.get(2));
+        updateCoachInfoInFile(coaches.get(3));
     }
 
     public void addTestCoach(String name){
