@@ -529,6 +529,7 @@ public void removeDiscipline(Member member){
         updateNextMemberID();
         if (members.isEmpty() || coaches.isEmpty()){
             initializeData();       //If the arrays are empty at startup then clear the files and add some default members
+            initializePaymentData();
             initializeTrainingScores();
             updateArrays();
         }
@@ -539,27 +540,48 @@ public void removeDiscipline(Member member){
         FileHandler.clearFile("Members.txt"); //clears the files, so it's easier to assess if the data is correct.
         FileHandler.clearFile("Coaches.txt");
 
-        addTestCoach("Tony Stark");
-        addTestCoach("Dr. Otto Octavius");
-        addTestCoach("Norman Osborn");
-        addTestCoach("Ben Parker");
+        addTestCoach("Tony Stark"); //0
+        addTestCoach("Dr. Otto Octavius"); //1
+        addTestCoach("Norman Osborn"); //2
+        addTestCoach("Ben Parker"); //3
 
         loadCoachesArray();
 
-        addTestCompetitionMember("Peter", "Parker", "m", 1988,coaches.get(0));
-        addTestCompetitionMember("Miles", "Morales","m", 2010,coaches.get(0));
-        addTestCompetitionMember("Felicia", "Hardy", "f", 1990,coaches.get(2));
-        addTestCompetitionMember("Gwen", "Stacy", "f", 1991, coaches.get(1));
-        addTestCompetitionMember("Harry", "Osborn", "m", 1988, coaches.get(2));
-        addTestCompetitionMember("May", "Parker", "f", 1963, coaches.get(3));
-        addTestCompetitionMember("Mayday", "Parker", "f", 2018, coaches.get(3));
-        addTestCompetitionMember("Benjy", "Parker", "m", 2020, coaches.get(3));
+        addTestCompetitionMember("Peter", "Parker", "m", 1988,coaches.get(0)); //0
+        addTestCompetitionMember("Miles", "Morales","m", 2010,coaches.get(0)); //1
+        addTestCompetitionMember("Felicia", "Hardy", "f", 1990,coaches.get(2)); //2
+        addTestCompetitionMember("Gwen", "Stacy", "f", 1991, coaches.get(1)); //3
+        addTestCompetitionMember("Harry", "Osborn", "m", 1988, coaches.get(2)); //4
+        addTestCompetitionMember("May", "Parker", "f", 1963, coaches.get(3)); //5
+        addTestCompetitionMember("Mayday", "Parker", "f", 2018, coaches.get(3)); //6
+        addTestCompetitionMember("Benjy", "Parker", "m", 2020, coaches.get(3)); //7
 
-        addTestMember("Mary-Jane", "Watson", "f", 1988);
-        addTestMember("J. Jonah", "Jameson", "m", 1951);
-        addTestMember("Flash", "Thompson", "m", 1987);
+        addTestMember("Mary-Jane", "Watson", "f", 1988); //8
+        addTestMember("J. Jonah", "Jameson", "m", 1951); //9
+        addTestMember("Flash", "Thompson", "m", 1987); //10
 
     }
+
+    public void initializePaymentData() {
+        loadMemberArray();
+
+        Member felicia = members.get(2);
+        Member harry = members.get(4);
+        Member jameson = members.get(9);
+        Member flash = members.get(10);
+
+        felicia.setPaymentStatus(false);
+        harry.setPaymentStatus(false);
+        jameson.setPaymentStatus(false);
+        flash.setPaymentStatus(false);
+
+        updateMemberInfoInFile(felicia);
+        updateMemberInfoInFile(harry);
+        updateMemberInfoInFile(jameson);
+        updateMemberInfoInFile(flash);
+    }
+
+
 
     public void initializeTrainingScores(){
         loadMemberArray();
