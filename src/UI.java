@@ -3,7 +3,6 @@ import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -34,6 +33,7 @@ public class UI implements  Serializable {
             }
             catch (InputMismatchException e){
                 printText(" Input not recognized, please enter a number: ", ConsoleColor.RED);
+                in.next();
             }
         }
         return intInput;
@@ -46,7 +46,6 @@ public class UI implements  Serializable {
             printText(" Boolean input non-identified. Try again: ", ConsoleColor.RED);
             booleanInput = in.nextLine();
         }
-
         return whichBooleanIsString(booleanInput);
     }
 
@@ -73,7 +72,7 @@ public class UI implements  Serializable {
             try {
                 date = LocalDate.of(year, month, day);
             } catch (DateTimeException e) {
-                printText(" The date you have entered is invalid, please enter a valid date:", ConsoleColor.RED);
+                printText(" The date you have entered is invalid, please enter a valid date: ", ConsoleColor.RED);
                 return getLocalDateInput();
             }
         } return  date;
@@ -86,13 +85,20 @@ public class UI implements  Serializable {
 
         while(!isValid) {
             System.out.print("\n Day('DD)': ");
-            inputDay = in.nextInt();
-            in.nextLine();
 
-            if (inputDay >= 1 && inputDay <= 31) {
-                isValid = true;
-            } else {
-                printText(" Invalid day. Please ensure the day is between 1 and 31. ", ConsoleColor.RED);
+            try {
+                inputDay = in.nextInt();
+                in.nextLine();
+
+                if (inputDay >= 1 && inputDay <= 31) {
+                    isValid = true;
+                } else {
+                    printText(" Invalid day. Please ensure the day is between 1 and 31. ", ConsoleColor.RED);
+                }
+            } catch (InputMismatchException e){
+                printText(" Input not recognized, please try again. ", ConsoleColor.RED);
+                in.next();
+                return getDayInput();
             }
         }
         return inputDay;
@@ -105,13 +111,20 @@ public class UI implements  Serializable {
 
         while(!isValid) {
             System.out.print(" Month('MM'): ");
-            inputMonth = in.nextInt();
-            in.nextLine();
 
-            if (inputMonth >= 1 && inputMonth <= 12) {
-                isValid = true;
-            } else {
-                printText(" Invalid month. Please ensure the month is between 1 and 12. \n", ConsoleColor.RED);
+            try {
+                inputMonth = in.nextInt();
+                in.nextLine();
+
+                if (inputMonth >= 1 && inputMonth <= 12) {
+                    isValid = true;
+                } else {
+                    printText(" Invalid month. Please ensure the month is between 1 and 12. \n", ConsoleColor.RED);
+                }
+            } catch (InputMismatchException e){
+                printText(" Input not recognized, please try again. \n", ConsoleColor.RED);
+                in.next();
+                return getMonthInput();
             }
         }
         return inputMonth;
@@ -124,29 +137,23 @@ public class UI implements  Serializable {
 
         while(!endLoop) {
             System.out.print(" Year('YYYY'): ");
-            inputYear = in.nextInt();
-            in.nextLine();
 
-            if (inputYear >= 1915 && inputYear <= LocalDate.now().getYear()) {
-                        endLoop = true;
-                    }
-             else {
-                printText(" Invalid year. Please ensure the year is between 1915 and this year. \n", ConsoleColor.RED);
+            try {
+                inputYear = in.nextInt();
+                in.nextLine();
+
+                if (inputYear >= 1915 && inputYear <= LocalDate.now().getYear()) {
+                    endLoop = true;
+                } else {
+                    printText(" Invalid year. Please ensure the year is between 1915 and this year. \n", ConsoleColor.RED);
+                }
+            } catch (InputMismatchException e){
+                printText(" Input not recognized, please try again. \n", ConsoleColor.RED);
+                in.next();
+                return getYearInput();
             }
         }
         return inputYear;
-    }
-
-    //Error code
-    private void inputMismatch() {
-        printText(" Invalid input. Please enter numeric values for the date: ", ConsoleColor.RED);
-        in.nextLine(); // Clear input
-    }
-
-    //Error code
-    private void unexpectedError() {
-        printText(" An unexpected error occurred. Please try again: ", ConsoleColor.RED);
-        in.nextLine(); // Clear input
     }
 
     public static void printText(String text, ConsoleColor color) {
@@ -168,9 +175,8 @@ public class UI implements  Serializable {
 
     public void printDisciplines(ArrayList<Discipline> disciplines){
         if (!disciplines.isEmpty()) {
-            for (Discipline discipline: disciplines) {
+            for (Discipline discipline: disciplines)
                 printText(" "+discipline.toString() + "\n",ConsoleColor.RESET);
-            }
         }
     }
 
@@ -222,15 +228,11 @@ public class UI implements  Serializable {
         String info = prompt + " in " + discipline.label + " top 5:_";
         int seniorSpaceLength = (48 - info.length()) / 2;
         System.out.println("\n " + "_".repeat(seniorSpaceLength) + info + "_".repeat(seniorSpaceLength) + " \n");
-        for (int i = 0; i < listOfMembers.size(); i++) {
-            printTrainingScore(discipline, listOfMembers.get(i));}
+        for (int i = 0; i < listOfMembers.size(); i++)
+            printTrainingScore(discipline, listOfMembers.get(i));
     }
+
     /// private boolean methods to check data type
-
-    private static boolean isLeapYear(int year) {
-        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-    }
-
     private boolean isStringBoolean(String strBool) {
         if (strBool.equalsIgnoreCase("y")
                 || strBool.equalsIgnoreCase("true")
@@ -239,9 +241,7 @@ public class UI implements  Serializable {
                 || strBool.equalsIgnoreCase("false")
                 || strBool.equalsIgnoreCase("no")) {
             return true;
-        } else {
-            return false;
-        }
+        } else {return false;}
     }
 
 
@@ -251,9 +251,7 @@ public class UI implements  Serializable {
                 || strBool.equalsIgnoreCase("true")
                 || strBool.equalsIgnoreCase("yes")) {
             return true;
-        } else {
-            return false;
-        }
+        } else {return false;}
     }
 
     private boolean isString(String str) {
@@ -267,7 +265,6 @@ public class UI implements  Serializable {
 
 
     // GET DISCIPLINES
-
     public Discipline getDiscipline(){
         Discipline discipline = null;
         while (discipline == null){
@@ -322,7 +319,6 @@ public class UI implements  Serializable {
 
 
     // ------ MENUS -------
-
     public Menu buildMainMenu() {
         Menu mainMenu = new Menu();
         mainMenu.setMenuTitle(" Which menu would you like to access?");
