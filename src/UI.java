@@ -377,7 +377,14 @@ public class UI implements  Serializable {
         seeTop5Menu.printMenu();
         return seeTop5Menu;
     }
-    public Menu buildEditMenu(){
+    public Menu buildEditMemberMenu(){
+        Menu editMenu = new Menu();
+        editMenu.setMenuTitle("EDIT");
+        editMenu.setMenuItems("Name", "Active-status", "Return to Previous Menu");
+        editMenu.printMenu();
+        return editMenu;
+    }
+    public Menu buildEditCompetitionMemberMenu(){
         Menu editMenu = new Menu();
         editMenu.setMenuTitle("EDIT");
         editMenu.setMenuItems("Name", "Active-status", "Remove Disciplin","Add Disciplines","Return to Previous Menu");

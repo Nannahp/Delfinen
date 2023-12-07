@@ -240,16 +240,31 @@ public class SystemManager {
         ui.printMembers(members);
         UI.printText("\n", ConsoleColor.RESET);
         Member member = getMember();
-        runEditMenu(member);
+        if(member instanceof CompetitionMember){
+            runEditCompetitionMemberMenu((CompetitionMember) member);
+        }else runEditMemberMenu(member);
         updateMemberInfoInFile(member);
         updateMembers();
     }
 
-    //Edit menu
-    public  void runEditMenu(Member member) {
+    public void runEditMemberMenu(Member member){
         boolean exitMenu = false;
         while (!exitMenu) {
-            Menu menu = ui.buildEditMenu();
+            Menu menu = ui.buildEditMemberMenu();
+            int choice = menu.menuInputHandler();
+            switch (choice) {
+                case 1 -> editName(member);
+                case 2 -> editActiveStatus(member);
+                case 3 -> exitMenu = true;
+            }
+        }
+    }
+
+    //Edit menu
+    public  void runEditCompetitionMemberMenu(CompetitionMember member) {
+        boolean exitMenu = false;
+        while (!exitMenu) {
+            Menu menu = ui.buildEditCompetitionMemberMenu();
             int choice = menu.menuInputHandler();
             switch (choice) {
                 case 1 -> editName(member);
@@ -258,43 +273,33 @@ public class SystemManager {
                 case 4 -> addDiscipline( member);
                 case 5 -> exitMenu = true;
             }
-        }
-        if ((member instanceof CompetitionMember)){
-            updateCoachInfo( ((CompetitionMember) member).getCoach());
+            updateCoachInfo(member.getCoach());
         }
     }
 
     //Add disciplin through edit
-    public void addDiscipline(Member member) {
-        if (member instanceof CompetitionMember) {
+    public void addDiscipline(CompetitionMember member) {
             UI.printText("\n " + member.getFirstName() + " is active in: \n", ConsoleColor.RESET);
-            ui.printDisciplines(((CompetitionMember) member).getDisciplines());
-            UI.printText("\n Which discipline would you like to add? ", ConsoleColor.RESET);
+            ui.printDisciplines((member).getDisciplines());
+            UI.printText("\n Which discipline would you like to add?\n Please write here: ", ConsoleColor.RESET);
             Discipline discipline = ui.getDiscipline();
-            ((CompetitionMember) member).addDisciplines(discipline);
-            Coach coach = ((CompetitionMember) member).getCoach();
-            coach.checkCompetitionMemberTeam((CompetitionMember) member);
-        } else {
-            UI.printText("\n Member is not a competition member", ConsoleColor.RED);
+            (member).addDisciplines(discipline);
+            Coach coach = ( member).getCoach();
+            coach.checkCompetitionMemberTeam(member);
         }
-    }
+
 
     //Remove disciplin through edit
-    public void removeDiscipline(Member member){
-        if( member instanceof CompetitionMember) {
-            if(!((CompetitionMember) member).getDisciplines().isEmpty()){
-            UI.printText("\n Which discipline would you like to delete?\n", ConsoleColor.RESET);
-            ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+    public void removeDiscipline(CompetitionMember member){
+            if(!( member).getDisciplines().isEmpty()){
+            UI.printText("\n Which discipline would you like to delete?\n Please write here:", ConsoleColor.RESET);
+            ui.printDisciplines((member).getDisciplines());
             Discipline discipline = ui.getDiscipline();
-            ((CompetitionMember) member).deleteDiscipline(discipline);
-            deleteMemberByDiscipline((CompetitionMember) member, discipline);
+            (member).deleteDiscipline(discipline);
+            deleteMemberByDiscipline( member, discipline);
         }
             else UI.printText(" This member is not active in any disciplines\n", ConsoleColor.RED);
         }
-        else {
-            UI.printText("\n Member is not a competition member", ConsoleColor.RED);
-        }
-    }
 
     //Edit names
     public void editName(Member member){
