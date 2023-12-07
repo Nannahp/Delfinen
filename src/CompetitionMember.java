@@ -98,7 +98,7 @@ public class CompetitionMember extends Member{
     }
 
     //Method to make sure the member has the disciplin
-    private boolean doesMemberHaveDiscipline(Discipline discipline) {
+    public boolean doesMemberHaveDiscipline(Discipline discipline) {
         return getDisciplines().contains(discipline);
     }
 
@@ -106,8 +106,9 @@ public class CompetitionMember extends Member{
     public void deleteDiscipline(Discipline discipline) {
         if (doesMemberHaveDiscipline(discipline)) {
             disciplines.remove(discipline);
+            UI.printText(" Discipline removed\n", ConsoleColor.GREEN);
         } else UI.printText(" This member is not active in this discipline\n", ConsoleColor.RED);
-    }
+}
 
     public ArrayList<Discipline> getDisciplines() {
         return disciplines;

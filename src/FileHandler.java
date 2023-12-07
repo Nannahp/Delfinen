@@ -4,7 +4,7 @@ import java.util.*;
 public class FileHandler {
 
     public static void saveObjectsToFile(String fileName, List<Object> objects) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src" + File.separator + "files" + File.separator + fileName))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("src" + File.separator + fileName))) {
             for (Object object : objects) {
                 oos.writeObject(object);
             }
@@ -21,7 +21,7 @@ public class FileHandler {
 
     public static List<Object> loadObjectsFromFile(String fileName) {
         List<Object> objects = new ArrayList<>();
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src" + File.separator + "files" + File.separator + fileName))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("src" + File.separator + fileName))) {
             Object object;
             while ((object = ois.readObject()) != null) {
                 objects.add(object);
@@ -65,22 +65,21 @@ public class FileHandler {
     }
 }
 
-    //Not needed right now because file is created, but might be needed afterwards
-    /*public static void createFile(String fileName) {
+
+    public static void createFile(String fileName) {
         try {
-            File newFile = new File("src" + File.separator + "files" + File.separator + fileName);
+            File newFile = new File("src" + File.separator +  fileName);
             if (newFile.createNewFile()) {
                 UI.printText("File created: " + newFile.getName(), ConsoleColor.GREEN);
             } else {
-                UI.printText("File already exists!\n", ConsoleColor.RED);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }*/
+    }
 
     public static void clearFile(String fileName) {
-        try (FileWriter fw = new FileWriter("src" + File.separator + "files" + File.separator + fileName, false)) {
+        try (FileWriter fw = new FileWriter("src" + File.separator +  fileName, false)) {
         } catch (IOException e) {
             e.printStackTrace();
         }
