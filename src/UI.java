@@ -265,7 +265,7 @@ public class UI implements  Serializable {
     }
 
     private boolean isString(String str) {
-        Pattern pattern = Pattern.compile("^[a-zA-Z\\s\\-'.]+$"); // regex - complicated - Pattern for letters and a few special characters
+        Pattern pattern = Pattern.compile("^[a-zA-ZåäöøæÅÄÖØÆéèêëÉÈÊËíìîïÍÌÎÏóòôõöÓÒÔÕÖúùûüÚÙÛÜÁáÀàÂâÃãÄäÇçÐðÉéÊêËëÍíÎîÏïÑñÓóÔôÕõÖöÚúÛûÜüÝýÿ\\s\\-',.]+$"); // regex - complicated - Pattern for letters and a few special characters
 
         //check if StringInput matches our letter pattern
         Matcher matcher = pattern.matcher(str);
