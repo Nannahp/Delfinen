@@ -711,6 +711,7 @@ public class SystemManager {
         member.setMemberID(nextMemberId++);
         FileHandler.appendObjectToFile("Members.txt", member);
     }
+    //Dummyfiles removed
 }
 
 
