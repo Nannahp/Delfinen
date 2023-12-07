@@ -58,7 +58,6 @@ public class SystemManager {
         }
     }
 
-
     public void registerPaymentStatus(){
         ui.printMembers(members);
         UI.printText("\n",ConsoleColor.RESET);
@@ -386,7 +385,10 @@ public class SystemManager {
                 coach.updateMemberInCoach((CompetitionMember) member);
                 updateCoachInfoInFile(coach);}
              } else UI.printText("\n The member ID you have entered is not a competition member!\n", ConsoleColor.RED);
-            } else  UI.printText("\n This member is not assigned to this coach\n", ConsoleColor.RED);
+            } else  {
+                UI.printText("\n This member is not assigned to this coach!\n", ConsoleColor.RED);
+                registerTrainingScore(coach);
+            }
         }
         else UI.printText("\n No members assigned to this coach\n", ConsoleColor.RED);
     }
@@ -434,17 +436,20 @@ public class SystemManager {
             ui.printMembers(coach.getAllMembers());
             Member member = getMember();
             if (coach.getAllMembers().contains(member)){
-            if (member instanceof CompetitionMember) {
-                System.out.print(" This member has these disciplines: \n");
-                ui.printDisciplines(((CompetitionMember) member).getDisciplines());
-                Discipline discipline = checkIfMemberHasDiscipline((CompetitionMember) member);
-                if (discipline != null){
-                coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member,discipline));
-                updateMemberInfoInFile(member);
-                coach.updateMemberInCoach((CompetitionMember) member);
-                updateCoachInfoInFile(coach);}
-            } else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
-            } else  UI.printText("\n This member is not assigned to this coach\n", ConsoleColor.RED);
+                if (member instanceof CompetitionMember) {
+                    System.out.print(" This member has these disciplines: \n");
+                    ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+                    Discipline discipline = checkIfMemberHasDiscipline((CompetitionMember) member);
+                    if (discipline != null){
+                    coach.addCompetitionScoreToMember((CompetitionMember) member, createCompetitionScore((CompetitionMember) member,discipline));
+                    updateMemberInfoInFile(member);
+                    coach.updateMemberInCoach((CompetitionMember) member);
+                    updateCoachInfoInFile(coach);}
+                } else UI.printText("\n The member ID you have entered is not a competition member!", ConsoleColor.RED);
+            } else {
+                UI.printText("\n The member is not assigned to this coach!\n", ConsoleColor.RED);
+                registerCompetitionScore(coach);
+            }
         } else UI.printText("\n No members assigned to this coach\n", ConsoleColor.RED);
     }
 
