@@ -563,6 +563,8 @@ public class SystemManager {
 
 
     public void readyArraysAtStartup(){
+        FileHandler.createFile("Members.txt");
+        FileHandler.createFile("Coaches.txt");
         loadArrays();
         updateNextMemberID();
         if (members.isEmpty() || coaches.isEmpty()){
