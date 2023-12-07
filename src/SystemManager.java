@@ -55,8 +55,8 @@ public class SystemManager {
             UI.printText("\n No members found.", ConsoleColor.RED);
         } else {
              ui.showPaymentStatusForAllMembers(members);
-            }
         }
+    }
 
 
     public void registerPaymentStatus(){
@@ -134,7 +134,7 @@ public class SystemManager {
         LocalDate date = getMemberDateInput();
         String gender = ui.getGenderInput();
         boolean isActive = getMemberBooleanInput();
-        member=new Member(firstName, lastName, date, gender, isActive);
+        member = new Member(firstName, lastName, date, gender, isActive);
         member.setMemberID(nextMemberId++);
         return member;
     }
@@ -169,8 +169,9 @@ public class SystemManager {
                 Discipline discipline = askForDiscipline();
                 if (disciplines.contains(discipline)){
                     UI.printText(" \n Member already active in this discipline \n", ConsoleColor.RED);
-                } else
-                disciplines.add(discipline);
+                } else {
+                    disciplines.add(discipline);
+                }
             }
         }
         while (needToAddMoreDisciplines && disciplines.size()<5);
@@ -202,7 +203,7 @@ public class SystemManager {
         ui.printMembers(members);
         UI.printText("\n", ConsoleColor.RESET);
         Member member = getMember();
-        UI.printText("\n Are you sure? (y/n) ", ConsoleColor.CYAN);
+        UI.printText("\n Are you sure? (y/n) ", ConsoleColor.RESET);
 
         if (ui.getStringInput().equalsIgnoreCase("y")) {
             removeMemberFromFile(member);
@@ -261,36 +262,39 @@ public class SystemManager {
         if ((member instanceof CompetitionMember)){
             updateCoachInfo( ((CompetitionMember) member).getCoach());
         }
-        }
+    }
 
     //Add disciplin through edit
-public void addDiscipline(Member member){
-        if( member instanceof CompetitionMember){
-        UI.printText("\n " +member.getFirstName() + " is active in: \n" ,ConsoleColor.RESET);
-        ui.printDisciplines(((CompetitionMember) member).getDisciplines());
-        UI.printText("\n Which discipline would you like to add? ", ConsoleColor.RESET);
-        Discipline discipline = ui.getDiscipline();
-        ((CompetitionMember) member).addDisciplines(discipline);
-        Coach coach = ((CompetitionMember) member).getCoach();
-        coach.checkCompetitionMemberTeam((CompetitionMember) member);
-}
-    else UI.printText("\n Member is not a competition member", ConsoleColor.RED);}
+    public void addDiscipline(Member member) {
+        if (member instanceof CompetitionMember) {
+            UI.printText("\n " + member.getFirstName() + " is active in: \n", ConsoleColor.RESET);
+            ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+            UI.printText("\n Which discipline would you like to add? ", ConsoleColor.RESET);
+            Discipline discipline = ui.getDiscipline();
+            ((CompetitionMember) member).addDisciplines(discipline);
+            Coach coach = ((CompetitionMember) member).getCoach();
+            coach.checkCompetitionMemberTeam((CompetitionMember) member);
+        } else {
+            UI.printText("\n Member is not a competition member", ConsoleColor.RED);
+        }
+    }
 
     //Remove disciplin through edit
-public void removeDiscipline(Member member){
-    if( member instanceof CompetitionMember) {
-        if(!((CompetitionMember) member).getDisciplines().isEmpty()){
-        UI.printText("\n Which discipline would you like to delete?\n", ConsoleColor.RESET);
-        ui.printDisciplines(((CompetitionMember) member).getDisciplines());
-        Discipline discipline = ui.getDiscipline();
-        ((CompetitionMember) member).deleteDiscipline(discipline);
-        deleteMemberByDiscipline((CompetitionMember) member, discipline);
+    public void removeDiscipline(Member member){
+        if( member instanceof CompetitionMember) {
+            if(!((CompetitionMember) member).getDisciplines().isEmpty()){
+            UI.printText("\n Which discipline would you like to delete?\n", ConsoleColor.RESET);
+            ui.printDisciplines(((CompetitionMember) member).getDisciplines());
+            Discipline discipline = ui.getDiscipline();
+            ((CompetitionMember) member).deleteDiscipline(discipline);
+            deleteMemberByDiscipline((CompetitionMember) member, discipline);
+        }
+            else UI.printText(" This member is not active in any disciplines\n", ConsoleColor.RED);
+        }
+        else {
+            UI.printText("\n Member is not a competition member", ConsoleColor.RED);
+        }
     }
-        else UI.printText(" This member is not active in any disciplines\n", ConsoleColor.RED);
-
-    }
-    else UI.printText("\n Member is not a competition member", ConsoleColor.RED);
-}
 
     //Edit names
     public void editName(Member member){
